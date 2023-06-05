@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "Item Ledger";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Item Ledger</h2>
+
+<style>
+    #reportviewer {
+        min-height: 500px;
+        min-width: 100%;
+    }
+</style>
+@(Html.EJ().ReportViewer("reportviewer")
+    .ProcessingMode(Syncfusion.JavaScript.ReportViewerEnums.ProcessingMode.Remote)
+    .ReportServiceUrl(VirtualPathUtility.ToAbsolute("~/api/ReportApi"))
+    .ReportPath("~/App_Data/rptItemLedger.rdl").Parameters(param =>
+    {
+        param.Name("FromDt").Labels(new List<string>() { "FromDt" }).Values(new List<string>() { "12/24/2012" }).Add();
+        param.Name("ToDt").Labels(new List<string>() { "ToDt" }).Values(new List<string>() { "12/25/2018"}).Add();
+        param.Name("ItemCode").Labels(new List<string>() { "ItemCode" }).Values(new List<string>() { "P002","P003","P004" }).Add();
+    })
+)
+

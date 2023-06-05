@@ -1,0 +1,236 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dt-buttons {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+
+    .btn-custom {
+        background-color: blue;
+        color: white;
+    }
+
+    .dt-buttons .btn-primary {
+        background-color: blue;
+        border-color: blue;
+    }
+
+    .export-button {
+        float: right;
+        margin-top: 10px;
+    }
+</style>
+
+<th>
+    <h3 class="mb-0">Purchase Report </h3>
+</th>
+<div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="FromDate" class="col-md-4 control-label">From Date:</label>
+                            <div class="col-md-8">
+                                <input type="text" id="FromDate" name="FromDate" required class="form-control" style="width:100%" autocomplete="off" data-bv-notempty="true" data-bv-notempty-message="Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="ToDate" class="col-md-4 control-label">To Date:</label>
+                            <div class="col-md-8">
+                                <input type="text" id="ToDate" name="ToDate" required class="form-control" style="width:100%" autocomplete="off" data-bv-notempty="true" data-bv-notempty-message="Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <div class="col-lg-8">
+                                <div style="text-align:right">
+                                    @*<input id="btnsearch" type="submit" value="Search" class="btn btn-warning" style="padding:6px 6px" />*@
+                                    @*<input type="submit" value="Search" />*@
+                                    <input type="button" id="btnSearch" value="Search" onclick="SearchData();" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <table id="example" class="table table-striped table-bordered dt-responsive" style="width:100%">
+                    <thead>
+                        <tr class="text-uppercase" style="font-size: 12px; background-color: #d8e9c1">
+                            @*<th></th>*@
+                            <th>Supplier Name</th>
+                            <th>Purchase Order No</th>
+                            <th>Purchase Order Date </th>
+                            <th>Basic Rate </th>
+                            <th>Discount </th>
+                            <th>IGST Amount</th> 
+                            <th>SGST Amount</th>
+                            <th>CGST Amount</th>
+                            <th>Total Amount </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/vfs_fonts.js"></script>
+
+<script src="~/plugins/jquery/jquery.min.js"></script>
+@*<script src="~/plugins/datatables/jquery.dataTables.min.js"></script>*@
+
+<script>
+    $(document).ready(function () {
+        $("#FromDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+        $("#ToDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+
+        report();
+
+        //SearchData();
+
+
+     });
+
+    function report() {
+        debugger
+
+                try {
+                    $('#example').DataTable({
+                        paging: true,
+              searching: false,
+            bServerSide: true,
+            responsive: true,
+            lengthChange: false,
+            dom: 'Bfrtip',
+            "sServerMethod": 'POST',
+            "sAjaxSource": '@Url.Action("GetData", "PurchaseReport")',
+              "pageLength": 15,
+              //lengthMenu: [
+              //    [10, 25, 50, -1],
+              //    ['10 rows', '25 rows', '50 rows', 'Show all']
+              //],
+              //buttons: [
+              //    'pageLength'
+              //],
+              "buttons": [
+                  {
+                      extend: 'excelHtml5',
+                      text: 'Export to Excel',
+
+                      exportOptions: {
+                          modifier: {
+                              page: 'all'
+                          }
+                      }
+                  }
+              ],
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search"
+            },
+            "autoWidth": false,
+            "aoColumns": [
+
+
+                { "mData":"SupplierName" },
+                { "mData": "PurchaseOrderNo" },
+                {
+                    "mData": "PurchaseOrderDate",
+                    data: "PurchaseOrderDate", render: function (data) {
+                        return moment(data).format('DD-MM-YYYY');
+                    }
+                },
+                { "mData": "NetAmount" },
+
+                { "mData": "Discount" },
+                { "mData": "IGST" },
+
+                { "mData": "SGST" },
+                { "mData": "CGST" },
+                { "mData": "TotalAmount" }
+
+
+                ],
+
+        });
+
+        }
+
+                catch (e) {
+                }
+    }
+
+
+    $(document).ready(function () {
+       
+        $('#exportBtn').click(function () {
+            exportAllPagesToExcel();
+        });
+
+        function exportAllPagesToExcel() {
+            $.ajax({
+                url: '/path-to-export-endpoint', // Specify the server-side endpoint to export all pages to Excel
+                type: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    // Download the generated Excel file
+                    var downloadLink = document.createElement('a');
+                    downloadLink.href = response.fileUrl;
+                    downloadLink.download = 'all_pages.xlsx';
+                    downloadLink.click();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error exporting to Excel:', error);
+                }
+            });
+        }
+    });
+
+
+        function SearchData() {
+
+
+                $.ajax({
+                    url: '@Url.Action("SearchData", "PurchaseReport")',
+                    type: "GET",
+                    dataType: "JSON",
+                    data: { FromDate: $("#FromDate").val(), ToDate: $("#ToDate").val() },
+
+                    success: function (result) {
+                        debugger;
+                        if (result.Message == "success") {
+                          // report();
+
+                            window.location.reload(true);
+
+                        }
+                        else {
+                            alert(result.Message)
+                        }
+                    }
+                });
+
+    }
+
+
+
+
+
+</script>

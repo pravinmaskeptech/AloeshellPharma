@@ -1,0 +1,254 @@
+D:\Development\Inventory\Inventory\Inventory\bin\Inventory.dll.config
+D:\Development\Inventory\Inventory\Inventory\bin\Inventory.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Inventory.pdb
+D:\Development\Inventory\Inventory\Inventory\bin\Antlr3.Runtime.dll
+D:\Development\Inventory\Inventory\Inventory\bin\EntityFramework.dll
+D:\Development\Inventory\Inventory\Inventory\bin\EntityFramework.SqlServer.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.AnalysisServices.AdomdClient.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.AspNet.Identity.Core.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.AspNet.Identity.Owin.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Host.SystemWeb.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.Cookies.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.Facebook.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.Google.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.MicrosoftAccount.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.OAuth.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.Twitter.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Web.Infrastructure.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Newtonsoft.Json.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Owin.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.Chart.Wpf.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.Compression.Base.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.DocIO.Base.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.DocToPDFConverter.Base.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.EJ.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.EJ.Export.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.EJ.Mvc.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.EJ.PdfViewer.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.EJ.Pivot.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.EJ.ReportViewer.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.Gauge.Wpf.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.Linq.Base.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.Olap.Base.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.Pdf.Base.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.PivotAnalysis.Base.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.PMML.Base.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.Presentation.Base.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.ReportControls.Wpf.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.ReportWriter.Base.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.SFMaps.WPF.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.Shared.Wpf.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Syncfusion.XlsIO.Base.dll
+D:\Development\Inventory\Inventory\Inventory\bin\System.Net.Http.Formatting.dll
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Helpers.dll
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Http.dll
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Http.WebHost.dll
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Mvc.dll
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Optimization.dll
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Razor.dll
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.WebPages.Deployment.dll
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.WebPages.dll
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.WebPages.Razor.dll
+D:\Development\Inventory\Inventory\Inventory\bin\WebGrease.dll
+D:\Development\Inventory\Inventory\Inventory\bin\Antlr3.Runtime.pdb
+D:\Development\Inventory\Inventory\Inventory\bin\EntityFramework.xml
+D:\Development\Inventory\Inventory\Inventory\bin\EntityFramework.SqlServer.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.AspNet.Identity.Core.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.AspNet.Identity.Owin.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Host.SystemWeb.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.Cookies.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.Facebook.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.Google.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.OAuth.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Microsoft.Owin.Security.Twitter.xml
+D:\Development\Inventory\Inventory\Inventory\bin\Newtonsoft.Json.xml
+D:\Development\Inventory\Inventory\Inventory\bin\System.Net.Http.Formatting.xml
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Helpers.xml
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Http.xml
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Http.WebHost.xml
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Mvc.xml
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Optimization.xml
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.Razor.xml
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.WebPages.xml
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.WebPages.Deployment.xml
+D:\Development\Inventory\Inventory\Inventory\bin\System.Web.WebPages.Razor.xml
+D:\Development\Inventory\Inventory\Inventory\obj\Debug\Inventory.dll
+D:\Development\Inventory\Inventory\Inventory\obj\Debug\Inventory.pdb
+F:\Sudhir\Inventory\Inventory\Inventory\bin\Inventory.dll.config
+F:\Sudhir\Inventory\Inventory\Inventory\bin\Inventory.dll
+F:\Sudhir\Inventory\Inventory\Inventory\bin\Inventory.pdb
+F:\Sudhir\Inventory\Inventory\Inventory\obj\Debug\Inventory.dll
+F:\Sudhir\Inventory\Inventory\Inventory\obj\Debug\Inventory.pdb
+F:\invv\Inventory\Inventory\bin\Inventory.dll.config
+F:\invv\Inventory\Inventory\bin\Inventory.dll
+F:\invv\Inventory\Inventory\bin\Inventory.pdb
+F:\invv\Inventory\Inventory\obj\Debug\Inventory.dll
+F:\invv\Inventory\Inventory\obj\Debug\Inventory.pdb
+F:\invv\Inventory\Inventory\obj\Debug\Inventory.csprojResolveAssemblyReference.cache
+F:\Inventory System\Inventory\Inventory\bin\Inventory.dll.config
+F:\Inventory System\Inventory\Inventory\bin\Inventory.dll
+F:\Inventory System\Inventory\Inventory\bin\Inventory.pdb
+F:\Inventory System\Inventory\Inventory\obj\Debug\Inventory.dll
+F:\Inventory System\Inventory\Inventory\obj\Debug\Inventory.pdb
+F:\Inventory System\Inventory\Inventory\obj\Debug\Inventory.csprojResolveAssemblyReference.cache
+D:\WEB App\Inventory\Inventory\Inventory\bin\Inventory.dll.config
+D:\WEB App\Inventory\Inventory\Inventory\bin\Inventory.dll
+D:\WEB App\Inventory\Inventory\Inventory\bin\Inventory.pdb
+D:\WEB App\Inventory\Inventory\Inventory\obj\Debug\Inventory.dll
+D:\WEB App\Inventory\Inventory\Inventory\obj\Debug\Inventory.pdb
+F:\Inventory New\Inventory\Inventory\obj\Debug\Inventory.dll
+F:\Inventory New\Inventory\Inventory\obj\Debug\Inventory.pdb
+F:\Inventory New\Inventory\Inventory\bin\Inventory.dll.config
+F:\Inventory New\Inventory\Inventory\bin\Inventory.dll
+F:\Inventory New\Inventory\Inventory\bin\Inventory.pdb
+F:\Sudhir\Inventory\Inventory\Inventory\obj\Debug\Inventory.csprojResolveAssemblyReference.cache
+F:\Inventory\Inventory\bin\Inventory.dll.config
+F:\Inventory\Inventory\bin\Inventory.dll
+F:\Inventory\Inventory\bin\Inventory.pdb
+F:\Inventory\Inventory\obj\Debug\Inventory.dll
+F:\Inventory\Inventory\obj\Debug\Inventory.pdb
+F:\New folder\Inventory\Inventory\bin\Inventory.dll.config
+F:\New folder\Inventory\Inventory\bin\Inventory.dll
+F:\New folder\Inventory\Inventory\bin\Inventory.pdb
+F:\New folder\Inventory\Inventory\obj\Debug\Inventory.csprojResolveAssemblyReference.cache
+F:\New folder\Inventory\Inventory\obj\Debug\Inventory.dll
+F:\New folder\Inventory\Inventory\obj\Debug\Inventory.pdb
+F:\Work\All Backup\Inventory New\18-06-2018\Inventory\Inventory\bin\Inventory.dll.config
+F:\Work\All Backup\Inventory New\18-06-2018\Inventory\Inventory\bin\Inventory.dll
+F:\Work\All Backup\Inventory New\18-06-2018\Inventory\Inventory\bin\Inventory.pdb
+F:\Work\All Backup\Inventory New\18-06-2018\Inventory\Inventory\obj\Debug\Inventory.dll
+F:\Work\All Backup\Inventory New\18-06-2018\Inventory\Inventory\obj\Debug\Inventory.pdb
+F:\Sudhir\Inventory\Inventory 14 July 218\Inventory\bin\Inventory.dll.config
+F:\Sudhir\Inventory\Inventory 14 July 218\Inventory\bin\Inventory.dll
+F:\Sudhir\Inventory\Inventory 14 July 218\Inventory\bin\Inventory.pdb
+F:\Sudhir\Inventory\Inventory 14 July 218\Inventory\obj\Debug\Inventory.dll
+F:\Sudhir\Inventory\Inventory 14 July 218\Inventory\obj\Debug\Inventory.pdb
+F:\Sudhir\Inventory\Inventory 14 July 218\Inventory\obj\Debug\Inventory.csprojResolveAssemblyReference.cache
+F:\Sudhir\Inventory\Inventory 21 July 2018\Inventory\bin\Inventory.dll.config
+F:\Sudhir\Inventory\Inventory 21 July 2018\Inventory\bin\Inventory.dll
+F:\Sudhir\Inventory\Inventory 21 July 2018\Inventory\bin\Inventory.pdb
+F:\Sudhir\Inventory\Inventory 21 July 2018\Inventory\obj\Debug\Inventory.dll
+F:\Sudhir\Inventory\Inventory 21 July 2018\Inventory\obj\Debug\Inventory.pdb
+F:\Sudhir\Inventory\Inventory 21 July 2018\Inventory\obj\Debug\Inventory.csprojResolveAssemblyReference.cache
+F:\Sudhir\Inventory\Inventory 06 Sept 2018\Inventory\bin\Inventory.dll.config
+F:\Sudhir\Inventory\Inventory 06 Sept 2018\Inventory\bin\Inventory.dll
+F:\Sudhir\Inventory\Inventory 06 Sept 2018\Inventory\bin\Inventory.pdb
+F:\Sudhir\Inventory\Inventory 06 Sept 2018\Inventory\obj\Debug\Inventory.csprojResolveAssemblyReference.cache
+F:\Sudhir\Inventory\Inventory 06 Sept 2018\Inventory\obj\Debug\Inventory.dll
+F:\Sudhir\Inventory\Inventory 06 Sept 2018\Inventory\obj\Debug\Inventory.pdb
+D:\Sudhir\Inventory\Inventory 28 Sept 2018\Inventory\bin\Inventory.dll.config
+D:\Sudhir\Inventory\Inventory 28 Sept 2018\Inventory\bin\Inventory.dll
+D:\Sudhir\Inventory\Inventory 28 Sept 2018\Inventory\bin\Inventory.pdb
+D:\Sudhir\Inventory\Inventory 28 Sept 2018\Inventory\obj\Debug\Inventory.csprojAssemblyReference.cache
+D:\Sudhir\Inventory\Inventory 28 Sept 2018\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+D:\Sudhir\Inventory\Inventory 28 Sept 2018\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+D:\Sudhir\Inventory\Inventory 28 Sept 2018\Inventory\obj\Debug\Inventory.dll
+D:\Sudhir\Inventory\Inventory 28 Sept 2018\Inventory\obj\Debug\Inventory.pdb
+D:\Sudhir\Inventory\Inventory 04 OCT 2018\Inventory\bin\Inventory.dll.config
+D:\Sudhir\Inventory\Inventory 04 OCT 2018\Inventory\bin\Inventory.dll
+D:\Sudhir\Inventory\Inventory 04 OCT 2018\Inventory\bin\Inventory.pdb
+D:\Sudhir\Inventory\Inventory 04 OCT 2018\Inventory\obj\Debug\Inventory.csprojAssemblyReference.cache
+D:\Sudhir\Inventory\Inventory 04 OCT 2018\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+D:\Sudhir\Inventory\Inventory 04 OCT 2018\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+D:\Sudhir\Inventory\Inventory 04 OCT 2018\Inventory\obj\Debug\Inventory.dll
+D:\Sudhir\Inventory\Inventory 04 OCT 2018\Inventory\obj\Debug\Inventory.pdb
+D:\Sudhir\Inventory\Inventory 22 April 2019\Inventory\bin\Inventory.dll.config
+D:\Sudhir\Inventory\Inventory 22 April 2019\Inventory\bin\Inventory.dll
+D:\Sudhir\Inventory\Inventory 22 April 2019\Inventory\bin\Inventory.pdb
+D:\Sudhir\Inventory\Inventory 22 April 2019\Inventory\obj\Debug\Inventory.csprojAssemblyReference.cache
+D:\Sudhir\Inventory\Inventory 22 April 2019\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+D:\Sudhir\Inventory\Inventory 22 April 2019\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+D:\Sudhir\Inventory\Inventory 22 April 2019\Inventory\obj\Debug\Inventory.dll
+D:\Sudhir\Inventory\Inventory 22 April 2019\Inventory\obj\Debug\Inventory.pdb
+F:\Micraft All Projects\Inventory New Application\Inventory\Inventory\bin\Inventory.dll.config
+F:\Micraft All Projects\Inventory New Application\Inventory\Inventory\bin\Inventory.dll
+F:\Micraft All Projects\Inventory New Application\Inventory\Inventory\bin\Inventory.pdb
+F:\Micraft All Projects\Inventory New Application\Inventory\Inventory\obj\Debug\Inventory.csprojAssemblyReference.cache
+F:\Micraft All Projects\Inventory New Application\Inventory\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+F:\Micraft All Projects\Inventory New Application\Inventory\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+F:\Micraft All Projects\Inventory New Application\Inventory\Inventory\obj\Debug\Inventory.dll
+F:\Micraft All Projects\Inventory New Application\Inventory\Inventory\obj\Debug\Inventory.pdb
+D:\Sudhir\Inventory\Inventory10May2019\Inventory\bin\Inventory.dll.config
+D:\Sudhir\Inventory\Inventory10May2019\Inventory\bin\Inventory.dll
+D:\Sudhir\Inventory\Inventory10May2019\Inventory\bin\Inventory.pdb
+D:\Sudhir\Inventory\Inventory10May2019\Inventory\obj\Debug\Inventory.csprojAssemblyReference.cache
+D:\Sudhir\Inventory\Inventory10May2019\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+D:\Sudhir\Inventory\Inventory10May2019\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+D:\Sudhir\Inventory\Inventory10May2019\Inventory\obj\Debug\Inventory.dll
+D:\Sudhir\Inventory\Inventory10May2019\Inventory\obj\Debug\Inventory.pdb
+D:\Sudhir\Inventory\Inventory 24 July 2019\Inventory\bin\Inventory.dll.config
+D:\Sudhir\Inventory\Inventory 24 July 2019\Inventory\bin\Inventory.dll
+D:\Sudhir\Inventory\Inventory 24 July 2019\Inventory\bin\Inventory.pdb
+D:\Sudhir\Inventory\Inventory 24 July 2019\Inventory\obj\Debug\Inventory.csprojAssemblyReference.cache
+D:\Sudhir\Inventory\Inventory 24 July 2019\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+D:\Sudhir\Inventory\Inventory 24 July 2019\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+D:\Sudhir\Inventory\Inventory 24 July 2019\Inventory\obj\Debug\Inventory.dll
+D:\Sudhir\Inventory\Inventory 24 July 2019\Inventory\obj\Debug\Inventory.pdb
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory 24 July 2019\Inventory\bin\Inventory.dll.config
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory 24 July 2019\Inventory\bin\Inventory.dll
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory 24 July 2019\Inventory\bin\Inventory.pdb
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory 24 July 2019\Inventory\obj\Debug\Inventory.dll
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory 24 July 2019\Inventory\obj\Debug\Inventory.pdb
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory 24 July 2019\Inventory\bin\itextsharp.dll
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory 24 July 2019\Inventory\obj\Debug\Inventory.csprojResolveAssemblyReference.cache
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory Purchase and Sales\Inventory\bin\Inventory.dll.config
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory Purchase and Sales\Inventory\bin\Inventory.dll
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory Purchase and Sales\Inventory\bin\Inventory.pdb
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory Purchase and Sales\Inventory\bin\itextsharp.dll
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.dll
+D:\Micraft Soft\Work From Home\Inventory 24 July 2019\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.pdb
+E:\Micraft Software\Software\Inventory Purchase and Sales\Inventory\bin\Inventory.dll.config
+E:\Micraft Software\Software\Inventory Purchase and Sales\Inventory\bin\Inventory.dll
+E:\Micraft Software\Software\Inventory Purchase and Sales\Inventory\bin\Inventory.pdb
+E:\Micraft Software\Software\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.AssemblyReference.cache
+E:\Micraft Software\Software\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+E:\Micraft Software\Software\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+E:\Micraft Software\Software\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.dll
+E:\Micraft Software\Software\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.pdb
+F:\Download\Inventory Purchase and Sales\Inventory\bin\Inventory.dll.config
+F:\Download\Inventory Purchase and Sales\Inventory\bin\Inventory.dll
+F:\Download\Inventory Purchase and Sales\Inventory\bin\Inventory.pdb
+F:\Download\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.AssemblyReference.cache
+F:\Download\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+F:\Download\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+F:\Download\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.dll
+F:\Download\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.pdb
+E:\Micraft Software\Software\AlloeshellFarma\Farma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\bin\Inventory.dll.config
+E:\Micraft Software\Software\AlloeshellFarma\Farma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\bin\Inventory.dll
+E:\Micraft Software\Software\AlloeshellFarma\Farma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\bin\Inventory.pdb
+E:\Micraft Software\Software\AlloeshellFarma\Farma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.AssemblyReference.cache
+E:\Micraft Software\Software\AlloeshellFarma\Farma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+E:\Micraft Software\Software\AlloeshellFarma\Farma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+E:\Micraft Software\Software\AlloeshellFarma\Farma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.dll
+E:\Micraft Software\Software\AlloeshellFarma\Farma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.pdb
+D:\AloshellPharma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\bin\Inventory.dll.config
+D:\AloshellPharma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\bin\Inventory.dll
+D:\AloshellPharma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\bin\Inventory.pdb
+D:\AloshellPharma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.AssemblyReference.cache
+D:\AloshellPharma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+D:\AloshellPharma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+D:\AloshellPharma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.dll
+D:\AloshellPharma\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.pdb
+E:\AloshellPharma\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.AssemblyReference.cache
+E:\AloshellPharma\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+E:\AloshellPharma\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.dll
+E:\AloshellPharma\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.pdb
+E:\AloshellPharma\Inventory Purchase and Sales\Inventory\bin\Inventory.dll.config
+E:\AloshellPharma\Inventory Purchase and Sales\Inventory\bin\Inventory.dll
+E:\AloshellPharma\Inventory Purchase and Sales\Inventory\bin\Inventory.pdb
+E:\AloshellPharma\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\bin\Inventory.dll.config
+D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\bin\Inventory.dll
+D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\bin\Inventory.pdb
+D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.AssemblyReference.cache
+D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.dll
+D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.pdb

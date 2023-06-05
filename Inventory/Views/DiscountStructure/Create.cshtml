@@ -1,0 +1,179 @@
+﻿@model Inventory.Models.DiscountStructure
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .iframe-container {
+        padding-bottom: 60%;
+        padding-top: 30px;
+        height: 0;
+        overflow: hidden;
+    }
+
+        .iframe-container iframe,
+        .iframe-container object,
+        .iframe-container embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+</style>
+<div class="row" style="background-color:white">
+    <div class="col-lg-12 col-sm-12 col-xs-12">
+        @using (Html.BeginForm("Create", "DiscountStructure", FormMethod.Post, new
+        {
+            enctype = "multipart/form-data",
+            @class = "form-horizontal",
+            data_bv_message = "This value is not valid",
+            data_toggle = "validator",
+            data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+            data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+            data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+        }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                <h4>Discount Structure</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.ProductName)
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.EJ().Autocomplete("Product").WatermarkText("Select Product").Datasource((IEnumerable<Inventory.Models.Products>)ViewBag.ProductSrc).Width("100%").AutocompleteFields(field => field.Key("ProductCode").Text("ProductName")).HighlightSearch(true).ShowPopupButton(true).ClientSideEvents(e => e.Select("SetProductId"))
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.MRP, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.MRP, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "MRP is required and cannot be empty", maxlength = "250", @readonly = "readonly", @id = "MRPField" } })
+                                    @Html.ValidationMessageFor(model => model.MRP, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.EcomDiscount, "Ecommerce Discount", htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.EcomDiscount, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Ecommerce Discount is required and cannot be empty", maxlength = "10", onkeypress = "return event.charCode >= 48 && event.charCode <= 57" } })
+                                    @Html.ValidationMessageFor(model => model.EcomDiscount, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.CustDiscount, "Customer Discount", htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.CustDiscount, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "false", maxlength = "10", onkeypress = "return event.charCode >= 48 && event.charCode <= 57" } })
+                                    @Html.ValidationMessageFor(model => model.CustDiscount, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.MRPoints, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.MRPoints, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "MR Points is required and cannot be empty", maxlength = "10", onkeypress = "return event.charCode >= 46 && event.charCode <= 57" } })
+                                    @Html.ValidationMessageFor(model => model.MRPoints, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DoctorRefCodePt, "Doctor Reference Code Points", htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.DoctorRefCodePt, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Doctor Reference Code Points is required and cannot be empty", maxlength = "10", onkeypress = "return event.charCode >= 46 && event.charCode <= 57" } })
+                                    @Html.ValidationMessageFor(model => model.DoctorRefCodePt, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.NutraRefCodePt, "Nutra Reference Code Points", htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.NutraRefCodePt, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Nutra Agent Reference Code Points is required and cannot be empty", maxlength = "10", onkeypress = "return event.charCode >= 46 && event.charCode <= 57" } })
+                                    @Html.ValidationMessageFor(model => model.NutraRefCodePt, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" id="create" value="Create" class="btn btn-primary" onclick="CheckDuplicateName(); " />
+                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script>
+
+
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+    })
+
+    function SetProductId(args) {
+        debugger
+        var selectedProduct = args.item;
+        $('#ProductName').val(selectedProduct.ProductName)
+      
+        var mrpField = document.getElementById("MRPField");
+
+        // Set the MRP field value to the selected product's MRP
+        mrpField.value = selectedProduct.MRP;
+    }
+
+</script>
+

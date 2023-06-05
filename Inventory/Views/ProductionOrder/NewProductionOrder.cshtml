@@ -1,0 +1,294 @@
+﻿@model Inventory.Models.ProductionOrder
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    textarea {
+        width: 230px;
+        height: 50px;
+    }
+
+    .iframe-container {
+        padding-bottom: 60%;
+        padding-top: 30px;
+        height: 0;
+        overflow: hidden;
+    }
+
+        .iframe-container iframe,
+        .iframe-container object,
+        .iframe-container embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+</style>
+<div class="box-body">
+    <div class="row" style="background-color:white">
+        <div class="col-lg-12 col-sm-12 col-xs-12">
+            <form enctype="multipart/form-data" onsubmit="false" class="form-horizontal" data-bv-message="This value is not valid" data-toggle="validator" data-bv-feedbackicons-valid="glyphicon glyphicon-ok" data-bv-feedbackicons-invalid="glyphicon glyphicon-remove" data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    <h4>New Production Order</h4>
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        @Html.LabelFor(model => model.ProductionOrderID, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" id="ProductionOrderID" value="@ViewBag.ProdOrderNo" disabled class="form-control" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        @Html.LabelFor(model => model.RequiredDate, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" id="RequiredDate" name="RequiredDate" required class="form-control" style="width:100%" autocomplete="off" />
+                                        @Html.ValidationMessageFor(model => model.RequiredDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <textarea rows="2" cols="50" id="Reason" class="form-control" data-bv-notempty="true" data-bv-notempty-message="Reason is required and cannot be empty" maxlength="500"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="hidden" id="Count" value="1">
+                                        <table id="tblProd" class="table table-responsive" style="width: 100%; overflow-x:auto; white-space:nowrap;">
+                                            <tr style="background-color:#3c8dbc; color:white">
+                                                <td style="width:70%">ITEM NAMES</td>
+                                                <td>QUANTITY</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr class="mycontainer" id="mainrow">
+                                                <td>
+                                                    @*@Html.EJ().Autocomplete("ProductCode").Datasource((IEnumerable<Inventory.Models.Products>)ViewBag.Products).Width("100%").ShowPopupButton(true).AutocompleteFields(field => field.Text("ProductName").Key("ProductCode")).ClientSideEvents(e => e.Select("getProductData"))*@
+                                                    @Html.EJ().Autocomplete("ProductCode").Width("100%").EmptyResultText("Product Not Found").ShowEmptyResultText(true).ShowPopupButton(true).AutocompleteFields(field => field.Text("ProductName").Key("ProductCode")).ClientSideEvents(e => e.Select("getProductData").FocusOut("CheckProduct"))
+                                                    <input type="hidden" id="ProductKey" />
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="OrderQty" class="OrderQty form-control" onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode != 47" />
+                                                </td>
+                                                <td>
+                                                    <input type="button" id="add" value="add" class="btn btn-success" onclick="AddProduct();" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="button" id="create" value="Create" class="btn btn-primary" onclick="Create();" />
+                                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $("#RequiredDate").ejDatePicker({ minDate: new Date(), locale: "en-IN", });
+        $.ajax({
+            url: '@Url.Action("FillProduct", "ProductionOrder")',
+            type: "GET",
+            dataType: "JSON",
+            data: {},
+            success: function (result) {
+
+                try {
+                    if (result.Message == "success") {
+                        $('#ProductCode').ejAutocomplete({ dataSource: result.Product, fields: { key: "ProductCode", text: "ProductName" }, ShowEmptyResultText: true, EmptyResultText: "Product Not Found", EnablePersistence: false, ShowPopupButton: true, width: "100%", });
+                    }
+                    else {
+                        toastr.error(result.Message);
+                    }
+                }
+                catch (e) {
+                }
+            }
+        });
+    })
+
+    function CheckProduct(args) {
+        var obj = $('#ProductCode').data("ejAutocomplete")  // Autocomplete object
+        var texts = obj.model.dataSource// Coej.DataManager(obj.model.dataSource).executeLocal(newej.Query().select(obj.model.fields.text))  // Select only datasource text
+        for (var i = 0; i < texts.length; i++) {
+            var text = texts[i].ProductName.toLowerCase();
+            var bool = text.startsWith(args.value.toLowerCase()); // Check if entered text is present in datasource or not
+            if (bool)
+                break;
+        }
+        if (!bool) {
+            $('#ProductCode').val('');
+        }
+    }
+
+    function getProductData(args) {
+        debugger;
+        $("#ProductKey").val(args.key);
+        var isduplicate = false;
+        $('#tblProd tbody tr').each(function (index, e) {
+
+            var inputEl = $(e).children().get(0);
+            if (index > 1) {
+                if ($('#ProductCode').val() == inputEl.firstElementChild.value) {
+                    $('#ProductCode').val('');
+                    $('#OrderQty').val('');
+                    toastr.warning("product already added...");
+                    isduplicate = true;
+                }
+            }
+        })
+        if (isduplicate == false) {
+            $("#OrderQty").focus();
+        }
+    }
+
+    function AddProduct() {
+        var flag = true;
+        if ($('#ProductCode').val() == "" || $('#ProductCode').val() == null) {
+            toastr.error("Please Select Item");
+            flag = false;
+        }
+        if ($('#OrderQty').val() == "" || $('#OrderQty').val() == null) {
+            toastr.error("Please Enter Quntity");
+            flag = false;
+        }
+        if (flag == true) {
+            var isduplicate = false;
+            $('#tblProd tbody tr').each(function (index, e) {
+
+                var inputEl = $(e).children().get(0);
+                if (index > 1) {
+
+                    if ($('#ProductCode').val() == inputEl.firstElementChild.value) {
+                        $('#ProductCode').val('');
+                        $('#OrderQty').val('');
+                        toastr.warning("product already added...");
+                        isduplicate = true;
+                    }
+                }
+            })
+            if (isduplicate == false) {
+                var ProductCode = $("#ProductKey").val();
+                var Count = parseInt($("#Count").val());
+                $("#tblProd").append(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='productNew" + Count + "' readonly  style='width:100%' value='" + $("#ProductCode").val() + "' class='productnew form-control'' /><input type='hidden' id='ProductC' value='" + ProductCode + "' class='productcode form-control'' ><td><input type='text' id='OrderQty" + Count + "' readonly  style='width:150px' value='" + $("#OrderQty").val() + "'   class='OrderQty form-control'' /></td><td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 65px' class='btn btn-danger' /></td></tr> <tbody>");
+
+                Count = Count + 1;
+                $("#Count").val(Count);
+                $("#ProductCode").val("");
+                $("#OrderQty").val("");
+            }
+        }
+        $("#ProductCode").focus();
+    }
+
+    function Create() {
+        debugger;
+        var flag = true;
+        if ($("#RequiredDate").val() == "" || $("#RequiredDate").val() == null) {
+            flag = false;
+            toastr.error("Please Select Required Date");
+        }       
+        var Length = $('#tblProd tr').length;
+        if (Length <= 2) {
+            flag = false;
+            toastr.error("Please add minimum 1 product");
+        }
+        if (flag == true) {
+            var dt = $('#RequiredDate').val();
+            var datearray = dt.split("/");
+            var RequiredDate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+            debugger;
+            var StockDetails = [];
+            $('#tblProd tbody tr').each(function (index, ele) {
+                if (index > 1) {
+                    if (this.id != "") {                      
+                        var Items = {
+                            Product: $('.productcode', this).val(),
+                            OrderQty: $('.OrderQty', this).val(),
+                        }
+                        StockDetails.push(Items);
+                    }
+                }
+            })
+
+            var productionOrder = {
+                ProductionOrderID: $("#ProductionOrderID").val(),
+                RequiredDate: RequiredDate,
+                Reason: $("#Reason").val(),
+                StockStatus: StockDetails
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/ProductionOrder/Create',
+                data: JSON.stringify(productionOrder),
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.Message == "success") {
+                        toastr.success("Successfully saved..");
+                        window.location.href = '/ProductionOrder/GenerateProdOrderList';
+                    }
+                    else {
+                        toastr.error(result.Message);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+    }
+</script>
+<script>
+    function Remove(Count) {
+        $("#R" + Count + "").remove();
+        CalculateGridData();
+    }
+</script>
+
+

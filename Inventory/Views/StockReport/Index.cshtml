@@ -1,0 +1,247 @@
+﻿@model IEnumerable<Inventory.Models.ProductSerialNo>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .dt-buttons {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+
+    .btn-custom {
+        background-color: blue;
+        color: white;
+    }
+
+    .dt-buttons .btn-primary {
+        background-color: blue;
+        border-color: blue;
+    }
+
+    .export-button {
+        float: right;
+        margin-top: 10px;
+    }
+</style>
+<th>
+    <h3 class="mb-0">Stock Report </h3>
+</th>
+<div>
+
+    
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+
+                @*<form action="@Url.Action("Index")" method="get">*@
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label for="FromDate" class="control-label">From Date:</label>
+
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                <input type="text" id="FromDate" name="FromDate" required class="form-control" style="width:100%" autocomplete="off" data-bv-notempty="true" data-bv-notempty-message="Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="ToDate" class="control-label">To Date:</label>
+
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                <input type="text" id="ToDate" name="ToDate" required class="form-control" style="width:100%" autocomplete="off" data-bv-notempty="true" data-bv-notempty-message="Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="productName" class="control-label">Product Name:</label>
+
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                @Html.EJ().Autocomplete("Product").Width("200%").Datasource((IEnumerable<Inventory.Models.Products>)ViewBag.Productdatasource).ShowPopupButton(true).AutocompleteFields(field => field.Text("ProductName").Key("ProductCode")).ClientSideEvents(e => e.Select("getProductId").FocusOut("checkProduct"))
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="categoryName" class="control-label">Product Category:</label>
+
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                @*@Html.EJ().Autocomplete("Category").WatermarkText("Select Category").Datasource((IEnumerable<Inventory.Models.Category>)ViewBag.CatDataSource).Width("100%").AutocompleteFields(field => field.Key("CategoryId").Text("CategoryName")).HighlightSearch(true).ShowPopupButton(true).ClientSideEvents(e => e.FocusOut("ChkCategory").Select("SetCategoryId"))*@
+
+                                @Html.EJ().Autocomplete("Category").Width("200%").Datasource((IEnumerable<Inventory.Models.Category>)ViewBag.Categorydatasource).ShowPopupButton(true).AutocompleteFields(field => field.Text("CategoryName").Key("CategoryId")).ClientSideEvents(e => e.Select("getCategoryId").FocusOut("checkProduct"))
+                            </div>
+                        </div>
+
+                    </div>
+                    <br>
+
+
+                    <div class="col-lg-2">
+                        <div class="form-group">
+
+                            <div class="col-md-8">
+                                <div style="text-align:right">
+                                    @*<input id="btnsearch" type="submit" value="Search" class="btn btn-warning" style="padding:6px 6px" />*@
+                                    <input type="button" id="btnSearch" value="Search" onclick="SearchData();" class="btn btn-primary" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <table id="example" class="table table-striped table-bordered dt-responsive" style="width:100%">
+                    <thead>
+                        <tr class="text-uppercase" style="font-size: 12px; background-color: #d8e9c1">
+                            <th>Product Name</th>
+                            <th>Product Category</th>
+                            <th>Product Code</th>
+                            <th>Received Qty</th>
+                            <th>Sales Qty</th>
+                            <th>Available Qty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/vfs_fonts.js"></script>
+<script src="~/plugins/jquery/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#FromDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+        $("#ToDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+
+        report();
+
+
+
+
+    });
+     function report() {
+        debugger
+
+        try {
+
+                    $('#example').DataTable({
+                        paging: true,
+              searching: false,
+            bServerSide: true,
+            responsive: true,
+            lengthChange: false,
+            dom: 'Bfrtip',
+            "sServerMethod": 'POST',
+            "sAjaxSource": '@Url.Action("GetData", "StockReport")',
+              "pageLength": 15,
+              //lengthMenu: [
+              //    [10, 25, 50, -1],
+              //    ['10 rows', '25 rows', '50 rows', 'Show all']
+              //],
+              //buttons: [
+              //    'pageLength'
+              //],
+                        "buttons": [
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Export to Excel',
+
+                                exportOptions: {
+                                    modifier: {
+                                        page: 'all'
+                                    }
+                                }
+                            }
+                        ],
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search"
+            },
+            "autoWidth": false,
+            "aoColumns": [
+
+
+                { "mData": "ProductName" },
+                { "mData": "CategoryName" },
+
+                { "mData": "ProductCode" },
+
+                { "mData": "ReceivedQty" },
+
+                //{
+                //    "mData": "PODate",
+                //    data: "PODate", render: function (data) {
+                //        return moment(data).format('DD-MM-YYYY');
+                //    }
+                //},
+                { "mData": "SalesQty" },
+
+                { "mData": "AvailableQty" },
+
+
+                ],
+
+        });
+
+        }
+
+                catch (e) {
+                }
+    }
+
+     function SearchData() {
+
+
+                $.ajax({
+                    url: '@Url.Action("SearchData", "StockReport")',
+                    type: "GET",
+                    dataType: "JSON",
+                    data: { FromDate: $("#FromDate").val(), ToDate: $("#ToDate").val(), Product: $("#Product").val(), Category: $("#Category").val(), Customer: $("#Customer").val() },
+
+                    success: function (result) {
+                        debugger;
+                        if (result.Message == "success") {
+                          // report();
+
+                            window.location.reload(true);
+
+                        }
+                        else {
+                            alert(result.Message)
+                        }
+                    }
+                });
+
+    }
+
+
+
+
+
+    function getProductId(PrdId) {
+        $('#ProductId').val(PrdId.key);
+    }
+    function getCategoryId(PrdId) {
+        $('#CategoryId').val(PrdId.key);
+    }
+    
+</script>

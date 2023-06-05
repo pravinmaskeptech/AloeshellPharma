@@ -1,0 +1,819 @@
+﻿ @{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+    .ScrollStyle {
+        max-height: 350px;
+        overflow-y: scroll;
+    }
+</style>
+
+@using (Html.BeginForm("Create", "GRNDetails", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="supplierId" name="supplierId" value="" />
+    <input type="hidden" id="WarehouseID" name="WarehouseID" value="" />
+    <input type="hidden" id="StoreLocationId" name="StoreLocationId" value="" />
+    <input type="hidden" id="COUNTNO" name="COUNTNO" value=0 />
+    <input type="hidden" id="SerialNoCount" name="SerialNoCount" value=1 />
+    <input type="hidden" id="PrdCode" name="PrdCode" value="" />
+    <input type="hidden" id="PODate" name="PODate" />
+    <input type="hidden" id="BatchSetting" name="BatchSetting" value="@ViewBag.BatchNoSetting" />
+    <input type="hidden" id="ManufactureDate" name="ManufactureDate" value="@ViewBag.ManufactureDate" />
+    <input type="hidden" id="ExpiryDate" name="ExpiryDate" value="@ViewBag.ExpiryDate" />
+    <input type="hidden" id="SerialNoApplicable" name="SerialNoApplicable" />
+
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h2 class="box-title">GRN DETAILS</h2>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            GRN No
+                        </div>
+                        <div class="col-md-6">
+                            @Html.Editor("BillNo", new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "The  Name is required and cannot be empty", maxlength = "20", disabled = "disabled" } })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            GRN Date
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="BillDate" name="BillDate" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Purchase Order Date is required and cannot be empty" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            Search PO number
+                        </div>
+                        <div class="col-md-6">
+                            @Html.EJ().Autocomplete("PONO").WatermarkText("Select PO Number").Datasource((IEnumerable<Inventory.Models.POMain>)ViewBag.PONOdatasource).Width("100%").AutocompleteFields(field => field.Key("PurchaseOrderNo").Text("PurchaseOrderNo")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("ShowPOdetails"))
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            Vendor Name
+                        </div>
+                        <div class="col-md-6">
+                            @Html.Editor("SupplierName", new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "The  Name is required and cannot be empty", maxlength = "20", disabled = "disabled", } })
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            Warehouse Name
+                        </div>
+                        <div class="col-md-6">
+                            @Html.Editor("WarehouseName", new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "The  Name is required and cannot be empty", maxlength = "20", disabled = "disabled" } })
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div id="orderItems" style="overflow-x:auto;" class="col-md-12">
+                <table class="table table-responsive" id="orderdetailsItems" style="width: 1470px; display:block; overflow-x:auto; white-space:nowrap;"></table><br />
+                <span id="orderItemError" style="color:red"></span>
+            </div>
+        </div>
+
+        <div class="row" style="width:1580px">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-2" style="text-align:center">
+                        Total Amount
+                    </div>
+                    <div class="col-md-4">
+
+                        <div style="padding:6px 0px; text-align:center">
+                            <input type="text" id="txtTotal" name="txtTotal" style='width:120px; background-color:white' readonly class="totalNew form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="orderItems" style="overflow-x:auto;">
+            <table class="table table-responsive" id="tblTest" style="width: 1470px; display:block; overflow-x:auto; white-space:nowrap;"></table><br />
+            <span id="orderItemError" style="color:red"></span>
+        </div>
+        <div class="modal fade" id="OfferLetterGeneration">
+            <div class="modal-dialog" style="width:55%; margin-top:100px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#367fa9; color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Serial Number</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" id="form1" class="form-horizontal" data-bv-message="This value is not valid" data-toggle="validator" data-bv-feedbackicons-valid="glyphicon glyphicon-ok" data-bv-feedbackicons-invalid="glyphicon glyphicon-remove" data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label class="control-label">Variant Name</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="VariantName" class="form-control" disabled="disabled" required="required" maxlength="100" />
+                                            <input type="hidden" id="ProdCode" class="form-control" value="" />
+                                            <input type="hidden" id="batchNo" class="form-control" value="" />
+                                            <input type="hidden" id="PODTLid" class="form-control" value="" />
+                                            <input type="hidden" id="WarehouseNo" name="WarehouseID" value="" />
+                                            <input type="hidden" id="StoreLocationNo" name="StoreLocationId" value="" />
+                                            <input type="hidden" id="CurrentSerialNo" name="CurrentSerialNo" value="" />
+                                            <input type="hidden" id="Prefix" name="Prefix" value="" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label class="control-label">Tot Qty</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="TotQty" class="form-control" disabled="disabled" required="required" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label class="control-label">Enter Serial No</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="ProductSerialNum" class="form-control" maxlength="50" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-2">
+                                            <input type="button" id="btnSerialNo" value="Add Row" class="btn btn-primary" onclick="AddSerialNosRows()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row">
+                        @*<table class="table table-responsive" id="ReceivedItemsheaders" style="width: 40%; overflow-x: auto; white-space: nowrap;">
+                                <tr style="background-color:#3c8dbc; color:white">
+                                    <td>Serial No.</td>
+                                    <td>sdfs</td>
+                                </tr>
+                            </table>*@
+                        <table class="table table-responsive" id="ReceivedItems" border="0" style="width: 40%; overflow-x: auto; white-space: nowrap; margin-left: 80px;"></table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label"></label>
+                                </div>
+                                <div class="col-md-6">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <label class="control-label"></label>
+                                </div>
+                                <div class="col-md-4">
+                                    <br /> <input type="button" id="btnAdd" name="btnAdd" value="Save" class="btn btn-info" onclick="getQuantity()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    span.error {
+                        display: block;
+                        visibility: hidden;
+                        color: red;
+                        font-size: 60%;
+                    }
+
+                    tr.error {
+                        background-color: rgba(255,0,0,0.35);
+                    }
+                </style>
+            </div>
+        </div>
+        <div class="row" style="width:1580px">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <div style="padding:6px 10px; text-align:right">
+                            <input id="submit" type="button" value="Save Order" class="btn btn-warning" style="padding:6px 6px" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+<script>
+    $(document).ready(function () {
+        debugger;
+
+        $("#BillDate").ejDatePicker({ value: new Date(), maxDate: new Date(), locale: "en-IN" });
+        getBillNo();
+    })
+    function getBillNo() {
+        $('#tbl1').hide();
+        $.ajax({
+            type: "GET",
+            url: '/GRNDetails/getBillNo',
+            success: function (result) {
+                $('#BillNo').val(result);
+            }
+        })
+    }
+    function ShowPOdetails() {
+        debugger
+        $('#tbl1').show();
+        $('#orderdetailsItems').empty();
+        $('#tblTest').empty();
+        //     getSupplierName();
+        $.ajax({
+            type: "GET",
+            url: '/GRNDetails/ShowPOdetails',
+            data: { 'PONO': $('#PONO').val() },
+            success: function (result) {
+              debugger
+                var BatchSetting = $("#BatchSetting").val();
+                var ManufactureDate = $("#ManufactureDate").val();
+                var ExpiryDate = $("#ExpiryDate").val();
+                var ResultCount = result.length;
+                //var SerialNoApplicable = $("#SerialNoApplicable").val();
+
+                if (ResultCount != 0) {
+                    //$("#tblTest").append('<tbody> <tr bgcolor="#3c8dbc" style="color: #FBF8F7" > <th>ITEM NAME</th> ' + (BatchSetting=="BatchNo"? "<th>Batch</th>":"")+'<th>Test</th>');
+                    $("#orderdetailsItems").append("<tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' > <th>ITEM NAME</th>" + (BatchSetting == "BatchNo" ? '<th>BATCH NO</th>' : "") + "<th>LOCATION</th><th>ORDER QTY</th><th>RECEIVED QTY</th> <th>QTY</th>" + (ManufactureDate == "ManufactureDate" ? '<th>MANUFACTURE DATE</th>' : '') + "" + (ExpiryDate == "ExpiryDate" ? '<th>EXPIRY DATE</th>' : '') + "<th>TAX</th><th>RATE</th><th>DISCOUNT</th><th>AMOUNT</th><th>SerialFrom</th><th>SerialTo</th>" + (SerialNoApplicable == "true" ? '<th>SerialFrom</th><th>SerialTo</th>' : '') +"</tr> <tbody>");
+                    var Count = 1;
+                    $("#SupplierName").val(result[0].SupplierName);
+                    $("#supplierId").val(result[0].SupplierID);
+                    $("#WarehouseName").val(result[0].WareHouseName);
+                    $("#WarehouseID").val(result[0].WareHouseID);
+
+
+                    if (result[i].PurchaseOrderDate !== null) {
+                        var date = new Date(parseInt(result[i].PurchaseOrderDate.substr(6)));
+                    }
+
+                    var poDate = $.datepicker.formatDate("mm/dd/yy", date);
+                    $("#PODate").val(poDate);
+                    $.each(result, function (i, item) {
+                        var orderQty = parseFloat(result[i].OrderQty).toFixed(2);
+                        var ReceivedQty = parseFloat(result[i].ReceivedQty).toFixed(2);
+
+
+                        if (orderQty != ReceivedQty) {
+                            $("#orderdetailsItems").append(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='productNew" + Count + "' readonly  style='width : 180px' class='productnew form-control'' /></td>" + (BatchSetting == "BatchNo" ? "<td><input type='text' id='batchNo" + Count + "' style='width : 120px' class='batchNo form-control' /></td>" : "") + "<td> <select name='StoreLocation" + Count + "'   style='width:130px' id='StoreLocation" + Count + "'   class='StoreLocation form-control'><option value=" + 0 + " >--Select--</option></select></td>   <td><input type='text' id='orderQty" + Count + "' readonly  style='width : 100px'  class='orderQty form-control'' /></td><td><input type='text' id='quentityNew" + Count + "' readonly style='width : 100px'  class='quentityNew form-control'' /></td> <td><input type='text' id='receiveQtyNew" + Count + "' style='width : 80px'  onchange='Calculate(" + Count + ");ShowQtyPopup(" + Count + ");'   onkeypress = 'return event.charCode >= 46 && event.charCode <= 57 && event.charCode !=47' class='receiveQtyNew  form-control'' /></td> " + (ManufactureDate == "ManufactureDate" ? '<td><input type="text" id="manufacturingDate' + Count + '"   style="width : 100px" class="manufacturingDate form-control" /></td>' : '') + "" + (ExpiryDate == "ExpiryDate" ? '<td><input type="text" id="expiryDate' + Count + '"   style="width : 100px" class="expiryDate form-control" /></td>' : '') + "<td><input type='text' id='TaxNew" + Count + "' readonly style='width : 100px'  class='TaxNew form-control'' /></td>  <td><input type='text'  id='rateNew" + Count + "' style='width : 100px'  class='rateNew form-control'' /></td> <td><input type='text' id='DiscountNew" + Count + "' style='width : 100px' class='DiscountNew form-control'' /></td><td><input type='text' readonly id='amountNew" + Count + "'  style='width : 130px'  class='amountNew form-control'' /><td><input type='text'  id='SerialFrom" + Count + "'  style='width : 130px' readonly class='SerialFrom form-control'' /> <td><input type='text' id='SerialTo" + Count + "' style='width : 130px' readonly class='SerialTo form-control'' /> </td>" + (SerialNoApplicable == "true" ? "<td><input type='text'  id='SerialFrom" + Count + "'  style='width : 130px' readonly class='SerialFrom form - control'' /> <td><input type='text' id='SerialTo" + Count + "' style='width : 130px' readonly class='SerialTo form-control'' /> </td>" : '')    +  "<input type='hidden'  id='tserial" + Count + "' class='tserial form-control'' /><input type='hidden'  id='startserial" + Count + "' class='startserial form-control'' />         <input type='hidden'  id='ProductIdNew" + Count + "'    class='ProductIdNew form-control'' /><input type='hidden'  id='CurrentSerialNo" + Count + "'    class='CurrentSerialNo form-control'' />       <input type='hidden'  id='Prefix" + Count + "'    class='Prefix form-control'' /><input type='hidden'  id='DiscountInNew" + Count + "'    class='DiscountInNew form-control'' /><input type='hidden'  id='igstNew" + Count + "'    class='igstNew form-control'' /><input type='hidden'  id='cgstNew" + Count + "'    class='cgstNew form-control'' /><input type='hidden'  id='sgstNew" + Count + "'    class='sgstNew form-control'' /> <input type='hidden'  id='hsncodeNew" + Count + "'    class='hsncodeNew form-control'' /><input type='hidden'  id='grandTot" + Count + "'    class='grandTot form-control'' /> <input type='hidden'  id='PoidNew" + Count + "'    class='PoidNew form-control'' /><input type='hidden'  id='SerialNoApplicable" + Count + "'    class='SerialNoApplicable form-control'' /><input type='hidden'  id='AllSerialNoCount" + Count + "'    class='AllSerialNoCount form-control'' /></td> </tr> <tbody>");
+                            $("#ProductIdNew" + Count + "").val(result[i].ProductCode);
+                            //   getProductName(result[i].ProductCode, Count);
+
+                            $("#productNew" + Count + "").val(result[i].VariantName);
+                            $("#SerialNoApplicable" + Count + "").val(result[i].SerialNoApplicable);
+
+                            $("#TaxNew" + Count + "").val(parseFloat(result[i].GSTPercentage).toFixed(2));
+                            $("#rateNew" + Count + "").val(parseFloat(result[i].Price).toFixed(2));
+                            $("#DiscountNew" + Count + "").val(parseFloat(result[i].Discount).toFixed(2));
+                            $("#orderQty" + Count + "").val(orderQty);
+                            $("#PoidNew" + Count + "").val(result[i].PurchaseOrderDetailsID);
+                            $("#quentityNew" + Count + "").val(ReceivedQty);
+                            $("#CurrentSerialNo" + Count + "").val(result[i].CurrentSerialNo);
+                            $("#Prefix" + Count + "").val(result[i].Prefix);
+
+
+
+                            $("#DiscountInNew" + Count + "").val(result[i].DiscountAs);
+                            try { $("#manufacturingDate" + Count).ejDatePicker({ maxDate: new Date(), locale: "en-IN", }); }
+                            catch (e) { }
+                            try { $("#expiryDate" + Count).ejDatePicker({ minDate: new Date(), locale: "en-IN", }); }
+                            catch (e) { }
+                            getStoreLocation(Count)
+                            //      getWarehouse(Count);
+                            Count = Count + 1;
+                        }
+                    });
+                } else {
+                    toastr.warning('NO data Found...');
+                    $('#orderdetailsItems').emptysave
+                }
+            }
+        })
+
+    }
+
+    function CalculatetotalAmount() {
+        $('#txtTotal').val(0);
+        $('#orderdetailsItems tbody tr').each(function (index, ele) {
+            var amountNew = $('.amountNew', this).val();
+            if (amountNew == undefined || amountNew == "") {
+            } else {
+                $('#txtTotal').val((parseFloat($('#txtTotal').val()) + parseFloat(amountNew)).toFixed(2));
+            }
+        })
+    }
+    function Calculate(Count) {
+        debugger
+        var discIn = $("#DiscountInNew" + Count + "").val();
+        var aa = Warehouse = $("#Warehouse" + Count + "").val();
+        var receivedQty = $("#quentityNew" + Count + "").val();
+        var Qty = $("#receiveQtyNew" + Count + "").val();
+        var OrderQty = $("#orderQty" + Count + "").val();
+        var tax = $("#TaxNew" + Count + "").val();
+        var rate = $("#rateNew" + Count + "").val();
+        var disc = $("#DiscountNew" + Count + "").val();
+        var Prefix = $("#Prefix" + Count + "").val();
+        var CurrentSerialNo = $("#CurrentSerialNo" + Count + "").val();
+        if (CurrentSerialNo === "" || CurrentSerialNo === null) {
+            $("#startserial" + Count + "").val();
+            $("#tserial" + Count + "").val();
+        }
+        if (CurrentSerialNo != "") {
+            var startserialno = $("#CurrentSerialNo" + Count + "").val();
+            var prefix = $("#Prefix" + Count + "").val();
+            var startserial = parseInt(startserialno) + 1;
+            var startserialfrom = prefix + ("00000" + startserial).slice(-5);
+
+            var tserial = parseInt(startserial) + parseInt(Qty);
+            tserial = tserial - 1;
+            var prefixcount = prefix + ("00000" + tserial).slice(-5);
+            $("#startserial" + Count + "").val(startserial);
+            $("#tserial" + Count + "").val(tserial);
+        } 
+      
+
+        var discAmt = 0;
+        if (parseFloat(Qty) > (parseFloat(OrderQty) - parseFloat(receivedQty))) {
+            toastr.error("qty must not greater than Order received qty");
+            $("#receiveQtyNew" + Count + "").val('');
+            $("#amountNew" + Count + "").val('');
+
+
+
+        } else {
+            if (Qty != 0) {
+                $("#SerialFrom" + Count + "").val(startserialfrom);
+                $("#SerialTo" + Count + "").val(prefixcount);
+
+                var total = (parseFloat(Qty) * parseFloat(rate));
+
+                if (discIn == "Rupee") {
+                    discAmt = parseFloat(disc) * parseFloat(Qty);
+                } else {
+                    discAmt = (parseFloat(total) * parseFloat(disc)) / 100;
+                }
+
+                var tax1 = (((parseFloat(total) - parseFloat(discAmt)) * parseFloat(tax)) / 100).toFixed(2);
+                var Amt = (parseFloat(total) - parseFloat(discAmt)) + parseFloat(tax1);
+
+                $("#amountNew" + Count + "").val((parseFloat(Amt)).toFixed(2));
+
+            } else {
+                $("#amountNew" + Count + "").val('');
+            }
+        }
+        CalculatetotalAmount();
+    }
+    $(document).ready(function () {
+        $('#submit').click(function () {
+         
+            debugger;
+            if ($('#BillDate').val() == "" || $('#PONO').val() == "") {
+                if ($('#BillDate').val() == "") { toastr.error("please Enter Bill Date") }
+                if ($('#PONO').val() == "") { toastr.error("please Select PO Number") }
+            } else {
+              
+                var rowCount = $('#orderdetailsItems tr').length;
+                if (rowCount > 0) {
+                    var isAllValid = true;
+                    $('#orderItemError').text('');
+                    var list = [];
+                    var errorItemCount = 0;
+                    var Purchasedate = $('#BillDate').val();
+                    var datearray = Purchasedate.split("/");
+                    var BillDate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+                    $('#orderdetailsItems tbody tr').each(function (index, ele) {
+                        debugger;
+                        if (this.id != "") {
+                            var Batch="";
+                            if ($(".batchNo", this).length && $('.batchNo', this).val() == "") {
+                                Batch = "Required";
+                            }
+                            var manufacturingDate = "";
+                            if ($(".manufacturingDate", this).length && $('.manufacturingDate', this).val() == "") {
+                                manufacturingDate = "Required";
+                            }
+                            var expiryDate = "";
+                            if ($(".expiryDate", this).length && $('.expiryDate', this).val() == "") {
+                                expiryDate = "Required";
+                            }
+                            if (($('.quentityNew', this).val() || "") == "" ||
+                                $('.receiveQtyNew', this).val() == "" ||
+                                 $('.ProductIdNew', this).val() == "" ||
+                                 $('.TaxNew', this).val() == "" ||
+                                 $('.rateNew', this).val() == "" ||
+                                 $('.DiscountNew', this).val() == "" ||
+                                 $('.orderQty', this).val() == "" ||
+                                 $('.Warehouse', this).val() == "--Select--" ||
+                                $('.StoreLocation', this).val() == "" ||
+                                manufacturingDate == "Required" ||
+                                expiryDate == "Required" ||
+                                $('.amountNew', this).val() == 0 ||
+
+                                //$('.SerialFrom', this).val() == "" ||
+                                //$('.SerialTo', this).val() == "" ||
+
+                                  Batch == "Required" ||
+                                isNaN($('.receiveQtyNew', this).val())) {
+                                isAllValid = false;
+                                errorItemCount++;
+                                $(this).addClass('error');
+                            } else {
+                             
+                                var dt = Date();
+                                try{
+                                    var ManufacturingDate1 = $('.manufacturingDate', this).val();
+                                    var datearray1 = ManufacturingDate1.split("/");
+                                    dt = datearray1[1] + '/' + datearray1[0] + '/' + datearray1[2];
+                                }
+                                catch (e) { dt = null; }
+                                var dt1 = Date();
+                                try {
+                                    var expiryDate = $('.expiryDate', this).val();
+                                    var datearray2 = expiryDate.split("/");
+                                    var dt1 = datearray2[1] + '/' + datearray2[0] + '/' + datearray2[2];
+                                }
+                                catch (e) { dt1 = null; }
+                                var orderItem = {
+                                    ProductCode: $('.ProductIdNew', this).val(),
+                                    ReceivedQty: $('.receiveQtyNew', this).val(),
+                                    PurchaseOrderDetailsID: $('.PoidNew', this).val(),
+                                    WarehouseID: $('#WarehouseID').val(),
+                                    PurchasePrice: $('.rateNew', this).val(),
+                                    StoreLocationId: $('.StoreLocation', this).val(),
+                                    ManufacturingDate: dt,
+                                    ExpiryDate: dt1,
+                                    BatchNo: $('.batchNo', this).val(),
+                                    TotalAmount: $('#txtTotal').val(),
+                                    SerialFrom: $('.startserial',this).val(),
+                                    SerialTo: $('.tserial',this).val(),
+
+                                    GRNNo: $('#BillNo').val(),
+                                    PONO: $('#PONO').val(),
+                                    GRNDate: BillDate,
+                                    SupplierID: $('#supplierId').val(),
+                                    SerialNoApplicable: $('.SerialNoApplicable', this).val(),
+                                    DiscountAs: $('.DiscountInNew', this).val(),
+                                    Discount: $('.DiscountNew', this).val(),
+                                    Tax: $('.TaxNew', this).val(),
+                                    PODate: $('#PODate').val(),
+                                }
+                                list.push(orderItem);
+                            }
+                        }
+                    })
+                    if (parseInt(list.length) != 0) {
+                        debugger;
+                        var data = {
+                            OrderDetails: list, strGRNDate: $('#BillDate').val()
+                        }
+                        $('#submit').prop('disabled', true);
+                        //$(this).val('Please wait...');
+                        $.ajax({
+                            type: 'POST',
+                            url: '/GRNDetails/save',
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            success: function (data) {
+
+                                if (data.message == "success") {
+                                    toastr.success("Successfully saved..");
+                                    var newWindow = window.open();
+                                    newWindow.location.href = "/GRNDetails/GetReport";
+                                    window.location.href = "/GRNDetails/Index";
+
+                                    //window.location.href = "/GRNDetails/GetReport", '_blank';
+                                } else if (data.message == "duplicateFound")
+                                {
+                                    alert("Duplicate Serial No Found....Press OK To Download List")
+                                    window.location = '@Url.Action("DownloadAttachment", "GRNDetails")';
+                                }
+                                else {
+                                    toastr.error(data.message);
+                                }
+                                // $('#submit').val('Save');
+                            },
+                            error: function (error) {
+                                console.log(error);
+                                //     $('#submit').val('Save');
+                            }
+                        });
+                    }
+                } else {
+                    toastr.error("please add data to list.");
+                }
+            }
+        });
+    });
+    function getPONO() {
+        $.ajax({
+            type: "GET",
+            url: '/GRNDetails/getPONO',
+            //data: { 'Custid': $('#CustId').val() },
+            success: function (result) {
+                var ViewBackData = result;
+                if (result.length == "0") {
+                    $('#PONO').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: 200, });
+                } else {
+                    $('<option></option>').val(null).html('Select');
+                    $.each(result, function (i, result) {
+                        $('#PONO').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "PurchaseOrderNo", text: "PurchaseOrderNo" }, EnablePersistence: false, ShowPopupButton: true, width: "100%", });
+                    });
+                }
+            }
+        })
+    };
+    function getStoreLocation(Count) {
+
+        //var selectedText = Warehouse.options[Warehouse.selectedIndex].innerHTML;
+        //var Warehouseid = Warehouse.value;
+        $("#StoreLocation" + Count).empty();
+        $.ajax({
+            type: "GET",
+            url: '/GRNDetails/getStoreLocation',
+            data: { 'WarehouseID': $('#WarehouseID').val() },
+            success: function (result) {
+                var ViewBackData = result;
+                if (result.length == "0") {
+                    //$('#StoreLocation').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: 200, });
+                    $("#StoreLocation" + Count).empty();
+                } else {
+                    $('<option></option>').val(null).html('Select');
+                    $.each(result, function (i, result) {
+                        $("#StoreLocation" + Count).append($("<option>Select</option>").val(result.StoreLocationId).html(result.StoreLocation));
+                    });
+                }
+            }
+        })
+    };
+    function getWarehouse(Count) {
+        $.ajax({
+            type: "GET",
+            url: '/GRNDetails/getWarehouse',
+            //   data: { 'WarehouseID': ID.key },
+            success: function (result) {
+
+                var ViewBackData = result;
+                if (result.length == "0") {
+                    // $('#Warehouse' + Count).ejAutocomplete({ dataSource: ViewBackData, fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: 200, });
+                    $("#Warehouse" + Count).append($("<option></option>").val("").html("")); VariantName
+                } else {
+                    $('<option></option>').val(null).html('Select');
+                    $.each(result, function (i, result) {
+                        $("#Warehouse" + Count).append($("<option></option>").val(result.WareHouseID).html(result.WareHouseName));
+                    });
+                }
+            }
+        })
+    }
+    //function ShowQtyPopup(Count) {
+    //    if ($('#SerialNoApplicable' + Count).val() == "true") {
+    //        $('#VariantName').val($('#productNew' + Count).val());
+    //        $('#ProdCode').val($('#ProductIdNew' + Count).val());
+    //        $('#PODTLid').val($('#PoidNew' + Count).val());
+
+    //        if ($("#batchNo"+Count).length) {
+    //            $('#batchNo').val($('#batchNo' + Count).val());
+    //            if ($('#batchNo' + Count).val() == "") {
+    //                toastr.warning("Please Enter Batch No");
+    //                temp = false;
+    //            }
+    //        }
+    //        $('#WarehouseNo').val($('#WarehouseID').val());
+    //        $('#StoreLocationNo').val($('#StoreLocation' + Count).val());
+    //        $('#COUNTNO').val(Count);
+    //        $('#ReceivedItems').empty();
+    //        var receivedQty = $("#quentityNew" + Count + "").val();
+    //        var Qty = $("#receiveQtyNew" + Count + "").val();
+    //        $("#receiveQtyNew" + Count + "").val('');
+    //        $('#TotQty').val(Qty);
+    //        var OrderQty = $("#orderQty" + Count + "").val();
+    //        var temp = true
+
+    //        if (Qty == "") {
+    //            temp = false;
+    //        }
+    //        if (parseFloat(Qty) > (parseFloat(OrderQty) - parseFloat(receivedQty))) {
+    //            temp = false;
+    //        }
+    //        if ($('#BillDate').val() == "") {
+    //            toastr.warning("Please Select GRN Date");
+    //            temp = false;
+    //        }
+    //        if ($('#Warehouse' + Count).val() == '--Select--') {
+    //            toastr.warning("Please Select Warehouse");
+    //            temp = false;
+    //        }
+    //        if ($('#StoreLocation' + Count).val() == '--Select--') {
+    //            toastr.warning("Please Select Warehouse");
+    //            $('#StoreLocation' + Count).prop("disabled", false);
+    //            temp = false;
+    //        }
+
+    //        if (temp == true) {
+    //            $('#OfferLetterGeneration').modal({ backdrop: 'static', keyboard: false })
+    //            $("#OfferLetterGeneration").modal("show");
+    //        }
+    //        $.ajax({
+    //            type: "GET",
+    //            url: "/GRNDetails/getTempData",
+    //            data: { 'ProductCode': $('#productNew' + Count).val(), 'OrderDtlId': $('#PoidNew' + Count).val() },
+    //            success: function (result) {
+
+    //                if (result.length > 0) {
+    //                    var cnt = 1;
+    //                    $.each(result, function (i, item) {
+    //                        $(" <tbody> <tr id='R" + cnt + "'><td><input type='text' id='SerialNo" + cnt + "' readonly  style='width : 500px' class='SerialNo form-control'' /><input type='hidden' id='TempId" + cnt + "' class='TempId form-control' /></td><td><input type='Button' id='btnRemove" + cnt + "' value='Remove' class='btn btn-danger' onclick='RemoveSerialNo(" + cnt + ");'/></td></tr> <tbody>").appendTo("#ReceivedItems");
+    //                        $('#SerialNo' + cnt).val(result[i].SerialNo);
+    //                        $('#TempId' + cnt).val(result[i].SerialNoId);
+    //                        cnt = cnt + 1;
+    //                    });
+    //                }
+    //            },
+    //        })
+    //    } else {
+
+    //    }
+    //}
+    function AddSerialNosRows() {
+        debugger
+        var isduplicate = false;
+        $('#ReceivedItems tbody tr').each(function (index, e) {
+            var inputEl = $(e).children().get(0);
+            if ($('#ProductSerialNum').val() == inputEl.firstElementChild.value) {
+                toastr.error("Serial no. already added...");
+                isduplicate = true;
+            }
+        })
+        if (isduplicate == false) {
+            $.ajax({
+                type: "GET",
+                url: '/GRNDetails/checkValidSerialNo',
+                data: { 'SerialNo': $('#ProductSerialNum').val(), 'ProdCode': $('#ProdCode').val() },
+                success: function (result) {
+                    if (result == "0") {
+                        var rowCount = $('#ReceivedItems tr').length;
+                        if (rowCount > 0) {
+                            $('#SerialNoCount').val(parseInt(rowCount) + 1);
+                        }
+                        var cnt = $('#SerialNoCount').val();
+
+                        if (rowCount < parseInt($('#TotQty').val())) {
+                            if (rowCount == 0) {
+                                $('#SerialNoCount').val(1);
+                            }
+                            if ($('#ProductSerialNum').val() == "") {
+                                toastr.error("please Enter Serial Number");
+                            } else {
+                                //$(" <tbody> <tr id='R" + cnt + "'> <td style='width : 30px'></td><td><input type='text' id='SerialNo" + cnt + "' readonly  style='width : 500px' class='SerialNo form-control'' /></td></tr> <tbody>").appendTo("#ReceivedItems");
+                                $(" <tbody> <tr id='R" + cnt + "'><td><input type='text' id='SerialNo" + cnt + "' readonly  style='width : 500px' class='SerialNo form-control'' /><input type='hidden' id='TempId" + cnt + "' class='TempId form-control' /></td><td><input type='Button' id='btnRemove" + cnt + "' value='Remove' class='btn btn-danger' onclick='RemoveSerialNo(" + cnt + ");'/></td></tr> <tbody>").appendTo("#ReceivedItems");
+                                $('#SerialNo' + cnt).val($('#ProductSerialNum').val());
+                                $('#TempId' + cnt).val(0);
+                                $('#SerialNoCount').val(parseInt($('#SerialNoCount').val()) + 1);
+                                $('#ProductSerialNum').val('');
+                            }
+                        } else {
+                            toastr.warning('you must not add greater than total Qty')
+                        }
+                        $('#ProductSerialNum').focus();
+                    } else {
+                        toastr.warning('Serial No already exist');
+                    }
+                }
+            })
+
+        }
+    }
+    function RemoveSerialNo(Count) {
+        $('table#ReceivedItems tr#R' + Count + '').remove();
+    }
+    function getQuantity() {
+    debugger
+        $('#SerialNoCount').val(1)
+        var rowCount = $('#ReceivedItems tr').length;
+        var count = $('#COUNTNO').val();
+        $('#receiveQtyNew' + count).val(rowCount)
+        Calculate(count);
+        var list = [];
+        var isAllValid = true;
+        var BillDate = $('#BillDate').val();
+        var datearray = BillDate.split("/");
+        var dt = datearray[0] + '/' + datearray[1] + '/' + datearray[2];
+        $('#ReceivedItems tbody tr').each(function (index, ele) {
+            if (($('.SerialNo', this).val() || "") == 0) {
+                $(this).addClass('error');
+            } else {
+
+                var GrnItem = {
+                    SerialNoId: $('.TempId', this).val(),
+                    SerialNo: $('.SerialNo', this).val(),
+                    SerialFrom: $('.SerialFrom', this).val(),
+                    SerialTo: $('.SerialTo', this).val(),
+
+
+                    GRNId: $('#PODTLid').val(),
+                    WarehouseID: $('#WarehouseNo').val(),
+                    StoreLocationId: $('#StoreLocationNo').val(),
+                    //   ReceivedQty: $('#ProdCode').val(),
+                    BatchNo: $('#batchNo').val(),
+                    PONO: $('#PONO').val(),
+                    GrnNo: $('#BillNo').val(),
+                    ProductCode: $('#ProdCode').val(),
+                    PODetailsId: $('#PODTLid').val(),
+                    GrnDate: dt
+                }
+                list.push(GrnItem);
+            }
+        }
+        );
+
+        if (isAllValid == true) {
+            var data = {
+                Data: list
+            }
+            $("#OfferLetterGeneration").modal("hide");
+            $(this).val('Please wait...');
+            $.ajax({
+                type: 'POST',
+                url: '/GRNDetails/SaveSerialNoDetails',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data.status) {
+
+                        list = [];
+
+                        $('#ReceivedItems').empty();
+                        $("#OfferLetterGeneration").modal("hide");
+                        toastr.success("successfully saved..");
+                    }
+                    else {
+                        toastr.error("something Wrong..");
+                    }
+                },
+            });
+        } else {
+            toastr.error("error..");
+        }
+    }
+</script>

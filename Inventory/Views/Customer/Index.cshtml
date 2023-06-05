@@ -1,0 +1,932 @@
+﻿@model IEnumerable<Inventory.Models.Customer>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .e-grid .e-headercell, .e-grid .e-grouptopleftcell {
+        background-color: #3c8dbc;
+        border-top-color: teal;
+        border-left-color: teal;
+        border-bottom-color: teal;
+        color: #fff;
+    }
+
+    .e-grid .e-gridheader .e-icon {
+        color: #fff;
+    }
+
+    .Expand {
+        background-position: -180px 3px;
+    }
+
+    .Collapse {
+        background-position: -205px 3px;
+    }
+
+    .refresh {
+        background-position: -76px 3px;
+    }
+
+    .e-toolbaricons {
+        background-image: url("../../Content/ej/web/common-images/icons-gray.png");
+    }
+
+    .Expand:hover, .Collapse:hover, .refresh:hover {
+        background-image: url("../../Content/ej/web/common-images/icons-white.png");
+    }
+</style>
+<div class="box-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                @(Html.EJ().Grid<Inventory.Models.Customer>
+                            ("Customer").Datasource((IEnumerable<object>
+                        )ViewBag.datasource)
+                        .AllowScrolling()
+                        .AllowFiltering()
+                        .AllowTextWrap()
+                        .FilterSettings(filter => { filter.ShowFilterBarStatus().StatusBarWidth(500).FilterBarMode(FilterBarMode.Immediate).MaxFilterChoices(1000).FilterType(FilterType.Menu); })   /*Filtering Enabled*/
+                        .AllowSorting()    /*Sorting Enabled*/
+                        .AllowMultiSorting()
+                        .AllowPaging()    /*Paging Enabled*/
+                        .SelectionType(SelectionType.Multiple)
+                        .AllowResizing()
+                        .IsResponsive()
+                        .MinWidth(1000)
+                        .AllowReordering()
+                        .AllowResizeToFit()
+                        .AllowResizing()
+                        .ScrollSettings(scroll => { scroll.Height(300); })
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar().ToolbarItems(items =>
+                            {
+                                items.AddTool(ToolBarItems.Search); items.AddTool(ToolBarItems.ExcelExport);
+                            });
+                        })
+                                        .Mappers(map => map.ExportToExcelAction("/Customer/ExportToExcel"))
+                        .AllowSearching(true)
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar(true).CustomToolbarItems(new List<object>
+                                () { new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#Refresh" }, new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#AddNew" } });
+                        })
+                            .ClientSideEvents(eve => { eve.ToolbarClick("onToolBarClick"); })
+                            .Columns(col =>
+                            {
+                                col.HeaderText("").Template("<input type='Button' class='btn btn-sm btn-primary' onclick='GetContacts(this.id);' id='{{:CustomerID}}+{{:CustomerName}}' Value='Contacts' />").TextAlign(TextAlign.Left).Width(50).AllowFiltering(false).Add();
+                                col.HeaderText("").Template("<input type='Button' class='btn btn-sm btn-warning' id='LetterGeneration' Value='Shipper' onclick='F1();' /></a> ").AllowFiltering(false).Width(50).Add();
+                                col.HeaderText("Edit").Template("<a href='/Customer/Edit/{{:CustomerID}}'><input type='Button' class='btn btn-sm btn-primary' id='Button1' Value='Edit' /></a> ").TextAlign(TextAlign.Left).Width(35).AllowFiltering(false).Add();
+                                col.Field("CustomerName").HeaderText("Customer Name").IsPrimaryKey(true).TextAlign(TextAlign.Left).Visible(true).Width(90).Add();
+                                col.Field("BillingCountry").HeaderText("Billing Country").IsPrimaryKey(true).TextAlign(TextAlign.Left).Visible(true).Width(90).Add();
+                                col.Field("BillingState").HeaderText("Billing State").TextAlign(TextAlign.Left).Visible(true).Width(100).EditType(EditingType.String).Add();
+                                col.Field("BillingCity").HeaderText("Billing City").TextAlign(TextAlign.Left).Visible(true).Width(150).EditType(EditingType.String).Add();
+                               // col.Field("EmployeeID").HeaderText("Employee").TextAlign(TextAlign.Left).Visible(true).Width(100).EditType(EditingType.String).Add();
+                                col.Field("IsActive").HeaderText("Active").TextAlign(TextAlign.Left).Visible(true).Width(45).Add();
+                            })
+                             .ClientSideEvents(evt => evt.RowSelected("onRowSelected")))
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="interview-modal">
+        <div class="modal-dialog" style="width:80%; margin-top:100px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Customer Contacts</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="form1" class="form-horizontal" data-bv-message="This value is not valid" data-toggle="validator" data-bv-feedbackicons-valid="glyphicon glyphicon-ok" data-bv-feedbackicons-invalid="glyphicon glyphicon-remove" data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-3 ">
+                                    <label class="control-label">Customer Name</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label id="lblCustName" name="lblCustName" />
+                                </div>
+                                <div class="col-md-3  ">
+
+                                </div>
+                                <div class="col-md-3">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label class="control-label">Contact person</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="hidden" id="CustId" name="CustId" />
+                                    <input type="hidden" id="ContactPID" name="ContactPID" />
+                                    <input type="hidden" value="@ViewBag.EmailRegax" id="EmailReg" name="EmailReg" />
+                                    <input type="text" id="txtContactPerson" class="form-control" required="required" onchange="DuplicteName();" autocomplete="off" maxlength="100" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label">Phone</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" id="txtPhone" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3 ">
+                                    <label class="control-label">Mobile</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="txtMobile" required="required" maxlength="10" class="form-control" />
+                                </div>
+                                <div class="col-md-3  ">
+                                    <label class="control-label">Email</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" maxlength="100" onchange="DuplicteEmail();" required="required" id="txtEmail" />
+                                </div>
+                            </div>
+                            <panel id="pnlFreeze" name="pnlFreeze">
+                                <div class="form-group">
+                                    <div class="col-md-3 ">
+                                        <label class="control-label">Active</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.DropDownList("Active", new SelectList(ViewBag.VIGST, "Value", "Text"), new { @class = "form-control", style = "width: 190px;" })
+                                    </div>
+                                    <div class="col-md-3  ">
+                                    </div>
+                                    <div class="col-md-3">
+                                    </div>
+                                </div>
+                            </panel>
+
+                            <div class="form-group">
+                                <div class="col-md-3 ">
+
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="button" id="btnSaveContact" value="Submit" onclick="SaveContactPerson();" class="btn btn-primary" />&nbsp;&nbsp;
+                                    <input type="button" id="btnRestContact" value="Reset" onclick="Reset();" class="btn btn-primary" />
+                                </div>
+                                <div class="col-md-3  ">
+                                </div>
+                                <div class="col-md-3">
+                                </div>
+                            </div>
+                            <div>
+                                <div class="table-scrollable">
+                                    <table class='table table-bordered table-responsive ' id="tblContactPerson">
+                                        <thead>
+                                            <tr>
+                                                <th>Edit</th>
+                                                <th>Contact Person</th>
+                                                <th>Mobile</th>
+                                                <th>Phone</th>
+                                                <th>Email</th>
+                                                <th>Active</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="OfferLetterGeneration">
+        <div class="modal-dialog" style="width:80%; margin-top:100px;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#367fa9; color:white">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Shipper Details</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="form1" class="form-horizontal" data-bv-message="This value is not valid" data-toggle="validator" data-bv-feedbackicons-valid="glyphicon glyphicon-ok" data-bv-feedbackicons-invalid="glyphicon glyphicon-remove" data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label class="control-label">Customer ID</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="ShipperCustID" class="form-control" disabled="disabled" required="required" onchange="DuplicteName();" autocomplete="off" maxlength="100" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label">Customer Name</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="hidden" id="ShipperContactPID" name="ShipperContactPID" value="" />
+                                    <input type="text" class="form-control" id="ShipperCustomerName" disabled="disabled" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label class="control-label">Name</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="ShipperName" class="form-control"  required="required"  autocomplete="off" maxlength="100" onchange="CheckDuplicateShipperName()"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label class="control-label">Contact person</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="ShipperContactPerson" class="form-control" required="required" autocomplete="off" maxlength="100" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label">Address</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <textarea rows="2" class="form-control" id="ShipperAddress" name="ShipperAddress" maxlength="500"></textarea>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3 ">
+                                    <label class="control-label">City</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="ShipperCity" required="required" maxlength="50" class="form-control" />
+                                </div>
+                                <div class="col-md-3  ">
+                                    <label class="control-label">Pincode</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" maxlength="100" required="required" id="ShipperPincode" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3 ">
+                                    <label class="control-label">Email</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="email" id="ShipperEmail" required="required" maxlength="50" class="form-control" />
+                                </div>
+                                <div class="col-md-3  ">
+                                    <label class="control-label">Contact Us</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" maxlength="15" required="required" onkeypress="return event.charCode >= 48 && event.charCode <= 57" id="ShipperContactUs" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3 ">
+                                    <label class="control-label">Country</label>
+                                </div>
+                                <div class="col-md-3">
+                                   @Html.EJ().Autocomplete("Country").Width("100%").ClientSideEvents(e => e.FocusOut("populateState")).EnablePersistence(false).ShowPopupButton(true).WatermarkText("Select Country")
+                                </div>
+                                <div class="col-md-3  ">
+                                    <label class="control-label">State</label>
+                                </div>
+                                <div class="col-md-3">
+                                    @Html.EJ().Autocomplete("State").Width("100%").ClientSideEvents(e => e.FocusOut("CheckStates")).EnablePersistence(false).ShowPopupButton(true).WatermarkText("Select State")
+                                </div>
+                            </div>
+                            <panel id="pnlShipperFreeze" name="pnlShipperFreeze">
+                                <div class="form-group">
+                                    <div class="col-md-3 ">
+                                        <label class="control-label">Active</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.DropDownList("Freeze", new SelectList(ViewBag.VIGST, "Value", "Text"), new { @class = "form-control", style = "width: 190px;" })
+                                    </div>
+                                    <div class="col-md-3  ">
+                                    </div>
+                                    <div class="col-md-3">
+                                    </div>
+                                </div>
+                            </panel>
+
+                            <div class="form-group">
+                                <div class="col-md-3 ">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="button" id="btnSaveContact" value="Submit" onclick="SaveShipperContactPerson();" class="btn btn-primary" />&nbsp;&nbsp;
+                                    <input type="button" id="btnRestContact" value="Reset" onclick="ShipperReset();" class="btn btn-primary" />
+                                </div>
+                                <div class="col-md-3  ">
+                                </div>
+                                <div class="col-md-3">
+                                </div>
+                            </div>
+                            <div>
+                                <div class="table-scrollable">
+                                    <table class='table table-bordered table-responsive ' id="tblShipperDetails">
+                                        <thead>
+                                            <tr>
+                                                <th>Edit</th>
+                                                <th>Name</th>
+                                                <th>Contact Person</th>
+                                                <th>City</th>
+                                                <th>Contact Us</th>
+                                                <th>Email</th>
+                                                <th>Active</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <style>
+                span.error {
+                    display: block;
+                    visibility: hidden;
+                    color: red;
+                    font-size: 60%;
+                }
+
+                tr.error {
+                    background-color: rgba(255,0,0,0.35);
+                }
+            </style>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/countries.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script id="Refresh" type="text/x-jsrender">
+    <a href="#" class="e-toolbaricons refresh" />
+</script>
+<script id="AddNew" type="text/x-jsrender">
+    <button class="btn btn-primary btn-sm add">Add Customer</button>
+</script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#form1").bootstrapValidator();
+        $("#OFGForm").bootstrapValidator();
+
+        $("#pnlFreeze").hide();
+
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+
+        var Temp = '@TempData["Temp"]';
+        if (Temp != "" && Temp != undefined && Temp != null) {
+            toastr.success(Temp);
+        }
+    });
+</script>
+<script type="text/javascript">
+    function onToolBarClick(sender) {
+        if (sender.itemName == "Expand")
+            this.expandAll();
+        else if (sender.itemName == "Collapse")
+            this.collapseAll();
+        else if (sender.itemName == "Refresh") {
+            var instance = $("#Customer").ejGrid("instance");
+            instance._filterCollection = [];
+            instance.clearFiltering();
+            instance.clearSearching();
+            this.refreshContent();
+        }
+        if (sender.itemName == "AddNew") {
+            window.location.href = "../Customer/Create";
+        }
+    }
+    function GetContacts(id) {
+
+        $("#ContactPID").val("");
+        $("#CustId").val(id);
+        var ID = $("#CustId").val();
+        var Customer = ID.split("+");
+        ID = Customer[0];
+        $("#lblCustName").html(Customer[1]);
+        var CustomerNam = Customer[1];
+        $("#CustId").val(ID);
+
+        $("#txtContactPerson").val("");
+        $("#txtPhone").val("");
+        $("#txtMobile").val("");
+        $("#txtEmail").val("");
+        $("#Active").val("False");
+        $("#tblContactPerson").find("tr:gt(0)").remove();
+
+        $.ajax({
+            url: '@Url.Action("GetContacts", "Customer")',
+            type: "GET",
+            dataType: "JSON",
+            data: { ID: ID },
+            success: function (result) {
+                try {
+                    if (result.error == "error") {
+                        toastr.error(result.msg);
+                    }
+                    else {
+                        $.each(result, function (i, result) {
+                            $("#tblContactPerson").append('<tr><td><input type="button" style="height: 30px;" id="btnEdit" onclick="Edit(' + result.ContactPersonID + ');" value="Edit" class="btn btn-primary" /></td><td>' + result.ContactPerson + '</td><td>' + result.Mobile + '</td><td>' + result.Phone + '</td><td>' + result.Email + '</td><td>' + result.IsActive + '</td></tr>');
+                        });
+                        $("#interview-modal").modal('toggle');
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+    function Edit(ID) {
+        $.ajax({
+            url: '@Url.Action("GetOneContact", "Customer")',
+            type: "GET",
+            dataType: "JSON",
+            data: { ID: ID },
+            success: function (result) {
+                try {
+                    if (result.error == "error") {
+                        toastr.error(result.msg);
+                    }
+                    else {
+                        $("#pnlFreeze").show();
+                        $("#ContactPID").val(result.ContactPersonID);
+                        $("#txtContactPerson").val(result.ContactPerson);
+                        $("#txtPhone").val(result.Phone);
+                        $("#txtMobile").val(result.Mobile);
+                        $("#txtEmail").val(result.Email);
+                        if (result.IsActive == true)
+                            $("#Active").val("True");
+                        else
+                            $("#Active").val("False");
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+    function Reset() {
+
+        $("#ContactPID").val("");
+        $("#txtContactPerson").val("");
+        $("#txtPhone").val("");
+        $("#txtMobile").val("");
+        $("#txtEmail").val("");
+        $("#Active").val("False");
+        $("#pnlFreeze").hide();
+    }
+    function SaveContactPerson() {
+
+        var ContactPersonID = $("#ContactPID").val();
+        if (ContactPersonID == "")
+            ContactPersonID = 0;
+        var CustomerID = $("#CustId").val();
+        var ContactPerson = $("#txtContactPerson").val();
+        var Phone = $("#txtPhone").val();
+        var Mobile = $("#txtMobile").val();
+        var Email = $("#txtEmail").val();
+        var IsActive = $("#Active").val();
+
+        var flag = "true";
+
+        if (ContactPerson == "") {
+            flag = "false";
+            toastr.error("Contact Person is required");
+        }
+        if (Phone == "") {
+            flag = "false";
+            toastr.error("Phone No. is required");
+        }
+        //else {
+        //    var expr = "^[7-9][0-9]{9}$";
+        //    var PhoneReg = new RegExp(expr);
+        //    var valid = PhoneReg.test(Phone);
+        //    if (!valid) {
+        //        toastr.error("Not valid Phone No.");
+        //        $("#txtPhone").val("");
+        //        flag = "false";
+        //    }
+        //}
+        if (Mobile == "") {
+            flag = "false";
+            toastr.error("Mobile No. is required");
+        }
+        else {
+            var expr = "^[7-9][0-9]{9}$";
+            var MobileReg = new RegExp(expr);
+            var valid = MobileReg.test(Mobile);
+            if (!valid) {
+                toastr.error("Not valid Mobile No.");
+                $("#txtMobile").val("");
+                flag = "false";
+            }
+        }
+        if (Email == "") {
+            flag = "false";
+            toastr.error("Email is required");
+        }
+        else {
+            var expr = $("#EmailReg").val();
+            var EmailReg = new RegExp(expr);
+            var valid = EmailReg.test(Email);
+            if (!valid) {
+                toastr.error("Not valid Email");
+                $("#txtEmail").val("");
+                flag = "false";
+            }
+        }
+        DuplicteEmail();
+        DuplicteName();
+
+        if (flag != "false") {
+            $.ajax({
+                url: '@Url.Action("SaveContactPerson", "Customer")',
+                type: "GET",
+                dataType: "JSON",
+                data: { ContactPersonID: ContactPersonID, CustomerID: CustomerID, ContactPerson: ContactPerson, Phone: Phone, Mobile: Mobile, Email: Email, IsActive: IsActive },
+                success: function (result) {
+                    try {
+                        if (result.error == "error") {
+                            toastr.error(result.msg);
+                        }
+                        else {
+                            $("#tblContactPerson").find("tr:gt(0)").remove();
+                            $.ajax({
+                                url: '@Url.Action("GetContacts", "Customer")',
+                                type: "GET",
+                                dataType: "JSON",
+                                data: { ID: CustomerID },
+                                success: function (result) {
+                                    try {
+                                        if (result.error == "error") {
+                                            toastr.error(result.msg);
+                                        }
+                                        else {
+                                            $.each(result, function (i, result) {
+                                                $("#tblContactPerson").append('<tr><td><input type="button" id="btnEdit" style="height: 30px;" onclick="Edit(' + result.ContactPersonID + ');" value="Edit" class="btn btn-primary" /></td><td>' + result.ContactPerson + '</td><td>' + result.Mobile + '</td><td>' + result.Phone + '</td><td>' + result.Email + '</td><td>' + result.IsActive + '</td></tr>');
+                                            });
+                                            toastr.success("Contact Person Saved Successfully");
+                                        }
+                                    }
+                                    catch (e) {
+
+                                    }
+                                }
+                            });
+                            Reset();
+                        }
+                    }
+                    catch (e) {
+
+                    }
+                },
+            });
+        }
+    }
+    function DuplicteName() {
+
+        var Name = $("#txtContactPerson").val();
+        var ContactPersonID = $("#ContactPID").val();
+        var Mode = "";
+        if (ContactPersonID == "") {
+            ContactPersonID = 0;
+            Mode = "Create";
+        }
+        else {
+            Mode = "Edit";
+        }
+        var CustomerID = $("#CustId").val();
+
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateContactPerson","Customer")',
+            type: "GET",
+            dataType: "JSON",
+            data: { Name: Name, Mode: Mode, CustomerID: CustomerID, ContactPersonID: ContactPersonID },
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#txtContactPerson').val("");
+                        toastr.error("Contact Person Name already exist");
+                        return false;
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                        return false;
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+    function DuplicteEmail() {
+
+        var Email = $("#txtEmail").val();
+        var ContactPersonID = $("#ContactPID").val();
+        var Mode = "";
+        if (ContactPersonID == "") {
+            ContactPersonID = 0;
+            Mode = "Create";
+        }
+        else {
+            Mode = "Edit";
+        }
+        var CustomerID = $("#CustId").val();
+        $.ajax({
+            url: '@Url.Action("DuplicateContactPersonEmail","Customer")',
+            type: "GET",
+            dataType: "JSON",
+            data: { Email: Email, Mode: Mode, CustomerID: CustomerID, ContactPersonID: ContactPersonID },
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#txtEmail').val("");
+                        toastr.error("Contact Person Email already exist");
+                        return false;
+                    }
+                    else if (result == "0") {
+                    }
+                    else {
+                        toastr.error(result);
+                        return false;
+                    }
+                }
+                catch (e) {
+                }
+            }
+        });
+    }
+</script>
+<script>
+    function F1() {
+       
+        $('#OfferLetterGeneration').modal({ backdrop: 'static', keyboard: false })
+        $("#OfferLetterGeneration").modal("show");
+        $("#orderdetailsItems tr").remove();
+        $("#pnlShipperFreeze").hide();       
+    }
+    function GetShipperDetails() {
+        $("#txtContactPerson").val("");
+        $("#txtPhone").val("");
+        $("#txtMobile").val("");
+        $("#txtEmail").val("");
+        $("#Active").val("False");
+        $("#tblShipperDetails").find("tr:gt(0)").remove();
+        $.ajax({
+            url: '@Url.Action("GetShipperDetails", "Customer")',
+            type: "GET",
+            dataType: "JSON",
+            data: { ID: $('#ShipperCustID').val() },
+            success: function (result) {
+                try {
+                    if (result.error == "error") {
+                        toastr.error(result.msg);
+                    }
+                    else {
+                        $.each(result, function (i, result) {
+                            $("#tblShipperDetails").append('<tr><td><input type="button" style="height: 30px;" id="btnEdit" onclick="EditShipper(' + result.ShipperId + ');" value="Edit" class="btn btn-primary" /></td><td>' + result.Name + '</td><td>' + result.ContactPerson + '</td><td>' + result.City + '</td><td>' + result.ContactNo + '</td><td>' + result.Email + '</td><td>' + result.Freeze + '</td></tr>');
+                        });
+                     //   $("#OfferLetterGeneration").modal('toggle');
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+    function onRowSelected(args) {
+        var result = this.getSelectedRecords();
+        var Id = result[0].CustomerID;
+        var Name = result[0].CustomerName;
+        $('#ShipperCustID').val(Id);
+        $('#ShipperCustomerName').val(Name);
+        $("#pnlShipperFreeze").show();
+        GetShipperDetails();
+    }
+    function SaveShipperContactPerson() {
+        debugger
+        var ContactPersonID = $("#ShipperContactPID").val();      
+        if (ContactPersonID == "")
+        {
+            ContactPersonID = 0;
+        }            
+        var CustomerID = $("#ShipperCustID").val();
+        var ContactPerson = $("#ShipperContactPerson").val();
+        var Phone = $("#ShipperContactUs").val();
+        var Email = $("#ShipperEmail").val();
+        var IsActive = $("#Freeze").val();
+        var Address = $("#ShipperAddress").val();
+        var City = $("#ShipperCity").val();
+        var Pincode = $("#ShipperPincode").val();
+        var Country = $("#Country").val();
+        var State = $("#State").val();
+        var Name = $("#ShipperName").val();
+       
+        var flag = "true";
+        if (Name == "") {
+            flag = "false";
+            toastr.error("Name is required");
+        }
+        if (Country == "") {
+            flag = "false";
+            toastr.error("Country is required");
+        }
+        if (State == "") {
+            flag = "false";
+            toastr.error("State is required");
+        }
+        if (City == "") {
+            flag = "false";
+            toastr.error("City is required");
+        }
+        if (Address == "") {
+            flag = "false";
+            toastr.error("Address is required");
+        }
+        if (Pincode == "") {
+            flag = "false";
+            toastr.error("Pincode is required");
+        }
+        if (ContactPerson == "") {
+            flag = "false";
+            toastr.error("Contact Person is required");
+        }
+        if (Phone == "") {
+            flag = "false";
+            toastr.error("Phone No. is required");
+        }
+        //else {
+        //    var expr = "^[7-9][0-9]{9}$";
+        //    var PhoneReg = new RegExp(expr);
+        //    var valid = PhoneReg.test(Phone);
+        //    if (!valid) {
+        //        toastr.error("Not valid Phone No.");
+        //        $("#txtPhone").val("");
+        //        flag = "false";
+        //    }
+        //}
+        if (Email == "") {
+            flag = "false";
+            toastr.error("Email is required");
+        }
+        else {
+            var expr = $("#EmailReg").val();
+            var EmailReg = new RegExp(expr);
+            var valid = EmailReg.test(Email);
+            if (!valid) {
+                toastr.error("Not valid Email");
+                $("#txtEmail").val("");
+                flag = "false";
+            }
+        } 
+        if (flag != "false") {
+            $.ajax({
+                url: '@Url.Action("SaveShipperContactPerson", "Customer")',
+                type: "GET",
+                dataType: "JSON",
+                data: { ContactPersonID: ContactPersonID, CustomerID: CustomerID, ContactPerson: ContactPerson, Phone: Phone, Email: Email, Address: Address, City: City, Pincode: Pincode, IsActive: IsActive, Country: Country,State:State,Name:Name },
+                success: function (result) {
+                    try {
+                        if (result.error == "error") {
+                            toastr.error(result.msg);
+                        }
+                        else {
+                            $("#tblShipperDetails").find("tr:gt(0)").remove();
+                            $.ajax({
+                                url: '@Url.Action("GetShipperDetails", "Customer")',
+                                type: "GET",
+                                dataType: "JSON",
+                                data: { ID: CustomerID },
+                                success: function (result) {
+                                    
+                                    try {
+                                        if (result.error == "error") {
+                                            toastr.error(result.msg);
+                                        }
+                                        else {
+                                            $.each(result, function (i, result) {
+                                                $("#tblShipperDetails").append('<tr><td><input type="button" id="btnEdit" style="height: 30px;" onclick="EditShipper(' + result.ShipperId + ');" value="Edit" class="btn btn-primary" /></td><td>' + result.Name+ '</td><td>' + result.ContactPerson + '</td><td>' + result.City + '</td><td>' + result.ContactNo + '</td><td>' + result.Email + '</td><td>' + result.Freeze + '</td></tr>');
+                                            });
+                                            toastr.success("Contact Person Saved Successfully");                                           
+                                            $("#ShipperContactPerson").val('');
+                                            $("#ShipperContactUs").val('');
+                                            $("#ShipperEmail").val('');                                            
+                                            $("#ShipperAddress").val('');
+                                            $("#ShipperCity").val('');
+                                            $("#ShipperPincode").val(''); 
+                                            $("#ShipperName").val('');
+                                            $("#Country").val('');
+                                            $("#State").val('');
+                                            $("#ShipperName").val('');
+                                            $("#ShipperContactPID").val('');
+                                        }
+                                    }
+                                    catch (e) {
+
+                                    }
+                                }
+                            });
+                            Reset();
+                        }
+                    }
+                    catch (e) {
+
+                    }
+                },
+            });
+        }
+    }
+    function EditShipper(ID)
+    {
+        $.ajax({
+            url: '@Url.Action("GetSingleShipperDetails", "Customer")',
+            type: "GET",
+            dataType: "JSON",
+            data: { ID: ID },
+            success: function (result) {
+                try {
+                    if (result.error == "error") {
+                        toastr.error(result.msg);
+                    }
+                    else {                      
+                        $("#pnlShipperFreeze").show();
+                        $("#ShipperContactPID").val(result.ShipperId);
+                        $("#ShipperContactPerson").val(result.ContactPerson);
+                        $("#ShipperContactUs").val(result.ContactNo);
+                        $("#ShipperAddress").val(result.Address);
+                        $("#ShipperCity").val(result.City);
+                        $("#ShipperPincode").val(result.Pincode); 
+                        $("#ShipperEmail").val(result.Email);
+                        $("#ShipperName").val(result.Name);
+                        $("#Country").val(result.Country);
+                        $("#State").val(result.State);
+                        if (result.Freeze == true)
+                            $("#Freeze").val("True");
+                        else
+                            $("#Freeze").val("False");
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+    populateCountries("Country", "State");
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+    })
+    function populateState() {
+        populateStates("Country", "State");
+        $("#State").val("");
+    }
+
+    function CheckStates() {
+        CheckState("Country", "State");
+    }
+    function CheckDuplicateShipperName()
+        {
+        var Name = $("#ShipperName").val();
+        var ShipperID = $("#ShipperContactPID").val();
+        var Mode = "";
+        if (ShipperID == "") {
+            ShipperID = 0;
+            Mode = "Create";
+        }
+        else {
+            Mode = "Edit";
+        }
+        var CustomerID = $("#ShipperCustID").val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateShipperName", "Customer")',
+            type: "GET",
+            dataType: "JSON",
+            data: { Name: Name, Mode: Mode, CustomerID: CustomerID, ShipperID: ShipperID },
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#ShipperName').val("");
+                        toastr.error("Name already exist");
+                        return false;
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                        return false;
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+        }
+</script>

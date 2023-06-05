@@ -1,0 +1,209 @@
+﻿@model Inventory.Models.Products
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Products</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProductName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ModelName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModelName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CategoryId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CategoryId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OpeningQuantity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OpeningQuantity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.InwardQuantity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InwardQuantity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OutwardQuantity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OutwardQuantity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClosingQuantity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClosingQuantity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SellingPrice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SellingPrice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Weight)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Weight)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Size)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Size)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Discount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Discount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReorderLevel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReorderLevel)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaxLevel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaxLevel)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HsnCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HsnCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Note)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LeadTimePurchase)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LeadTimePurchase)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LeadTimeSell)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LeadTimeSell)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdatedBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UpdatedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdateDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UpdateDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

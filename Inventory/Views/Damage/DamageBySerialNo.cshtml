@@ -1,0 +1,281 @@
+﻿@model Inventory.Models.Damage
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("DamageBySerialNo", "Damage", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Count" name="Count" value="1" />
+    <input type="hidden" id="SupplierID" name="SupplierID" />
+    <input type="hidden" id="ProductId" name="ProductId" />
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Add Serial Number</h3>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.DamageNo, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.DamageNo, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", @disabled = "disabled", maxlength = "20" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Date
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="DamageDate" name="DamageDate" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Damage Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Select Product
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EJ().Autocomplete("Product").Width("100%").Datasource((IEnumerable<Inventory.Models.Products>)ViewBag.Productdatasource).ShowPopupButton(true).AutocompleteFields(field => field.Text("ProductName").Key("ProductCode")).ClientSideEvents(e => e.Select("getProductId").FocusOut("checkProduct"))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Damage Reason
+                            </div>
+                            <div class="col-md-8">
+                                <textarea rows="2" cols="50" id="DamageReason" name="DamageReason" maxlength="200"></textarea>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Serial No
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" id="SerialNumber" class="SerialNumber form-control" />
+                            </div>
+                            <div class="col-md-2">
+                                <input type="button" id="add" value="add" style="width:80px" class="btn btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="orderItems" style="overflow-x:auto;">
+            <table class="table table-responsive" id="orderdetailsItems" display block; overflow-x auto; white-space nowrap; style="width:1470px"></table>
+        </div>
+
+        <div class="row" style="width:1580px">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <div style="padding:5px 10px; text-align:right">
+                            <input id="submit" type="button" value="Save Order" class="btn btn-warning" style="padding:5px 5px" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    function Remove(Count) {
+        $("#R" + Count + "").remove();
+    }
+    $(document).ready(function () {
+        $("#DamageDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+        getDamageIdNo();
+    })
+    function getDamageIdNo() {
+        $.ajax({
+            type: "GET",
+            url: '/Damage/getDamageNo',
+            success: function (result) {
+                $('#DamageNo').val(result);
+            }
+        })
+    }
+    $(document).ready(function () {
+        $('#add').click(function () {
+            var temp = true;
+            if ($('#DamageDate').val() == "") { toastr.warning('please select date'); temp = false; }
+            if ($('#DamageReason').val() == "") { toastr.warning('please enter damage reason'); temp = false; }
+            if ($('#SerialNumber').val() == "") { toastr.warning('please scan serial no'); temp = false; }
+            if ($('#Product').val() == "") { toastr.warning('please select Product Name'); temp = false; }
+            if (temp == true) {
+                var isduplicate = "";
+                var cnt = 1;
+                alert($('#ProductId').val())
+                $('#orderdetailsItems  tr').each(function (index, e) {
+                    if ($('#SerialNumber').val() == $("#SerialNoNew" + cnt + "").val() && $('#ProductId').val() == $("#ProductIdNew" + cnt + "").val()) {
+                        
+                        $('#SerialNumber').val('');
+                        toastr.error("Serial Number already added...");
+                        isduplicate = true;
+                    }
+                    cnt = parseInt(cnt) + 1;
+                })
+                if (isduplicate == false) {
+                    $.ajax({
+                        type: "GET",
+                        url: '/Damage/getSerialNoData',
+                        data: { 'SerialNo': $('#SerialNumber').val(), 'ProductId': $('#ProductId').val() },
+                        success: function (result) {
+                            
+                            if (result.length != 0) {
+                                var isValid = false;
+                                if ($('#SerialNumber').val() == "") { toastr.error("Please Enter Serial Number"); $('#SerialNumber').css("border", "1px solid #e46f61"); isValid = false; } else { $('#SerialNumber').css("border", "1px solid #a5da6b"); isValid = true; }
+                                var Count = $('#Count').val();
+                                var rowCount = $('#orderdetailsItems tr').length;
+                                if (rowCount == 0) {
+                                    $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' > <th>PO NO</th><th>GRN NO</th><th>PRODUCT</th><th>SERIAL NO</th><th>BATCH NO</th> <th>WAREHOUSE</th><th>LOCATION</th><th>RETURN REASON</th><th></th> </tr> <tbody>").appendTo("#orderdetailsItems");
+                                }
+                                $("#orderdetailsItems").append(" <tbody> <tr id='R" + Count + "'><td><input type='text' readonly id='PONONew" + Count + "'    class='PONONew form-control'' /></td><td><input type='text' readonly id='GrnNoNew" + Count + "'    class='GrnNoNew form-control'' /></td><td><input type='text' id='ProductNew" + Count + "' readonly  style='width:150px' class='ProductNew form-control'' /></td><td><input type='text' id='SerialNoNew" + Count + "' readonly  style='width:130px' class='SerialNoNew form-control'' /></td><td><input type='text' id='BatchNoNew" + Count + "' readonly class='BatchNoNew form-control'' /></td><td><input type='text'  id='WarehouseNew" + Count + "'  readonly class='WarehouseNew form-control'' /></td><td><input type='text' id='StoreLocationNew" + Count + "' readonly class='StoreLocationNew form-control'' /></td><td><input type='text' id='DamageReasonNew" + Count + "'   style='width : 200px'  class='DamageReasonNew form-control'' /></td> <td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /></td><input type='hidden'  id='ProductIdNew" + Count + "'    class='ProductIdNew form-control'' /><input type='hidden'  id='WarehouseId" + Count + "'  class='WarehouseId form-control'' /><input type='hidden'  id='StoreLocationId" + Count + "'   class='StoreLocationId form-control'' /><input type='hidden'  id='SerialNoIdNew" + Count + "'  class='SerialNoIdNew form-control'' /><input type='hidden'  id='PODetailsIdNew" + Count + "'  class='PODetailsIdNew form-control'' /></td></tr> <tbody>");
+                                $("#SerialNoNew" + Count + "").val(result[0].SerialNo);
+
+                                $("#PONONew" + Count + "").val(result[0].ProductName);
+                                $("#ProductNew" + Count + "").val(result[0].ProductName);
+                                $("#BatchNoNew" + Count + "").val(result[0].BatchNo);
+                                $("#WarehouseNew" + Count + "").val(result[0].WareHouseName);
+                                $("#StoreLocationNew" + Count + "").val(result[0].StoreLocation);
+                                $("#GrnNoNew" + Count + "").val(result[0].GrnNo);
+                                $("#DamageReasonNew" + Count + "").val($('#DamageReason').val());
+                                // Hidden Fields
+                                $("#ProductIdNew" + Count + "").val(result[0].ProductCode);
+                                $("#WarehouseId" + Count + "").val(result[0].WarehouseId);
+                                $("#StoreLocationId" + Count + "").val(result[0].StoreLocationId);
+                                $("#SerialNoIdNew" + Count + "").val(result[0].SerialNoId);
+                                $("#PODetailsIdNew" + Count + "").val(result[0].PODetailsId);
+                                $("#SerialNumber").val('');
+                                $("#SerialNumber").focus();
+
+                                $('#Count').val(parseInt($('#Count').val()) + 1)
+                            } else {
+                                toastr.warning('serial number not found')
+                            }
+                        }
+                    })
+
+                }
+            }
+        });
+        $('#submit').click(function () {
+            var rowCount = $('#orderdetailsItems tr').length;
+            
+            alert($('#Count').val());
+            if (rowCount > 0) {
+                var isAllValid = true;
+                $('#orderItemError').text('');
+                var list = [];
+                var errorItemCount = 0;
+
+                var DamageDate = $('#DamageDate').val();
+                var datearray1 = DamageDate.split("/");
+                var dt = datearray1[1] + '/' + datearray1[0] + '/' + datearray1[2];
+
+                $('#orderdetailsItems tbody tr').each(function (index, ele) {
+                    if ($('.PONONew', this).val() == "" ||
+                        $('.SerialNoIdNew', this).val() == undefined ||
+                        $('.GrnNoNew', this).val() == "" ||
+                        $('.ProductIdNew', this).val() == undefined) {
+                        errorItemCount++;
+                        $(this).addClass('error');
+
+                    } else {
+                        var orderItem = {
+                            PODetailsId: $('.PODetailsIdNew', this).val(),
+                            StoreLocationId: $('.StoreLocationId', this).val(),
+                            WarehouseId: $('.WarehouseId', this).val(),
+                            DamageReason: $('.DamageReasonNew', this).val(),
+                            ProductCode: $('.ProductIdNew', this).val(),
+                            BatchNo: $('.BatchNoNew', this).val(),
+                            SerialNo: $('.SerialNoNew', this).val(),
+                            SerialNoId: $('.SerialNoIdNew', this).val(),
+                            GRNNo: $('.GrnNoNew', this).val(),
+                            DamageQty: 1,
+                            DamageDate: dt,
+                            DamageNo: $('#DamageNo').val(),
+                        }
+                        list.push(orderItem);
+                    }
+                })
+                
+                if (isAllValid) {
+                    var data = {
+                        damage: list
+                    }
+                    $(this).val('Please wait...');
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Damage/SaveSerialNo',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if (data.status) {
+                                toastr.success("Successfully saved..");
+                                window.location.href = "/Damage/Index";
+                            }
+                            else {
+                                toastr.error("something Wrong..");
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
+                            $('#submit').val('Save');
+                        }
+                    });
+                }
+            } else {
+                toastr.warning("please add data to list.");
+            }
+        });
+    });
+    function getProductId(PrdId) {
+        $('#ProductId').val(PrdId.key);
+    }
+
+</script>

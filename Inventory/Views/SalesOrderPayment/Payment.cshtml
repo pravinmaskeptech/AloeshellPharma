@@ -1,0 +1,457 @@
+﻿
+@model Inventory.Models.SalesOrderPayment
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Create", "SalesOrderPayment", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Tamount" name="Tamount" value="0">
+    <input type="hidden" id="hfAdvanceamt" name="hfAdvanceamt" value="0">
+    <input type="hidden" id="CustomerId" name="CustomerId">
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h1 class="box-title">Customer Payment</h1>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Document No
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="DocumentNo" name="DocumentNo"  disabled="disabled" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Document No is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Document Date
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="DocumentDate" name="DocumentDate" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Purchase Order Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>          
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                               Payment Mode
+                            </div>
+                            <div class="col-md-8">
+                                <select name="PaymentMode" id="PaymentMode" class='PaymentMode form-control' onchange="getPaymentMode()">
+                                    <option value='Select'>Select</option>
+                                    <option value='Cash'>Cash</option>
+                                    <option value='Cheque'>Cheque</option>
+                                    <option value='DD'>DD</option>
+                                    <option value='NEFT'>NEFT</option>
+                                    <option value='IMPS'>IMPS</option>
+                                    <option value='Paytm'>Paytm</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Ref No
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="RefNo" name="RefNo" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Ref No is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Payment Type
+                            </div>
+                            <div class="col-md-8">
+                                <select name="PaymentType" id="PaymentType" class='PaymentType form-control' >
+                                    <option value='Select'>Select</option>
+                                    <option value='Invoice'>Invoice</option>
+                                    <option value='Advance'>Advance</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>        
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Select Customer
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EJ().Autocomplete("CustomerName").WatermarkText("Select Customer").Datasource((IEnumerable<Inventory.Models.Customer>)ViewBag.Custdatasource).Width("100%").AutocompleteFields(field => field.Key("CustomerID").Text("CustomerName")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("Select Customer\r\n").FocusOut("CheckValidCustomer"))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Ref Date
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="RefDate" name="RefDate" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Ref Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>              
+            </div>
+          
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Amount
+                            </div>
+                            <div class="col-md-8">
+                                <input type="number" id="TotAmount" name="TotAmount" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" onchange="getBalAmount()" data_bv_notempty_message="Tot Amount is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Advance Amount
+                            </div>
+                            <div class="col-md-8">
+                                <input type="number" id="AdvanceAmount" name="AdvanceAmount" disabled="disabled" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Advance Amount is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                balance
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="BalanceAmount" name="BalanceAmount" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" disabled="disabled" value="0" data_bv_notempty_message="Balance Amount is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="orderItems" style="overflow-x:auto;">
+                <table class="table table-responsive" id="orderdetailsItems"  style="width:100% ; display :block; overflow-x :auto; white-space :nowrap; "></table><br />
+                <span id="orderItemError" style="color:red"></span>
+            </div>
+                <div class="row" style="width:1580px">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <div style="padding:6px 10px; text-align:right">
+                                    <input id="btnsave" type="button" value="Save Order" onclick="SaveInvoiceDetails()" class="btn btn-warning" style="padding:6px 6px" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+}
+<script>
+    function getPaymentMode()
+    {      
+        if($('#PaymentMode').val()=="Cash")
+        {
+            $("#RefNo").val('');
+            $("#RefNo").prop('disabled', true);            
+        }else
+        {
+            $("#RefNo").prop('disabled', false);
+        }
+    }    
+     $(document).ready(function () {
+         $("#DocumentDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+         $("#RefDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+         //    $("#PoDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+         $('#AdvanceAmount').val(0);
+        getPaymentNo();
+     })
+     function getPaymentNo() {
+        $.ajax({
+            type: "GET",
+            url: '/SalesOrderPayment/getPaymentNo',
+            success: function (result) {
+                $('#DocumentNo').val(result);
+            }
+        })
+    }
+     function ShowInvoiceDetails(ID) {         
+         $('#TotAmount').val('');
+         $("#TotAmount").prop('disabled', false);
+         $('#orderdetailsItems tr').empty();
+         $('#CustomerId').val(ID.key);
+         if ($('#PaymentType').val() == "Invoice") {
+             ShowAdvanceAmt();
+             $.ajax({
+                 type: "GET",
+                 url: '/SalesOrderPayment/ShowInvoiceDetails',
+                 data: { 'CustomerId': ID.key },
+                 success: function (result) {
+                     if (result.length != 0) {                        
+                             var Count = 1;
+                             if (Count == 1) {
+                                 $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' > <th>Invoice No</th><th>So No</th><th>Invoice Date</th><th>Invoice Amount</th><th>Balance Amt</th><th>Select</th> </tr> <tbody>").appendTo("#orderdetailsItems");
+                             }
+                             $.each(result, function (i, item) {
+                                 if (parseFloat(result[i].InvoiceAmount) != parseFloat(result[i].PayAmount)) {
+                                     $(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='InvoiceNo" + Count + "' readonly  style='width : 200px'  readonly class='InvoiceNo form-control'' /></td> <td> <input type='Text'   style='width : 200px'  id='OrderNo" + Count + "' readonly  class='PONO form-control'></td>   <td> <input type='Text'   style='width : 200px'  id='InvoiceDate" + Count + "' readonly  class='InvoiceDate form-control'></td>   <td> <input type='text'   style='width : 200px'  id='InvoiceAmount" + Count + "'  readonly  class='InvoiceAmount form-control'></td><td> <input type='Text'   style='width:120px' id='PayAmount" + Count + "' readonly  class='PayAmount form-control'></td>   <td><input type='button' id='" + Count + "' onclick='Payment(" + Count + ")' value='Select' style='width: 100' class='btn btn-success' /> <input type='hidden'   style='width:200px' id='SelectRow" + Count + "' readonly  class='SelectRow form-control'><input type='hidden'   style='width:200px' id='BalAmount" + Count + "' readonly  class='BalAmount form-control'></td> </tr> <tbody>").appendTo("#orderdetailsItems");
+                                     var date = new Date(parseInt(result[i].InvoiceDate.substr(6)));
+                                     var InvoiceDate = $.datepicker.formatDate("dd/mm/yy", date);
+                                     $("#InvoiceDate" + Count).val(InvoiceDate);
+                                     $("#InvoiceNo" + Count + "").val(result[i].InvoiceNo);
+                                     $("#InvoiceAmount" + Count).val(parseFloat(result[i].InvoiceAmount) - parseFloat(result[i].PayAmount));
+                                     $("#OrderNo" + Count + "").val(result[i].OrderNo);
+                                     $("#SelectRow" + Count + "").val('No');
+                                     $("#BalAmount" + Count + "").val(0);
+                                     Count = parseInt(Count) + 1;
+                                 }
+                             })
+                        
+                     }
+                 }
+             })
+         }else
+         {            
+             ShowAdvanceAmt();
+         }
+     }
+     function ShowAdvanceAmt()
+     {
+         $('#AdvanceAmount').val(0);
+         $('#BalanceAmount').val(0);         
+         $.ajax({
+             type: "GET",
+             url: '/SalesOrderPayment/getAdvanceAmount',
+             data: { 'CustomerId': $('#CustomerId').val() },
+             success: function (result) {                
+                 $('#AdvanceAmount').val(result);
+             }
+         })
+     }
+     function getBalAmount()
+     {
+         $('#BalanceAmount').val(parseFloat($('#TotAmount').val()) + parseFloat($('#AdvanceAmount').val()));
+         $("#TotAmount").prop('disabled', true);
+     }
+     function Payment(Count) {
+         var flag = true;
+         if ($('#DocumentDate').val() == "") { toastr.warning("Please Select Document Date"); flag = false }
+         if ($('#PaymentMode').val() == "Select") { toastr.warning("Please select Payment Mode"); flag = false }
+         if ($('#PaymentMode').val() != "Cash") { if ($('#RefNo').val() == "") { toastr.warning("Please enter Reference No"); flag = false } }
+         if ($('#SupplierName').val() == "") { toastr.warning("Please Select Supplier Name"); flag = false }
+         if ($('#RefDate').val() == "") { toastr.warning("Please select Reference Date"); flag = false }
+         if ($('#TotAmount').val() == "") { toastr.warning("Please Enter +" + $('#PaymentMode').val() + "+Amount"); flag = false }
+         if ($('#PaymentType').val() == "Select") { toastr.warning("Please select Payment Type"); flag = false }
+         
+         if (flag == true) {          
+             var InvoiceAmount = $('#InvoiceAmount' + Count).val();
+             var TotAmount = $('#TotAmount').val();
+              balAmount = $('#BalanceAmount').val();
+             if (parseFloat(balAmount) >= parseFloat(InvoiceAmount)) {
+                 if ($('#SelectRow' + Count).val() == "No")
+                 {
+                     $('#SelectRow' + Count).val("Yes");
+                     $('#BalanceAmount').val(parseFloat($('#BalanceAmount').val()) - parseFloat(InvoiceAmount));
+                     $('#Tamount').val(parseFloat($('#Tamount').val()) + parseFloat(InvoiceAmount));
+                     $('#PayAmount' + Count).val(parseFloat(InvoiceAmount));
+                     $('#hfAdvanceamt').val(parseFloat($('#hfAdvanceamt').val() + parseFloat($('#BalanceAmount').val())));                     
+                 }
+             }
+             else
+             {
+                 // BalAmount
+                     if ($('#SelectRow' + Count).val() == "No") {
+                         $('#SelectRow' + Count).val("Yes");
+                           var amt = parseFloat(InvoiceAmount) - parseFloat(balAmount);
+                           $('#PayAmount' + Count).val(parseFloat(InvoiceAmount) - parseFloat(amt));
+                         $('#BalanceAmount').val((parseFloat(InvoiceAmount) - parseFloat($('#BalanceAmount').val())) - parseFloat(amt));
+                         $('#Tamount').val(parseFloat($('#Tamount').val()) + parseFloat(amt));
+                         $('#hfAdvanceamt').val(parseFloat($('#hfAdvanceamt').val() + parseFloat($('#BalanceAmount').val())));
+                     }
+             }
+         }
+     }
+     function SaveInvoiceDetails() {       
+         if ($('#DocumentDate').val() == "" || $('#PaymentMode').val() == "Select" || $('#SupplierName').val() == "" || $('#TotAmount').val() == "" || $('#BalanceAmount').val() == "" || $('#RefDate').val() == "") {
+             if ($('#DocumentDate').val() == "") { toastr.warning("please Select Document Date") }
+                 if ($('#GRNNO').val() == "") { toastr.warning("please Select GRN Number") }
+                 if ($('#PaymentMode').val() == "Select") { toastr.warning("please Select Payment Mode") }
+                 if ($('#PaymentMode').val() != "Cash") { if ($('#RefNo').val() == "") { toastr.warning("Please enter Reference No");  } }
+                 if ($('#SupplierName').val() == "") { toastr.warning("please Enter Return Reason") }
+                 if ($('#TotAmount').val() == "") { toastr.warning("please Enter Return Reason") }
+                 if ($('#BalanceAmount').val() == "") { toastr.warning("please Enter Return Reason") } 
+                 if ($('#RefDate').val() == "") { toastr.warning("please Enter Ref Date") }
+                 if ($('#PaymentType').val() == "Select") { toastr.warning("Please select Payment Type")}
+         } else {
+          
+             // save Advance Amount
+             if ($('#PaymentType').val() == "Advance") {
+                 var DocumentDate = $('#DocumentDate').val();
+                 var datearray = DocumentDate.split("/");
+                 var Docdt = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+
+                 var RefDate = $('#RefDate').val();
+                 var datearray1 = RefDate.split("/");
+                 var Refdt = datearray1[1] + '/' + datearray1[0] + '/' + datearray1[2];
+
+                 $.ajax({
+                     type: "GET",
+                     url: '/SalesOrderPayment/AddAdvanceAmount',
+                     data: { 'CustomerId': $('#CustomerId').val(), 'DocNo': $('#DocumentNo').val(), 'Amount': $('#TotAmount').val(), 'DocDate': Docdt, 'PaymentMode': $('#PaymentMode').val(), 'ReferenceNo': $('#RefNo').val(), 'PaymentType': $('#PaymentType').val(), 'Date': Refdt, },
+                     success: function (result) {
+                         ShowAdvanceAmt();
+                     }
+                 })
+             } else {
+                 //save invoice Details
+                 var rowCount = $('#orderdetailsItems tr').length;
+                 if (rowCount > 0) {
+                     var isAllValid = true;
+                     $('#orderItemError').text('');
+                     var list = [];
+                     var errorItemCount = 0;
+
+                     var DocumentDate = $('#DocumentDate').val();
+                     var datearray = DocumentDate.split("/");
+                     var Docdt = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+
+                     var RefDate = $('#RefDate').val();
+                     var datearray1 = RefDate.split("/");
+                     var Refdt = datearray1[1] + '/' + datearray1[0] + '/' + datearray1[2];
+
+                     $('#orderdetailsItems tbody tr').each(function (index, ele) {
+                         if (($('.InvoiceNo', this).val() || "") == "" ||
+                             $('.PONO', this).val() == "" ||
+                              $('.InvoiceDate', this).val() == "" ||
+                              $('.InvoiceAmount', this).val() == "" ||
+                              $('.PayAmount', this).val() == "" ||
+                             isNaN($('.PayAmount', this).val())) {
+                             errorItemCount++;
+                             $(this).addClass('error');
+                         } else {
+
+                             var InvoiceDate = $('.InvoiceDate', this).val();
+                             var datearray2 = InvoiceDate.split("/");
+                             var invdt = datearray2[1] + '/' + datearray2[0] + '/' + datearray2[2];
+                             var orderItem = {
+                                 DocNo: $('#DocumentNo').val(),
+                                 DocDate: Docdt,
+                                 InvoiceNo: $('.InvoiceNo', this).val(),
+                                 InvoiceDate: invdt,
+                                 CustomerId: $('#CustomerId').val(),
+                                 InvoiceAmount: $('.InvoiceAmount', this).val(),
+                                 balanceAmount: $('.PayAmount', this).val(),
+                                 PaymentMode: $('#PaymentMode').val(),
+                                 ReferenceNo: $('#RefNo').val(),
+                                 Amount: $('#TotAmount').val(),
+                                 Date: Refdt,
+                                 SoNo: $('.PONO', this).val(),
+                                 PaymentType: $('#PaymentType').val(),
+                             //    hfAdvanceamt: $('#hfAdvanceamt').val(),
+                                 hfAdvanceamt: $('#BalanceAmount').val(),                                 
+                             }
+                             list.push(orderItem);
+                         }
+                     })
+
+                     if (isAllValid) {
+                         var data = {
+                             Invoice: list
+                         }
+                         $(this).val('Please wait...');
+                         $.ajax({
+                             type: 'POST',
+                             url: '/SalesOrderPayment/save',
+                             data: JSON.stringify(data),
+                             contentType: 'application/json',
+                             success: function (data) {
+                                 if (data.status) {
+                                     toastr.success("Successfully saved..");
+                                     window.location.href = "/SalesOrderPayment/Index";
+                                 }
+                                 else {
+                                     toastr.error("something Wrong..");
+                                 }
+                                 $('#submit').val('Save');
+                             },
+                             error: function (error) {
+                                 console.log(error);
+                                 $('#submit').val('Save');
+                             }
+                         });
+                     }
+                 } else {
+                     toastr.error("please add data to list.");
+                 }
+             }
+             }       
+     };
+     function CheckValidCustomer()
+     {
+         $.ajax({
+             type: "GET",
+             url: '/SalesOrderPayment/CheckValidCustomer',
+             data: { 'CustomerName': $('#CustomerName').val() },
+             success: function (result) {
+                 if (result == "0")
+                 {
+                     toastr.warning('invalid Customer Name ....');
+                     $('#CustomerName').val('');
+                 }
+                 
+             }
+         })
+     }
+</script>

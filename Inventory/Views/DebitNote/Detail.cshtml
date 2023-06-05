@@ -1,0 +1,139 @@
+﻿@model Inventory.Models.DebitNote
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Edit", "POReplacement", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="box box-info">
+        <div class="box-header with-border" style="background-color:#3c8dbc; color:white">
+            <h2 class="box-title">DEBIT NOTE</h2>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+        <div class="box-body">           
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            Doc No
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="DocNo" value="@ViewBag.DocNo" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            Doc Date
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="DocDate" name="DocDate" required class="form-control" readonly style="width:100%" autocomplete="off" data-bv-notempty="true" data-bv-notempty-message="GRN Date is required and cannot be empty" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            PO number
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="PONO" value="@ViewBag.PONO" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            Supplier
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="Supplier" value="@ViewBag.Supplier" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="orderItems" style="overflow-x: auto; margin-left: 60px; ">
+                <table class="table table-responsive" id="tblDebit" style="width: 1470px; display: block; overflow-x: auto; white-space: nowrap;"></table><br />               
+            </div>       
+                     
+            <div class="row" style="width:1580px">               
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <div style="padding:6px 10px; text-align:right">
+                                <input id="btnSave" type="button" value="Debit Note" onclick="Save();" class="btn btn-warning" style="padding:6px 6px" />&nbsp;&nbsp;
+                                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        //$("#DocDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+
+        var value = new Date();
+        var month = ("0" + (value.getMonth() + 1)).slice(-2);
+        var day = ("0" + value.getDate()).slice(-2);
+        var ret = day + "/" + month + "/" + value.getFullYear();
+        $("#DocDate").val((ret));
+
+        $.ajax({
+            url: '@Url.Action("GetData", "DebitNote")',
+            type: "GET",
+            datatype: "JSON",
+            data: { PONO: $("#PONO").val() },
+            success: function (result) {
+                
+                var Total = 0;
+                $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' ><th>PRODUCT CODE</th><th>PRODUCT</th><th>ITEM QTY</th><th>DISCOUNT</th><th>TAX</th><th>AMOUNT</th></tr> <tbody>").appendTo("#tblDebit");
+                $.each(result, function (i, item) {
+                    
+                    $(" <tbody><tr><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + result[i].ProductCode + " /></td><td><input type='text' readonly  style='width : 180px' class='form-control' value='" + result[i].ProductName + "' /> </td><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + result[i].ItemQty + " /></td><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + result[i].Discount + " /></td><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + result[i].Tax + " /></td><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + result[i].Amount + " /></td></tr> <tbody>").appendTo("#tblDebit");
+                    Total=Total+parseFloat(result[i].Amount);
+                });
+                $(" <tbody><tr><td></td><td></td><td></td><td></td><td align='right'>Total</td><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + Total + " /></td></tr> <tbody>").appendTo("#tblDebit");
+            },
+        });
+    });
+   
+    function Save() {        
+        $.ajax({
+            url: '@Url.Action("Save", "DebitNote")',
+            type: "POST",
+            datatype: "JSON",
+            data: { PONO: $("#PONO").val(), DocNo: $("#DocNo").val() },
+            success: function (result) {
+                if (result == "success") {
+                    toastr.success("Debit note created");
+                    window.location.href = '/DebitNote/Index';
+                }
+                else {
+                    toastr.error(result);
+                }
+            },
+        });
+    }
+</script>

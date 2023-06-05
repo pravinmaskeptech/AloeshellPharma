@@ -1,0 +1,607 @@
+﻿@model Inventory.Models.Suppliers
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Create", "Suppliers", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">New Supplier</h3>
+            <div class="box-tools pull-right">
+                @*<button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>*@
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.SupplierName, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.SupplierName, new { htmlAttributes = new { onchange = "DuplicteName();", @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Supplier name is required and cannot be empty" } })
+                                @Html.ValidationMessageFor(model => model.SupplierName)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.BillingAddress, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                                <div class="col-md-8">
+                                    <textarea rows="3" cols="50" id="BillingAddress" name="BillingAddress" class="form-control" maxlength="500" data-bv-notempty="true" required="required" data-bv-notempty-message="Billing Address is required and cannot be empty"></textarea>
+                                    @Html.ValidationMessageFor(model => model.BillingAddress)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.BillingCountry, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EJ().Autocomplete("BillingCountry").Width("100%").ClientSideEvents(e => e.FocusOut("populateBillingStates")).EnablePersistence(false).ShowPopupButton(true).WatermarkText("Select Country")@*.Datasource(Enumerable.Empty<SelectListItem>()).EnablePersistence(false).ClientSideEvents(e => e.FocusOut("chkLocationLocOffered")).ShowPopupButton(true).ClientSideEvents(e => e.Select("Disabledbtn")).WatermarkText("Select Country").ValidationRules(r => r.AddRule("required", true)).ValidationMessage(m => m.AddMessage("required", "City required "))*@
+                                    @Html.ValidationMessageFor(model => model.BillingCountry)
+                                    @*@Html.EditorFor(model => model.BillingCountry, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Billing Country is required and cannot be empty", maxlength = "50" } })*@
+                                    @*@Html.DropDownListFor(model => model.BillingCountry, new System.Web.Mvc.SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", required = "required", style = "width: 170px;" })*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.BillingState, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EJ().Autocomplete("BillingState").Width("100%").EnablePersistence(false).ShowPopupButton(true).WatermarkText("Select State").ClientSideEvents(e => e.FocusOut("CheckBState"))
+                                    @Html.ValidationMessageFor(model => model.BillingState)
+                                    @*@Html.DropDownListFor(model => model.BillingState, new System.Web.Mvc.SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", required = "required", style = "width: 170px;" })*@
+                                    @*@Html.EditorFor(model => model.BillingState, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Billing State is required and cannot be empty", maxlength = "50" } })*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.BillingCity, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.BillingCity, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Billing City is required and cannot be empty", maxlength = "50" } })
+                                    @Html.ValidationMessageFor(model => model.BillingCity)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.BillingPincode, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.BillingPincode, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "true", data_bv_notempty_message = "The Pincode is required", data_bv_stringlength = "true", data_bv_stringlength_min = "6", required = "required", autocomplete = "off", data_bv_stringlength_max = "6", data_bv_stringlength_message = "The Pincode must be 6 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-9]", data_bv_regexp_message = "The Pincode can only consist digit" } })
+                                    @Html.ValidationMessageFor(model => model.BillingPincode)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.BillingPhone, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.BillingPhone, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "true", data_bv_notempty_message = "The Phone No. is required", data_bv_stringlength = "true", data_bv_stringlength_min = "10", required = "required", autocomplete = "off", data_bv_stringlength_max = "15", data_bv_stringlength_message = "The Phone No. must be 10 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-9]", data_bv_regexp_message = "The Pincode can only consist digit" } })
+                                    @Html.ValidationMessageFor(model => model.BillingPhone)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.BillingEmail, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.BillingEmail, new { htmlAttributes = new { onchange = "DuplicteBillEmail();", @class = "form-control", maxlength = "100", data_bv_regexp_message = "Input string is not valid Email Id.", @Pattern = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$", data_bv_notempty_message = "Email Id is required", data_bv_emailaddress_message = "The input is not a valid email address", data_bv_notempty = "true", Autocomplete = "off" } })
+                                    @Html.ValidationMessageFor(model => model.BillingEmail)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Website, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.Website, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", maxlength = "100" } })
+                                @Html.ValidationMessageFor(model => model.Website)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.DrugLicenseNo, "Drug License No", htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.DrugLicenseNo, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", maxlength = "100" } })
+                                @Html.ValidationMessageFor(model => model.DrugLicenseNo)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.PANNo, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.PANNo, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", @Pattern = "^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$", data_bv_regexp_message = "Input string is not valid Pan no.", maxlength = "20", style = "text-transform:uppercase" } })
+                                @Html.ValidationMessageFor(model => model.PANNo)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.TANNo, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.TANNo, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", maxlength = "10", style = "text-transform:uppercase" } })
+                                @Html.ValidationMessageFor(model => model.TANNo)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.GSTTreatment, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                @Html.DropDownListFor(model => model.GSTTreatment, new SelectList(ViewBag.VIGST, "Value", "Text"), new { @class = "form-control", style = "width: 170px;" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.GSTNo, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.GSTNo, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", @Pattern = "^([0][1-9]|[1-2][0-9]|[3][0-5])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$", data_bv_regexp_message = "Input string is not valid GST No..", data_bv_emailaddress_message = "GST No. is not a valid", maxlength = "20", style = "text-transform:uppercase" } })
+                                @Html.ValidationMessageFor(model => model.GSTNo)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.IGST, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                @Html.DropDownListFor(model => model.IGST, new SelectList(ViewBag.VIGST, "Value", "Text"), new { @class = "form-control", style = "width: 170px;" })
+                                @Html.ValidationMessageFor(model => model.IGST)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.IsExempt, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                @Html.DropDownListFor(model => model.IsExempt, new SelectList(ViewBag.VIGST, "Value", "Text"), new { onchange = "EnabledExemption();", @class = "form-control", style = "width: 190px;" })
+                                @Html.ValidationMessageFor(model => model.IsExempt)
+                            </div>
+                        </div>
+                    </div>
+                    <panel id="pnlExemption" name="pnlExemption" style="display:none;">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <div class="col-md-12">
+
+                                    @Html.LabelFor(model => model.ExepmtionReason, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.ExepmtionReason, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Exemption reason is required and cannot be empty", maxlength = "100" } })
+                                    @Html.ValidationMessageFor(model => model.ExepmtionReason)
+                                </div>
+                            </div>
+                        </div>
+                    </panel>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Currency, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.DropDownListFor(model => model.Currency, new SelectList(ViewBag.Curr, "CurrencyName", "CurrencyName"), "Select Currency", new { @class = "form-control", required = "required", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Currency is required and cannot be empty", maxlength = "20" })
+                                @Html.ValidationMessageFor(model => model.Currency)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.PaymentTerms, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.DropDownListFor(model => model.PaymentTerms, new SelectList(ViewBag.Pterms, "PaymentTerm", "PaymentTerm"), "Select Payment Term", new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "false", maxlength = "100" })
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.BalanceAmount, htmlAttributes: new { @class = "control-label" })
+                            </div>
+
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.BalanceAmount, new { htmlAttributes = new { @class = "form-control", data_bv_stringlength = "true", autocomplete = "off", data_bv_regexp = "true", data_bv_regexp_regexp = "^[0-9]{1,9}(.[0-9]{0,2})?$", data_bv_regexp_message = "The Amount can only consist digit" } })
+                                @Html.ValidationMessageFor(model => model.BalanceAmount)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AdvanceAmount, htmlAttributes: new { @class = "control-label" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AdvanceAmount, new { htmlAttributes = new { @class = "form-control", data_bv_stringlength = "true", autocomplete = "off", data_bv_regexp = "true", data_bv_regexp_regexp = "^[0-9]{1,9}(.[0-9]{0,2})?$", data_bv_regexp_message = "The Amount can only consist digit" } })
+                                    @Html.ValidationMessageFor(model => model.AdvanceAmount)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+          
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-2">
+                                @Html.LabelFor(model => model.Notes, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-4">
+                                <textarea rows="3" cols="50" id="Notes" name="Notes" class="form-control" maxlength="500"></textarea>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-4">
+                                <input type="submit" value="Create" onclick="CheckDate(event); CopyAddress();" class="btn btn-primary" />&nbsp;&nbsp;
+                                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+@*@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")*@
+<script src="~/Scripts/countries.js"></script>
+<script language="javascript">
+    populateCountries("BillingCountry", "BillingState"); // first parameter is id of country drop-down and second parameter is id of state drop-down
+/*    populateCountries("ShippingCountry", "ShippingState");*/
+    function CheckBState() {
+        CheckState("BillingCountry", "BillingState");
+    }
+    //function CheckSState() {
+    //    CheckState("ShippingCountry", "ShippingState");
+    //}
+
+</script>
+<script>
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+        var Message = '@TempData["Msg"]';
+        if(Message!="")
+            toastr.error(Message);
+    })
+
+    function populateBillingStates() {
+        populateStates("BillingCountry", "BillingState")
+        $("#BillingState").val("");
+    }
+    //function populateShippingStates() {
+    //    populateStates("ShippingCountry", "ShippingState")
+    //    $("#ShippingState").val("");
+    //}
+    function CopyAddress() {
+        if ($("#ChkCopyAddress").is(":checked")) {
+            $("#ShippingAddress").val($("#BillingAddress").val());
+            $("#ShippingCity").val($("#BillingCity").val());
+            $("#ShippingPincode").val($("#BillingPincode").val());
+            $("#ShippingCountry").val($("#BillingCountry").val());
+            $("#ShippingPhone").val($("#BillingPhone").val());
+            $("#ShippingEmail").val($("#BillingEmail").val());
+
+            populateStates("ShippingCountry", "ShippingState")
+            $("#ShippingState").val($("#BillingState").val());
+
+            $("#form0").bootstrapValidator('revalidateField', 'ShippingAddress');
+            $("#form0").bootstrapValidator('revalidateField', 'ShippingCity');
+            $("#form0").bootstrapValidator('revalidateField', 'ShippingPincode');
+            $("#form0").bootstrapValidator('revalidateField', 'ShippingPhone');
+            $("#form0").bootstrapValidator('revalidateField', 'ShippingEmail');
+
+            $("#ShippingAddress").attr("disabled", true);
+            $("#ShippingCity").attr("disabled", true);
+            $("#ShippingPincode").attr("disabled", true);
+            $("#ShippingState").attr("disabled", true);
+            $("#ShippingCountry").attr("disabled", true);
+            $("#ShippingPhone").attr("disabled", true);
+            $("#ShippingEmail").attr("disabled", true);
+        }
+        else {
+            $("#ShippingAddress").val("");
+            $("#ShippingCity").val("");
+            $("#ShippingPincode").val("");
+            $("#ShippingState").val("");
+            $("#ShippingCountry").val("");
+            $("#ShippingPhone").val("");
+            $("#ShippingEmail").val("");
+
+            $("#ShippingAddress").attr("disabled", false);
+            $("#ShippingCity").attr("disabled", false);
+            $("#ShippingPincode").attr("disabled", false);
+            $("#ShippingState").attr("disabled", false);
+            $("#ShippingCountry").attr("disabled", false);
+            $("#ShippingPhone").attr("disabled", false);
+            $("#ShippingEmail").attr("disabled", false);
+
+            $("#form0").bootstrapValidator('revalidateField', 'ShippingAddress');
+            $("#form0").bootstrapValidator('revalidateField', 'ShippingCity');
+            $("#form0").bootstrapValidator('revalidateField', 'ShippingPincode');
+            $("#form0").bootstrapValidator('revalidateField', 'ShippingPhone');
+            $("#form0").bootstrapValidator('revalidateField', 'ShippingEmail');
+        }
+    }
+
+    function EnabledExemption() {
+        var isExempt = $("#IsExempt").val();
+        if (isExempt == "True") {
+            $("#pnlExemption").show();
+        }
+        else {
+            $("#pnlExemption").hide();
+        }
+    }
+    function DuplicteName() {
+        var Name = $("#SupplierName").val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateName","Suppliers")',
+            type:"GET",
+            dataType: "JSON",
+            data: { Name: Name , Mode:"Create", Id:0},
+            success: function (result) {
+                try {
+                    if (result== "1") {
+                        $('#SupplierName').val("");
+                        $("#form0").bootstrapValidator('revalidateField', 'SupplierName');
+                        toastr.error("Supplier Name already exist");
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+
+    function DuplicteBillEmail() {
+        var Email = $("#BillingEmail").val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateBillingMail","Suppliers")',
+            type: "GET",
+            dataType: "JSON",
+            data: { Email: Email, Mode: "Create", Id: 0 },
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#BillingEmail').val("");
+                        $("#form0").bootstrapValidator('revalidateField', 'BillingEmail');
+                        toastr.error("Billing Email already exist");
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+
+    function DuplicteShipEmail() {
+        var Email = $("#ShippingEmail").val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateShippingMail","Suppliers")',
+            type: "GET",
+            dataType: "JSON",
+            data: { Email: Email, Mode: "Create", Id: 0 },
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#ShippingEmail').val("");
+                        $("#form0").bootstrapValidator('revalidateField', 'ShippingEmail');
+                        toastr.error("Shipping Email already exist");
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+    function CheckDate(event) {
+        var Flag = true;
+        var BillingCountry = $("#BillingCountry").val();
+        var BillingState = $("#BillingState").val();
+        var ShippingCountry = $("#ShippingCountry").val();
+        var ShippingState = $("#ShippingState").val();
+
+        if (BillingCountry == null || BillingCountry == "") {
+            toastr.error("Please Select Billing Country");
+            Flag = false;
+        }
+        if (BillingState == null || BillingState == "") {
+            toastr.error("Please Select Billing State");
+            Flag = false;
+        }
+        if (ShippingCountry == null || ShippingCountry == "") {
+        //    toastr.error("Please Select Shipping Country");
+        //    Flag = false;
+        //}
+        //if (ShippingState == null || ShippingState == "") {
+        //    toastr.error("Please Select Shipping Country");
+        //    Flag = false;
+        //}
+        if (Flag == false) {
+            event.preventDefault();
+        }
+        else {
+            $("#ShippingAddress").attr("disabled", false);
+            $("#ShippingCity").attr("disabled", false);
+            $("#ShippingPincode").attr("disabled", false);
+            $("#ShippingState").attr("disabled", false);
+            $("#ShippingCountry").attr("disabled", false);
+            $("#ShippingPhone").attr("disabled", false);
+            $("#ShippingEmail").attr("disabled", false);
+        }
+    }
+</script>
+@*}*@

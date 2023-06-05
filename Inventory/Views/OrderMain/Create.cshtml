@@ -1,0 +1,1029 @@
+﻿@model Inventory.Models.OrderMain
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Create", "POMain", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="isIGST" name="isIGST" value="0" />
+    <input type="hidden" id="Count" name="Count" value="1" />
+    <input type="hidden" id="CustId" name="CustId" value="" />
+    <input type="hidden" id="ProductId" name="ProductId" value="" />
+    <input type="hidden" id="EmployeeID" name="EmployeeID" value="" />
+    <input type="hidden" id="txttotamt" name="txttotamt" value=0 />
+
+    <input type="hidden" id="igst" name="igst" value=0 />
+    <input type="hidden" id="cgst" name="cgst" value=0 />
+    <input type="hidden" id="sgst" name="sgst" value=0 />
+    <input type="hidden" id="disc" name="disc" value=0 />
+    <input type="hidden" id="hsncode" name="hsncode" value=0 />
+    <input type="hidden" id="ActiveBarcode" name="ActiveBarcode" value=false />
+    <head>
+        <style>
+            input:checked {
+                height: 25px;
+                width: 25px;
+            }
+
+            .ScrollStyle {
+                max-height: 250px;
+                overflow-y: scroll;
+            }
+        </style>
+    </head>
+    <div class="box box-info">
+        <div class="box-header with-border" style="background-color:#3c8dbc; color:white">
+            <h3 class="box-title">New Sales Order</h3>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.OrderNo, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.OrderNo, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", @disabled = "disabled", maxlength = "20" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.OrderDate, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="OrderDate" name="OrderDate" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Purchase Order Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.CustomerID, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EJ().Autocomplete("Customer").WatermarkText("Select Customer").Datasource((IEnumerable<Inventory.Models.Customer>)ViewBag.Custdatasource).AutocompleteFields(field => field.Key("CustomerID").Text("CustomerName")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("getProducts").FocusOut("checkCustomerName"))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.DeliverTo, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EJ().Autocomplete("DeliverTo").WatermarkText("Select Ship To").Datasource((IEnumerable<Inventory.Models.Shipper>)ViewBag.Shipperdatasource).AutocompleteFields(field => field.Key("ShipperId").Text("Name")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.FocusOut("checkShipTo"))
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.EmployeeID, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EJ().Autocomplete("Employee").WatermarkText("Select Employee").Datasource((IEnumerable<Inventory.Models.Employee>)ViewBag.Empdatasource).AutocompleteFields(field => field.Key("EmployeeID").Text("EmployeeName")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("getEmployeeId").FocusOut("checkEmployee"))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6" id="">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <panel id="pnlBarcode" name="pnlBarcode">
+                                <div class="col-md-4">
+                                    BarCode Applicable
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.CheckBox("BarcodeApplicable", new { htmlAttributes = new { onclick = "ApplicableBarcode()" } })
+                                </div>
+                            </panel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="orderItems" style="overflow-x: auto;">
+                <table class="table table-responsive" style="width: 100%; overflow-x:auto; white-space:nowrap;">
+                    <tr style="background-color:#3c8dbc; color:white">
+                        <td>ITEM NAMES</td>
+                        <td>QUANTITY</td>
+                        <td>TAX</td>
+                        <td>RATE</td>
+                        <td>DISCOUNT</td>
+                        <td>DISC IN</td>
+                        <td>AMOUNT</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr class="mycontainer" id="mainrow">
+                        <td>
+                            <div class="panel" id="P1">
+                                @Html.EJ().Autocomplete("ProductCode").Width("100%").ShowPopupButton(true).AutocompleteFields(field => field.Text("ProductName").Key("ProductCode")).ClientSideEvents(e => e.Select("getProductData").FocusOut("checkProduct"))
+                            </div>
+                            <div class="panel" id="P2">
+                                <input type="text" id="PRDCode" class="PRDCode form-control" onchange="getProductData(this); ">
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text" id="OrderQty" class="OrderQty form-control" onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode != 47" onchange="getAmount();" />
+                        </td>
+                        <td>
+                            <input type="text" id="Tax" class="Tax form-control" disabled onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode != 47" onchange="CalculateAmount()"/>
+                        </td>
+                        <td>
+                            <input type="text" id="Price" class="Price form-control"  onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode!=47"  onchange="CalculateAmount()"/>
+                        </td>
+                        <td>
+                            <input type="text" id="Discount" class="Discount form-control"  onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode != 47"  onchange="CalculateAmount()" />
+                        </td>
+                        <td>
+                            @*<select name="discIn" id="discIn"  class="discIn form-control">
+            <option value="Select">Select</option>
+            <option value="Rupee">Rupee</option>
+            <option value="Percentage">Percentage</option>
+        </select>*@
+                            <select name="discIn" id="discIn" class="discIn form-control">
+                                @*<option value="Select">Select</option>*@
+                                <option value="Percentage">Percentage</option>
+                                @*<option value="Rupee">Rupee</option>*@
+
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" id="Amount" class="Amount form-control" disabled onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode != 47" />
+                        </td>
+                        <td>
+                            <input type="button" id="add" value="add" class="btn btn-success" />
+                        </td>
+                    </tr>
+                </table>
+                <div class="ScrollStyle">
+                    <table class="table table-responsive" id="orderdetailsItems" style="width: 100%; overflow-x:auto; white-space:nowrap;"></table>
+                    <span id="orderItemError" style="color:red"></span>
+                </div>
+                <div class="row" style="width: 100%;">
+                    <div class="col-md-7">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                @*@if (ViewBag.TermsAndConditions != null )
+                                {*@
+                                    <label for="TermsAndConditions"> Terms And Conditions</label>
+                                    <textarea id="TermsAndConditions" name="TermsAndConditions" maxlength="490" placeholder="Terms And Conditions" rows="3" cols="85">@ViewBag.TermsAndConditions</textarea>
+                                @*}*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <br />
+                                <div class="row" style="text-align:right;">
+                                    <div class="col-md-7">
+                                        <label for="Total"> Total</label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" id="txtTotal" name="txtTotal" style='width:120px; background-color:white' readonly class="totalNew form-control">
+                                    </div>
+                                </div>
+                                <div class="row" style="text-align:right;">
+                                    <div class="col-md-7">
+                                        <label for="Discount"> Discount</label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" id="txtdiscount" name="txtdiscount" style='width:120px; background-color:white' class="txtdiscount form-control" >
+                                    </div>
+                                </div>
+                                <div class="row" style="text-align:right;">
+                                    <div class="col-md-7">
+                                        <label for="IGST"> IGST</label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" id="txtIGST" name="txtIGST" style='width:120px; background-color:white' class="totalNew form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="row" style="text-align:right;">
+                                    <div class="col-md-7">
+                                        <label for="CGST"> CGST</label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" id="txtCGST" name="txtCGST" style='width:120px; background-color:white' class="totalNew form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="row" style="text-align:right;">
+                                    <div class="col-md-7">
+                                        <label for="SGST"> SGST</label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" id="txtSGST" name="txtSGST" style='width:120px; background-color:white' class="totalNew form-control" readonly>
+                                    </div>
+                                </div><br />
+                                <div class="row" style="text-align:right;">
+                                    <div class="col-md-7">
+                                        <label for="GrandTotal">Grand Total</label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" id="txtGrandTotal" name="txtGrandTotal" style='width:120px; background-color:white' readonly class="totalNew form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1580px">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <div style="padding:5px 10px; text-align:right">
+                                <input id="submit" type="button" value="Save Order" class="btn btn-warning" style="padding:5px 5px" /> &nbsp;&nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>}
+<script>
+    function Remove(Count) {
+        $("#R" + Count + "").remove();
+        CalculateGridData();
+    }
+    function CalculateAmount() {
+        var quantity = $('#OrderQty').val();
+        var rate = $('#Price').val();
+        var tax = $('#Tax').val();
+        var discount = $('#Discount').val();
+
+        var taxx = 0;
+        var disc = 0;
+        var amt = 0;
+        if (quantity == "" || rate == "" || tax == "" || discount == "") {
+        }
+        else {
+            var total = parseFloat(quantity) * parseFloat(rate);
+            $('#Amount').val(parseFloat(total).toFixed(2));
+        }
+    }
+
+
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+         if ("@ViewBag.BarcodeApplocable" == "BarcodeApplocable") {
+            $("#pnlBarcode").show();
+        } else {
+            $("#pnlBarcode").hide();
+        }
+        $("#OrderDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN" });
+        var d = new Date();
+        var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+        $("#OrderDate").val(strDate);
+        getOrderNo();
+        $("#P2").hide();
+        $("#BarcodeApplicable").click(function () {
+            if ($(this).is(":checked")) {
+                $("#P2").show();
+                $("#P1").hide();
+                $('#ActiveBarcode').val(true);
+                $('#PRDCode').focus();
+
+            } else {
+                $("#P1").show();
+                $("#P2").hide();
+                $('#ActiveBarcode').val(false);
+            }
+        });
+
+
+   
+        
+
+
+
+
+
+    });
+
+    function getOrderNo() {
+        $.ajax({
+            type: "GET",
+            url: '/OrderMain/getOrderNo',
+            success: function (result) {
+                $('#OrderNo').val(result);
+                $('#DeliverTo').ejAutocomplete({ dataSource: "", fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: 200, });
+            }
+        })
+    }
+    function DisabledCustomer() {
+        var DeliverTo = $("#DeliverTo").val();
+        if (DeliverTo == "Organization") {
+            $("#pnlCustomer").hide();
+            $('#CustId').val('')
+        }
+        else {
+            $("#pnlCustomer").show();
+        }
+    }
+    $(document).ready(function () {
+        $('#add').click(function () {
+            var isduplicate = "";
+            var cnt = 1;
+            $('#orderdetailsItems tbody tr').each(function (index, e) {
+                if ($("#BarcodeApplicable").is(":checked")) {
+                    var PrdName = $(e).children().get(0);
+                    if ($('#ProductCode').val() == PrdName.firstElementChild.value) {
+                        var CountId = $(e).children().get(8);
+                        var cntt = CountId.firstElementChild.value;
+                        $("#quentityNew" + parseInt(cntt) + "").val(parseFloat($("#quentityNew" + parseInt(cntt) + "").val()) + 1);
+                        isduplicate = true;
+                       CalculateGridData();
+                    } else {
+                      //  isduplicate = false;
+                    }
+                } else {
+                    if ($('#ProductCode').val() == $("#productNew" + cnt + "").val()) {
+                        $('#ProductCode').val('');
+                        $('#OrderQty').val('');
+                        $('#Price').val('');
+                        $('#Amount').val('');
+                        $('#Tax').val('');
+                        $('#Discount').val('');
+                        toastr.warning("product already added...");
+                        isduplicate = true;
+                    }
+                    cnt = parseInt(cnt) + 1;
+                }
+            });
+
+            if (isduplicate == false) {
+                var isValid = false;
+                if ($('#ProductCode').val() == "") { toastr.error("Please Select Product Name"); $('#ProductCode').css("border", "1px solid #e46f61"); isValid = false; } else { $('#ProductCode').css("border", "1px solid #a5da6b"); ; }
+                if ($('#OrderQty').val() == "") { toastr.error("Please Enter Quantity"); $('#OrderQty').css("border", "1px solid #e46f61"); isValid = false; } else { $('#OrderQty').css("border", "1px solid #a5da6b");  }
+                if ($('#Price').val() == "") { toastr.error("Please Enter Price"); $('#Price').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Price').css("border", "1px solid #a5da6b");  }
+                if ($('#Amount').val() == "") { toastr.error("Please Enter Amount"); $('#Amount').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Amount').css("border", "1px solid #a5da6b");  }
+                if ($('#Tax').val() == "") { toastr.error("Please Enter Tax"); $('#Tax').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Tax').css("border", "1px solid #a5da6b");  }
+                if ($('#Discount').val() == "") { toastr.error("Please Enter Discount"); $('#Discount').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Discount').css("border", "1px solid #a5da6b");  }
+             //   if ($('#discIn').val() == "Select") { toastr.error("Please Select Discount In"); $('#discIn').css("border", "1px solid #e46f61"); isValid = false; } else { $('#discIn').css("border", "1px solid #a5da6b");  }
+
+                if ($('#OrderDate').val() == "") { toastr.error("Please Select Order Date"); $('#OrderDate').css("border", "1px solid #e46f61"); isValid = false; } else { $('#OrderDate').css("border", "1px solid #a5da6b"); }
+                if ($('#Customer').val() == "") { toastr.error("Please Select Customer"); $('#Customer').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Customer').css("border", "1px solid #a5da6b"); }
+                if ($('#DeliverTo').val() == "") { toastr.error("Please Select Deliver To"); $('#DeliverTo').css("border", "1px solid #e46f61"); isValid = false; } else { $('#DeliverTo').css("border", "1px solid #a5da6b"); isValid = true; }
+                if ($('#Employee').val() == "") { toastr.error("Please Select Employee"); $('#Employee').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Employee').css("border", "1px solid #a5da6b"); }
+                if (isValid == true) {
+                    var Count = $('#Count').val();
+                    //$("#orderdetailsItems").append(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='productNew" + Count + "' readonly  style='width:150px'  class='productnew form-control'' /></td> <td><input type='text' id='quentityNew" + Count + "' readonly style='width:150px' class='quentityNew form-control'' /></td><td><input type='text' id='TaxNew" + Count + "' style='width:150px'  readonly class='TaxNew form-control'' /></td>  <td><input type='text' id='rateNew" + Count + "' style='width:150px'   readonly class='rateNew form-control'' /></td> <td><input type='text' id='DiscountPerNew" + Count + "'  style='width:150px'  readonly class='DiscountPerNew form-control'' /></td><td><input type='text' style='width:150px' id='discInNew" + Count + "' readonly class='discInNew form-control'' /></td><td><input type='text' readonly id='amountNew" + Count + "' style='width:150px'   class='amountNew form-control'' /></td>   </tr> <tbody>");
+                    $("#orderdetailsItems").append(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='productNew" + Count + "' readonly  style='width:150px'  class='productnew form-control'' /></td> <td><input type='text' id='quentityNew" + Count + "' readonly  style='width:120px' class='quentityNew form-control'' /></td><td><input type='text' id='TaxNew" + Count + "' style='width:130px' class='TaxNew form-control'' /></td>  <td><input type='text' id='rateNew" + Count + "' style='width:132px' class='rateNew form-control'' /></td> <td><input type='text' id='DiscountPerNew" + Count + "' style='width:133px' class='DiscountPerNew form-control'' /><td><input type='text' style='width:90px' id='discInNew" + Count + "' class='discInNew form-control'' /></td><td><input type='text' readonly id='amountNew" + Count + "' style='width:130px'   class='amountNew form-control'' /></td><td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 65px' class='btn btn-danger' /> <input type='hidden'  id='ProductIdNew" + Count + "'    class='ProductIdNew form-control'' /><input type='hidden'  id='DiscountInNew" + Count + "'    class='DiscountInNew form-control'' /><input type='hidden'  id='igstNew" + Count + "'    class='igstNew form-control'' /><input type='hidden'  id='cgstNew" + Count + "'    class='cgstNew form-control'' /><input type='hidden'  id='sgstNew" + Count + "'    class='sgstNew form-control'' /> <input type='hidden'  id='hsncodeNew" + Count + "'    class='hsncodeNew form-control'' /><input type='hidden'  id='grandTot" + Count + "'    class='grandTot form-control'' /><input type='hidden' id='DiscountNew" + Count + "' class='DiscountNew form-control'' /></td><td><input type='hidden' id='CountId" + Count + "'   class='CountId form-control'' />  </td> </tr> <tbody>");
+                    $("#quentityNew" + Count + "").val($('#OrderQty').val());
+                    $("#rateNew" + Count + "").val($('#Price').val());
+                    $("#TaxNew" + Count + "").val($('#Tax').val());
+                    $("#amountNew" + Count + "").val($('#Amount').val());
+                    $("#productNew" + Count + "").val($('#ProductCode').val());
+                    $("#ProductIdNew" + Count + "").val($('#ProductId').val());
+                    $("#hsncodeNew" + Count + "").val($('#hsncode').val());
+                    $("#discInNew" + Count + "").val($('#discIn').val());
+                    $("#DiscountPerNew" + Count + "").val($('#Discount').val());
+                    $("#CountId" + Count + "").val(Count);
+
+
+                    $("#igstNew" + Count + "").val(0);
+                    $("#cgstNew" + Count + "").val(0);
+                    $("#sgstNew" + Count + "").val(0);
+
+                    if ($('#txtTotal').val() == "") {
+                        $('#txtTotal').val(0);
+                        $('#txtIGST').val(0);
+                        $('#txtCGST').val(0);
+                        $('#txtSGST').val(0);
+                        $('#txtGrandTotal').val(0);
+                        $('#txtdiscount').val(0);
+                    }
+
+                    // Add tot Amount
+                    $('#txtTotal').val((parseFloat($('#txtTotal').val()) + parseFloat($('#Amount').val())).toFixed(2));
+                    //add Discount Amount
+                    var TotAmt = $('#Amount').val();
+                    var discount = $('#Discount').val();
+                    var disc = 0;
+                    var test = $('#discIn').val();
+
+                    if ($('#discIn').val() == "Rupee") {
+                        var disc = (parseFloat(discount) * parseFloat($('#OrderQty').val()));
+                        $("#DiscountNew" + Count + "").val(disc);
+                        $('#txtdiscount').val((parseFloat($('#txtdiscount').val()) + parseFloat(disc)).toFixed(2));
+                    } else {
+                        disc = (parseFloat(TotAmt) * parseFloat(discount)) / 100;
+                        $("#DiscountNew" + Count + "").val((disc).toFixed(2));
+                        $('#txtdiscount').val((parseFloat($('#txtdiscount').val()) + parseFloat(disc)).toFixed(2));
+                    }
+                    var Tamount = parseFloat(TotAmt) - parseFloat(disc);
+                    $('#txttotamt').val((parseFloat($('#txttotamt').val()) + parseFloat(Tamount)).toFixed(2));
+                    var gstamt = (parseFloat(Tamount) * parseFloat($('#Tax').val())) / 100;
+                    if ($('#isIGST').val() != "true") {
+                        var igst = (parseFloat(gstamt) / 2);
+                        $("#cgstNew" + Count + "").val(igst);
+                        $("#sgstNew" + Count + "").val(igst);
+                        $('#txtCGST').val((parseFloat($('#txtCGST').val()) + parseFloat(igst)).toFixed(2));
+                        $('#txtSGST').val((parseFloat($('#txtSGST').val()) + parseFloat(igst)).toFixed(2));
+                    } else {
+                        $("#igstNew" + Count + "").val(gstamt);
+                        $('#txtIGST').val((parseFloat($('#txtIGST').val()) + parseFloat(gstamt)).toFixed(2));
+                    }
+                 //Totoal
+                    $("#grandTot" + Count + "").val(parseFloat(Tamount) + parseFloat(gstamt));
+               var aaa=     $('#txttotamt').val();
+               $('#txtGrandTotal').val((parseFloat($('#txtGrandTotal').val()) + (parseFloat(Tamount) + parseFloat(gstamt))).toFixed(2));
+
+                    $('#OrderQty').val('');
+                    $('#Price').val('');
+                    $('#Amount').val('');
+                    $('#Tax').val('');
+                    $('#Discount').val('');
+                    $('#ProductCode').val('');
+                    $('#ProductId').val('');
+                    //$('#discIn').val("Select");
+                    $('#PRDCode').val('');
+
+                    $('#OrderQty').css("border", "1px solid #d2d6de");
+                    $('#Price').css("border", "1px solid #d2d6de");
+                    $('#Amount').css("border", "1px solid #d2d6de");
+                    $('#Tax').css("border", "1px solid #d2d6de");
+                    $('#Discount').css("border", "1px solid #d2d6de");
+                    $('#ProductCode').css("border", "1px solid #d2d6de");
+                }
+                $('#Count').val(parseInt($('#Count').val()) + 1)
+            }
+        });
+        $('#submit').click(function () {
+            var flag = true;
+            if ($('#OrderDate').val() == "") {
+                toastr.error('Please Select Order Date');
+                flag = false;
+            }
+            if ($('#Customer').val() == "") {
+                toastr.error('Please Select Customer');
+                flag = false;
+            }
+            if ($('#Employee').val() == "") {
+                toastr.error('Please Select Employee');
+                flag = false;
+            }
+            if ($('#DeliverTo').val() == "") {
+                toastr.error('Please Select Ship To');
+                flag = false;
+            }
+            if (flag == true) {
+                var rowCount = $('#orderdetailsItems tr').length;
+                if (rowCount > 0) {
+                    var isAllValid = true;
+                    $('#orderItemError').text('');
+                    var list = [];
+                    var errorItemCount = 0;
+                    var Purchasedate = $('#OrderDate').val();
+                    var datearray = Purchasedate.split("/");
+                    var Orderdt = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+                    $('#orderdetailsItems tbody tr').each(function (index, ele) {
+                        if (($('.quentityNew', this).val() || "") == "" ||
+                            $('.TaxNew', this).val() == "" ||
+                             $('.rateNew', this).val() == "" ||
+                             $('.DiscountPerNew', this).val() == "" ||
+                             $('.amountNew', this).val() == "" ||
+                            isNaN($('.rateNew', this).val())) {
+                            //isAllValid = false;
+                            errorItemCount++;
+                            $(this).addClass('error');
+                        } else {
+                            var orderItem = {
+                                ProductCode: $('.ProductIdNew', this).val(),
+                                GSTPercentage: $('.TaxNew', this).val(),
+                                Price: $('.rateNew', this).val(),
+                                Discount: $('.DiscountNew', this).val(),
+                                HSNCode: $('.hsncodeNew', this).val(),
+                                OrderQty: $('.quentityNew', this).val(),
+                                CGSTAmount: $('.cgstNew', this).val(),
+                                SGSTAmount: $('.sgstNew', this).val(),
+                                IGSTAmount: $('.igstNew', this).val(),
+                                AmountNew: $('.amountNew', this).val(),
+                                TotAmount: $('.grandTot', this).val(),
+                                discIn: $('.discInNew', this).val(),
+                                discPer: $('.DiscountPerNew', this).val(),
+
+                                NetAmount: $('#txtTotal').val(),
+                                CustomerID: $('#CustId').val(),
+                                EmployeeID: $('#EmployeeID').val(),
+                                IGST: $('#txtIGST').val(),
+                                CGST: $('#txtCGST').val(),
+                                SGST: $('#txtSGST').val(),
+                                DiscountAmount: $('#txtdiscount').val(),
+                                TotalAmount: $('#txtGrandTotal').val(),
+                                OrderNo: $('#OrderNo').val(),
+                                OrderDate: Orderdt,
+                                DeliverTo: $('#DeliverTo').val(),
+                                ActiveBarcode: $('#ActiveBarcode').val(),
+                                TermsAndConditions: $('#TermsAndConditions').val(),
+
+                            }
+                            list.push(orderItem);
+                        }
+                    })
+                    if (isAllValid) {
+                        var data = {
+                            OrderDetails: list
+                        }
+                        $(this).val('Please wait...');
+                        $.ajax({
+                            type: 'POST',
+                            url: '/OrderMain/save',
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if (data.status) {
+                                    toastr.success("Successfully saved..");
+                                    window.location.href = "/OrderMain/Index";
+                                   // OrderNo=$("#OrderNo").val();
+                                   //window.location.href = "/ProductionOrder/ProductionOrder?OrderNo=" + OrderNo + "";
+                                }
+                                else {
+                                    toastr.error("something Wrong..");
+                                }
+                                $('#submit').val('Save');
+                            },
+                            error: function (error) {
+                                console.log(error);
+                                $('#submit').val('Save');
+                            }
+                        });
+                    }
+                } else {
+                    toastr.error("please add data to list.");
+                }
+            }
+
+        });
+    });
+    function AddData()
+    {
+        var isduplicate = "";
+        var cnt = 1;
+        $('#orderdetailsItems tbody tr').each(function (index, e) {
+
+            if ($("#BarcodeApplicable").is(":checked")) {
+                var PrdName = $(e).children().get(0);
+                if ($('#ProductCode').val() == PrdName.firstElementChild.value) {
+                    var CountId = $(e).children().get(8);
+                    var cntt = CountId.firstElementChild.value;
+                    $("#quentityNew" + parseInt(cntt) + "").val(parseFloat($("#quentityNew" + parseInt(cntt) + "").val()) + 1);
+                    isduplicate = true;
+                    CalculateGridData();
+                } else {
+                    //  isduplicate = false;
+                }
+            } else {
+                if ($('#ProductCode').val() == $("#productNew" + cnt + "").val()) {
+                    $('#ProductCode').val('');
+                    $('#OrderQty').val('');
+                    $('#Price').val('');
+                    $('#Amount').val('');
+                    $('#Tax').val('');
+                    $('#Discount').val('');
+                    toastr.warning("product already added...");
+                    isduplicate = true;
+                }
+                cnt = parseInt(cnt) + 1;
+            }
+        });
+
+        if (isduplicate == false) {
+            var isValid = false;
+            if ($('#ProductCode').val() == "") { toastr.error("Please Select Product Name"); $('#ProductCode').css("border", "1px solid #e46f61"); isValid = false; } else { $('#ProductCode').css("border", "1px solid #a5da6b"); }
+            if ($('#OrderQty').val() == "") { toastr.error("Please Enter Quantity"); $('#OrderQty').css("border", "1px solid #e46f61"); isValid = false; } else { $('#OrderQty').css("border", "1px solid #a5da6b");  }
+            if ($('#Price').val() == "") { toastr.error("Please Enter Price"); $('#Price').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Price').css("border", "1px solid #a5da6b"); isValid = true; }
+           // if ($('#Amount').val() == "") { toastr.error("Please Enter Amount"); $('#Amount').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Amount').css("border", "1px solid #a5da6b"); isValid = true; }
+            if ($('#Tax').val() == "") { toastr.error("Please Enter Tax"); $('#Tax').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Tax').css("border", "1px solid #a5da6b");  }
+            if ($('#Discount').val() == "") { toastr.error("Please Enter Discount"); $('#Discount').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Discount').css("border", "1px solid #a5da6b");  }
+            //if ($('#discIn').val() == "Select") { toastr.error("Please Select Discount In"); $('#discIn').css("border", "1px solid #e46f61"); isValid = false; } else { $('#discIn').css("border", "1px solid #a5da6b");  }
+            if ($('#OrderDate').val() == "") { toastr.error("Please Select Order Date"); $('#OrderDate').css("border", "1px solid #e46f61"); isValid = false; } else { $('#OrderDate').css("border", "1px solid #a5da6b"); }
+            if ($('#Customer').val() == "") { toastr.error("Please Select Customer"); $('#Customer').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Customer').css("border", "1px solid #a5da6b"); }
+            if ($('#DeliverTo').val() == "") { toastr.error("Please Select Deliver To"); $('#DeliverTo').css("border", "1px solid #e46f61"); isValid = false; } else { $('#DeliverTo').css("border", "1px solid #a5da6b");  }
+            if ($('#Employee').val() == "") { toastr.error("Please Select Employee"); $('#Employee').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Employee').css("border", "1px solid #a5da6b"); }
+            if (isValid == true) {
+                var Count = $('#Count').val();
+                $("#orderdetailsItems").append(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='productNew" + Count + "' readonly  style='width:150px'  class='productnew form-control'' /></td> <td><input type='text' id='quentityNew" + Count + "' readonly  style='width:120px' class='quentityNew form-control'' /></td><td><input type='text' id='TaxNew" + Count + "' style='width:130px' class='TaxNew form-control'' /></td>  <td><input type='text' id='rateNew" + Count + "' style='width:132px' class='rateNew form-control'' /></td> <td><input type='text' id='DiscountPerNew" + Count + "' style='width:133px' class='DiscountPerNew form-control'' /><td><input type='text' style='width:90px' id='discInNew" + Count + "' class='discInNew form-control'' /></td><td><input type='text' readonly id='amountNew" + Count + "' style='width:130px'   class='amountNew form-control'' /></td><td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 65px' class='btn btn-danger' /> <input type='hidden'  id='ProductIdNew" + Count + "'    class='ProductIdNew form-control'' /><input type='hidden'  id='DiscountInNew" + Count + "'    class='DiscountInNew form-control'' /><input type='hidden'  id='igstNew" + Count + "'    class='igstNew form-control'' /><input type='hidden'  id='cgstNew" + Count + "'    class='cgstNew form-control'' /><input type='hidden'  id='sgstNew" + Count + "'    class='sgstNew form-control'' /> <input type='hidden'  id='hsncodeNew" + Count + "'    class='hsncodeNew form-control'' /><input type='hidden'  id='grandTot" + Count + "'    class='grandTot form-control'' /><input type='hidden' id='DiscountNew" + Count + "'  class='DiscountNew form-control'' /></td><td><input type='hidden' id='CountId" + Count + "'   class='CountId form-control'' />  </td> </tr> <tbody>");
+                $("#quentityNew" + Count + "").val($('#OrderQty').val());
+                $("#rateNew" + Count + "").val($('#Price').val());
+                $("#TaxNew" + Count + "").val($('#Tax').val());
+                $("#amountNew" + Count + "").val($('#Amount').val());
+                $("#productNew" + Count + "").val($('#ProductCode').val());
+                $("#ProductIdNew" + Count + "").val($('#ProductId').val());
+                $("#hsncodeNew" + Count + "").val($('#hsncode').val());
+                $("#discInNew" + Count + "").val($('#discIn').val());
+                $("#DiscountPerNew" + Count + "").val($('#Discount').val());
+                $("#CountId" + Count + "").val(Count);
+
+
+                $("#igstNew" + Count + "").val(0);
+                $("#cgstNew" + Count + "").val(0);
+                $("#sgstNew" + Count + "").val(0);
+
+                if ($('#txtTotal').val() == "") {
+                    $('#txtTotal').val(0);
+                    $('#txtIGST').val(0);
+                    $('#txtCGST').val(0);
+                    $('#txtSGST').val(0);
+                    $('#txtGrandTotal').val(0);
+                    $('#txtdiscount').val(0);
+                }
+
+                // Add tot Amount
+                $('#txtTotal').val((parseFloat($('#txtTotal').val()) + parseFloat($('#Amount').val())).toFixed(2));
+                //add Discount Amount
+                var TotAmt = $('#Amount').val();
+                var discount = $('#Discount').val();
+                var disc = 0;
+                var test = $('#discIn').val();
+
+                if ($('#discIn').val() == "Rupee") {
+                    var disc = (parseFloat(discount) * parseFloat($('#OrderQty').val()));
+                    $("#DiscountNew" + Count + "").val(disc);
+                    $('#txtdiscount').val((parseFloat($('#txtdiscount').val()) + parseFloat(disc)).toFixed(2));
+                } else {
+                    disc = (parseFloat(TotAmt) * parseFloat(discount)) / 100;
+                    $("#DiscountNew" + Count + "").val((disc).toFixed(2));
+                    $('#txtdiscount').val((parseFloat($('#txtdiscount').val()) + parseFloat(disc)).toFixed(2));
+                }
+                var Tamount = parseFloat(TotAmt) - parseFloat(disc);
+                $('#txttotamt').val((parseFloat($('#txttotamt').val()) + parseFloat(Tamount)).toFixed(2));
+                var gstamt = (parseFloat(Tamount) * parseFloat($('#Tax').val())) / 100;
+                if ($('#isIGST').val() != "true") {
+                    var igst = (parseFloat(gstamt) / 2);
+                    $("#cgstNew" + Count + "").val(igst);
+                    $("#sgstNew" + Count + "").val(igst);
+                    $('#txtCGST').val((parseFloat($('#txtCGST').val()) + parseFloat(igst)).toFixed(2));
+                    $('#txtSGST').val((parseFloat($('#txtSGST').val()) + parseFloat(igst)).toFixed(2));
+                } else {
+                    $("#igstNew" + Count + "").val(gstamt);
+                    $('#txtIGST').val((parseFloat($('#txtIGST').val()) + parseFloat(gstamt)).toFixed(2));
+                }
+                //Totoal
+                $("#grandTot" + Count + "").val(parseFloat(Tamount) + parseFloat(gstamt));
+                var aaa = $('#txttotamt').val();
+                $('#txtGrandTotal').val((parseFloat($('#txtGrandTotal').val()) + (parseFloat(Tamount) + parseFloat(gstamt))).toFixed(2));
+
+                $('#OrderQty').val('');
+                $('#Price').val('');
+                $('#Amount').val('');
+                $('#Tax').val('');
+                $('#Discount').val('');
+                $('#ProductCode').val('');
+                $('#ProductId').val('');
+                //$('#discIn').val("Select");
+                $('#PRDCode').val('');
+
+                $('#OrderQty').css("border", "1px solid #d2d6de");
+                $('#Price').css("border", "1px solid #d2d6de");
+                $('#Amount').css("border", "1px solid #d2d6de");
+                $('#Tax').css("border", "1px solid #d2d6de");
+                $('#Discount').css("border", "1px solid #d2d6de");
+                $('#ProductCode').css("border", "1px solid #d2d6de");
+            }
+            $('#Count').val(parseInt($('#Count').val()) + 1)
+        }
+};
+    function CalculateGridData() {
+        //if ($('#txtTotal').val() == "") {
+        $('#txtTotal').val(0);
+        $('#txtIGST').val(0);
+        $('#txtCGST').val(0);
+        $('#txtSGST').val(0);
+        $('#txtGrandTotal').val(0);
+        $('#txtdiscount').val(0);
+        //}
+        $('#orderdetailsItems tbody tr').each(function (index, e) {
+
+            var PrdName = $(e).children().get(0);
+            var Quentity = $(e).children().get(1);
+            var Tax = $(e).children().get(2);
+            var Rate = $(e).children().get(3);
+            var Discount = $(e).children().get(4);
+            var DiscIn = $(e).children().get(5);
+            var Amount = $(e).children().get(6);
+            var CountId = $(e).children().get(8);
+
+
+
+            var qty = Quentity.firstElementChild.value;
+            var tax = Tax.firstElementChild.value;
+            var rate = Rate.firstElementChild.value;
+            var disc = Discount.firstElementChild.value;
+            var discIn = DiscIn.firstElementChild.value;
+            var amount = Amount.firstElementChild.value;
+            var cntt = CountId.firstElementChild.value;
+
+            var quantity = $("#quentityNew" + parseInt(cntt) + "").val();
+
+            var Amt = parseFloat(rate) * parseFloat(quantity);
+            $("#amountNew" + parseInt(cntt) + "").val(Amt)
+            $('#txtTotal').val((parseFloat($('#txtTotal').val()) + parseFloat($("#amountNew" + parseInt(cntt) + "").val())).toFixed(2));
+
+            var discAmt = 0;
+            if (discIn == "Rupee") { discAmt = parseFloat(disc) * parseFloat(quantity); $("#DiscountNew" + cntt + "").val(discAmt); } else {
+                discAmt = (parseFloat(disc) * parseFloat(Amt) / 100);
+                $("#DiscountNew" + cntt + "").val(discAmt);
+            }
+            $('#txtdiscount').val((parseFloat($('#txtdiscount').val()) + parseFloat($("#DiscountNew" + cntt + "").val())).toFixed(2));
+
+            var Tamount = parseFloat(Amt) - parseFloat(discAmt);
+
+            //add IGST Amount
+            $("#igstNew" + cntt + "").val(0);
+            $("#igstNew" + cntt + "").val(0);
+            $("#igstNew" + cntt + "").val(0);
+            var gstamt = ((parseFloat(Tamount) * parseFloat(tax)) / 100).toFixed(2);
+            if ($('#isIGST').val() != "true") {
+                var igst = (parseFloat(gstamt) / 2);
+                $("#cgstNew" + cntt + "").val(igst);
+                $("#sgstNew" + cntt + "").val(igst);
+                $('#txtCGST').val((parseFloat($('#txtCGST').val()) + parseFloat(igst)).toFixed(2));
+                $('#txtSGST').val((parseFloat($('#txtSGST').val()) + parseFloat(igst)).toFixed(2));
+            } else {
+                $("#igstNew" + cntt + "").val(gstamt);
+                $('#txtIGST').val((parseFloat($('#txtIGST').val()) + parseFloat(gstamt)).toFixed(2));
+            }
+
+            // Add Grand Amount
+            $("#grandTot" + cntt + "").val(parseFloat(Tamount) + parseFloat(gstamt));
+            var totAmount = (((parseFloat($('#txtTotal').val()) - parseFloat($('#txtdiscount').val())) + parseFloat($('#txtIGST').val()) + parseFloat($('#txtCGST').val()) + parseFloat($('#txtSGST').val()))).toFixed(2);
+            $('#txtGrandTotal').val(parseFloat(totAmount).toFixed(2));
+
+
+        })
+        $('#OrderQty').val('');
+        $('#Price').val('');
+        $('#Amount').val('');
+        $('#Tax').val('');
+        $('#Discount').val('');
+        $('#ProductCode').val('');
+        $('#DiscountIn').val('');
+        $('#ProductId').val('');
+        $('#PRDCode').val('');
+    }
+    function getProductData(Product) {
+
+        var ProductId = "";
+        if ($("#BarcodeApplicable").is(":checked")) {
+            ProductId = $('#PRDCode').val();
+            $('#PRDCode').val('');
+            $("#OrderQty").prop('disabled', true);
+            ($("#OrderQty").val() == "")
+            {
+                $("#OrderQty").val(0);
+            }
+        } else {
+            ProductId = Product.key;
+            $("#OrderQty").prop('disabled', false);
+            $("#OrderQty").focus();
+        }
+        $('#ProductId').val(ProductId);
+    //    $('#OrderQty').val('');
+        $('#Price').val('');
+        $('#Amount').val('');
+        $('#Tax').val('');
+        $('#Discount').val('');
+        var cnt = 1;
+        var isduplicate = false;
+        $('#orderdetailsItems tbody tr').each(function (index, e) {
+            var inputEl = $(e).children().get(0);
+            if ($('#ProductCode').val() == inputEl.firstElementChild.value) {
+                $('#ProductCode').val('');
+                $('#OrderQty').val('');
+                $('#Price').val('');
+                $('#Amount').val('');
+                $('#Tax').val('');
+                $('#Discount').val('');
+                toastr.warning("product already added...");
+                isduplicate = true;
+            }
+            cnt = parseInt(cnt) + 1;
+        })
+        if (isduplicate == false) {
+            var cust = $('#Customer').val()
+            if (ProductId != "") {
+                $.ajax({
+                    type: "GET",
+                    url: '/OrderMain/getProductData',
+                    data: { 'productId': ProductId, 'CustomerID': cust },
+                    success: function (result) {
+
+                        toastr.warning("Product Quantity : " + result.ClosingQuantity);
+                        $('#Price').val((result.SellingPrice).toFixed(2));
+                        $('#Discount').val((result.Discount).toFixed(2));
+                        $('#discIn').val(result.DiscountIn);
+                        $('#Tax').val(result.GSTPer);
+                        if ($("#BarcodeApplicable").is(":checked")) {
+
+                            $('#PRDCode').focus();
+                            $("#OrderQty").val(parseFloat($("#OrderQty").val()) + 1);
+                            $('#ProductCode').val(result.ProductName);
+                        }
+                        getTax();
+                    }
+                })
+            }
+        }
+    }
+    function getTax() {
+        if ($('#ProductId').val() != null) {
+            $.ajax({
+                type: "GET",
+                url: '/OrderMain/getTax',
+                data: { 'ProductId': $('#ProductId').val() },
+                success: function (result) {
+                    $('#Tax').val((result.TaxPercent).toFixed(2));
+                    $('#hsncode').val(result.HSNCode);
+                    CalculateAmount();
+                    if ($("#BarcodeApplicable").is(":checked")) {
+                        $('#PRDCode').focus();
+                        AddData();
+                    }
+                }
+            })
+        }
+    }
+    function getProducts(CustId) {
+        $('#DeliverTo').val('');
+        $('#CustId').val(CustId.key); if (CustId.key != "") {
+            $('#ProductCode').val(''); $('#OrderQty').val(''); $('#Tax').val(''); $('#Price').val(''); $('#Amount').val(''); $('#txtTotal').val(''); $('#txtIGST').val(''); $('#txtCGST').val(''); $('#txtSGST').val(''); $('#txtdiscount').val(''); $('#txtGrandTotal').val(''); $('#orderdetailsItems').empty();
+            $.ajax({
+                type: "GET",
+                url: '/OrderMain/getProducts',
+                data: { 'CustomerId': CustId.key },
+                success: function (data) {
+                    var ViewBackData = data;
+                    if (data.length == "0") {
+                        $('#ProductCode').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: 200, });
+                    } else {
+
+                        $('<option></option>').val(null).html('Select');
+                        $.each(data, function (i, data) {
+                            $('#ProductCode').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "ProductCode", text: "ProductName" }, EnablePersistence: false, ShowPopupButton: true, width: "100%", });
+                        });
+                        GetShipTo();
+                        isIGST();
+                    }
+                }
+            })
+        }
+    }
+    function GetShipTo() {
+        if ($('#CustId').val() != "") {
+            $.ajax({
+                type: "GET",
+                url: '/OrderMain/GetShipToDetails',
+                data: { 'Custid': $('#CustId').val() },
+                success: function (result) {
+                    var ViewBackData = result;
+                    if (result.length == "0") {
+                        $('#DeliverTo').ejAutocomplete({ dataSource: "", fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: 200, });
+                    } else {
+                        $('<option></option>').val(null).html('Select');
+                        $.each(result, function (i, result) {
+                            $('#DeliverTo').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "ShipperId", text: "Name" }, EnablePersistence: false, ShowPopupButton: true, width: "100%", });
+                        });
+                    }
+                }
+            })
+        }
+    }
+    function isIGST() {
+
+        if ($('#CustId').val() != "") {
+            $.ajax({
+                type: "GET",
+                url: '/OrderMain/isIGST',
+                data: { 'Custid': $('#CustId').val() },
+                success: function (result) {
+                    $('#isIGST').val(result);
+                }
+            })
+        }
+    }
+    function checkProduct() {
+
+        $.ajax({
+            type: "GET",
+            url: '/OrderMain/checkProduct',
+            data: { 'PRD': $('#ProductCode').val() },
+            success: function (result) {
+                if (result == "0") {
+                    toastr.error("Product Name Not Fount");
+                    $('#ProductCode').val('');
+                    $('#OrderQty').val('');
+                    $('#Price').val('');
+                    $('#Amount').val('');
+                    $('#Tax').val('');
+                    $('#Discount').val('');
+                }
+            }
+        })
+    };
+    function checkCustomerName() {
+        $.ajax({
+            type: "GET",
+            url: '/OrderMain/checkCustomerName',
+            data: { 'CustName': $('#Customer').val() },
+            success: function (result) {
+                if (result == "0") {
+                    toastr.error("Customer Name Not Fount");
+                    $('#Customer').val('');
+                    $('#isIGST').val('');
+                    $('#CustId').val('');
+                }
+            }
+        });
+    };
+    function getEmployeeId(id) {
+        $('#EmployeeID').val(id.key);
+    }
+    function checkEmployee() {
+        if ($('#Employee').val() != "") {
+            $.ajax({
+                type: "GET",
+                url: '/OrderMain/checkEmployee',
+                data: { 'EmpName': $('#Employee').val() },
+                success: function (result) {
+                    if (result == "0") {
+                        toastr.error("Employee Name Not Fount");
+                        $('#Employee').val('');
+                        $('#EmployeeID').val('');
+                    }
+                }
+            });
+        } else {
+
+        }
+    }
+    function checkShipTo() {
+        if ($('#DeliverTo').val() != "") {
+            $.ajax({
+                type: "GET",
+                url: '/OrderMain/checkShipTo',
+                data: { 'Name': $('#DeliverTo').val(), CustId: $('#CustId').val() },
+                success: function (result) {
+                    if (result == "0") {
+                        toastr.error("Shipper Not Fount");
+                        $('#DeliverTo').val('');
+                    }
+                }
+            });
+        } else {
+
+        }
+    }
+    function getAmount()
+    {
+        CalculateAmount();
+    //    AddData();
+    }
+</script>
+

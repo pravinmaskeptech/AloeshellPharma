@@ -1,0 +1,91 @@
+﻿@model IEnumerable<Inventory.Models.Settings>
+
+@using (Html.BeginForm("Index", "Settings", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()   
+
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h2 class="box-title">Settings</h2>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+        <div class="box-body">
+            <div id="orderItems" class="row">
+                <table align="center" class="table table-responsive" id="tblSetting" style="width: 100%; display:block; overflow-x:auto; margin-left:60px; white-space:nowrap;"></table><br />              
+            </div>            
+        </div>              
+    </div>
+}
+<script>
+    $(document).ready(function () {      
+        $.ajax({
+            type: "GET",
+            url: '/Settings/GetSetting',
+            data: { },
+            success: function (result) {                
+                $("#tblSetting").append("<tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' ><th>Field Name</th><th>Required</th></tr> <tbody>");
+                var count = 1;
+                var flag = false;
+                $.each(result, function (i, result) {                                     
+                    $("#tblSetting").append(" <tbody><tr id='R" + count + "'><td><input type='text' id='FName" + count + "' readonly  style='width : 500px' class='FName form-control' value=" + result.FieldName + " /></td><td><input type='checkbox' value='true' class='Setting' id='Setting" + count + "' " + (result.Setting == true ? 'checked="checked"' : '') + " /><input type=hidden id='Id" + count + "' class='Id' value=" + result.Id + " /></td></tr><tbody>");
+                    count = count + 1;
+                });
+                $("#tblSetting").append(" <tbody><tr><td></td><td><input id='btnSave' type='button' onclick='Save();' value='Update' class='btn btn-warning' style='padding:6px 6px' /></td></tr><tbody>");
+            }
+        })
+    });
+
+    function Save() {
+        var list = [];
+        $('#tblSetting tbody tr').each(function (index, ele) {
+            debugger;
+            var flag=false;
+            if ($(".Setting", this).is(':checked')) {
+                flag = true;
+            }
+            else {
+                flag = false;
+            }           
+            if (this.id != "") {                                                  
+                    var orderItem = {
+                        FieldName: $('.FName', this).val(),
+                        Setting: flag,
+                        Id: $('.Id', this).val(),
+                    }
+                    list.push(orderItem);                
+            }
+        })
+
+        var data = {
+            Settings: list
+        }        
+        $.ajax({
+            type: 'POST',
+            url: '/Settings/Update',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function (data) {
+                debugger;
+                if (data == "success") {
+                    toastr.success("Setting Updated Successfully..");                    
+                }
+                else {
+                    toastr.error(data);
+                }               
+            },
+            error: function (error) {
+                console.log(error);                
+            }
+        });
+    }
+</script>

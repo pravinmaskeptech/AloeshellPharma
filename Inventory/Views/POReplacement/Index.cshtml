@@ -1,0 +1,159 @@
+﻿@model IEnumerable<Inventory.Models.POReplacement>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4><b>PO REPLACEMENT</b></h4>
+<style>
+    .e-grid .e-headercell, .e-grid .e-grouptopleftcell {
+        background-color: #3c8dbc;
+        border-top-color: #3c8dbc;
+        border-left-color: #3c8dbc;
+        border-bottom-color: #3c8dbc;
+        color: #fff;
+    }
+
+    .e-grid .e-gridheader .e-icon {
+        color: #fff;
+    }
+
+    .Expand {
+        background-position: -180px 3px;
+    }
+
+    .Collapse {
+        background-position: -205px 3px;
+    }
+
+    .refresh {
+        background-position: -76px 3px;
+    }
+
+    .e-toolbaricons {
+        background-image: url("../../Content/ej/web/common-images/icons-gray.png");
+    }
+
+    .Expand:hover, .Collapse:hover, .refresh:hover {
+        background-image: url("../../Content/ej/web/common-images/icons-white.png");
+    }
+</style>
+
+<div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                @(Html.EJ().Grid<Inventory.Models.POReplacement>
+                            ("POReplacement").Datasource((IEnumerable<object>
+                        )ViewBag.datasource)
+                        .AllowScrolling()
+                        .AllowFiltering()
+                        .AllowTextWrap()
+                        .FilterSettings(filter => { filter.ShowFilterBarStatus().StatusBarWidth(500).FilterBarMode(FilterBarMode.Immediate).MaxFilterChoices(1000).FilterType(FilterType.Menu); })   /*Filtering Enabled*/
+                        .AllowSorting()    /*Sorting Enabled*/
+                        .AllowMultiSorting()
+                        .AllowPaging()    /*Paging Enabled*/
+                        .SelectionType(SelectionType.Multiple)
+                        .AllowResizing()
+                        .IsResponsive()
+                        .MinWidth(1000)
+                        .AllowReordering()
+                        .AllowResizeToFit()
+                        .AllowResizing()
+                        .ScrollSettings(scroll => { scroll.Height(300); })
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar().ToolbarItems(items =>
+                            {
+                                items.AddTool(ToolBarItems.Search); items.AddTool(ToolBarItems.ExcelExport);
+                            });
+                        })
+                                        .Mappers(map => map.ExportToExcelAction("/POReplacement/ExportToExcel"))
+                        .AllowSearching(true)
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar(true).CustomToolbarItems(new List<object>
+                                () { new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#Refresh" } });
+                        })
+                            .ClientSideEvents(eve => { eve.ToolbarClick("onToolBarClick").ActionBegin("GetDataForCompID"); })
+                            .Columns(col => {
+
+                                col.HeaderText("Replace").Template("<a href='/POReplacement/Edit/{{:GRNId}}'><input type='Button' class='btn btn-sm btn-primary' id='Btn{{:GRNId}}' Value='Replace' /></a> ").AllowFiltering(false).Width(70).Add();
+
+                                col.Field("GRN").HeaderText("GRN NO").TextAlign(TextAlign.Left).Visible(true).Width(110).Add();
+                                col.Field("GRNDate").HeaderText("GRN Date").IsPrimaryKey(true).Format("{0:dd/MM/yyyy}").TextAlign(TextAlign.Left).Width(110).Add();
+                                col.Field("PONO").HeaderText("PO NO").TextAlign(TextAlign.Left).Visible(true).Width(160).Add();
+                                col.Field("PODate").HeaderText("PO Date").IsPrimaryKey(true).Format("{0:dd/MM/yyyy}").TextAlign(TextAlign.Left).Width(110).Add();
+                               // col.Field("ProductName").HeaderText("Product Name").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(250).Add();
+                            }))
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script id="Refresh" type="text/x-jsrender">
+    <a href="#" class="e-toolbaricons refresh" />
+</script>
+@*<script id="AddNew" type="text/x-jsrender">
+        <button class="btn btn-primary btn-sm add">Add Product</button>
+    </script>*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+
+           var tanId = '@TempData["Temp"]';
+       if (tanId != "" && tanId != undefined && tanId != null) {
+           toastr.success(tanId);
+       }
+    });
+
+  function GetDataForCompID() {
+    debugger;
+    $.ajax({
+        url: '@Url.Action("GetDataForCompID", "POReplacement")',
+        type: "GET",
+        dataType: "JSON",
+        success: function (result) {
+            debugger;
+            $.each(result, function (index, item) {
+                if (item.CompanyID == 1) {
+                    $("#Btn" + item.GRNId).removeClass("btn-primary").addClass("btn-warning").val("View");
+                }
+            });
+
+        },
+    });
+}
+
+
+
+
+</script>
+
+<script type="text/javascript">
+    function onToolBarClick(sender) {
+        if (sender.itemName == "Expand")
+            this.expandAll();
+        else if (sender.itemName == "Collapse")
+            this.collapseAll();
+        else if (sender.itemName == "Refresh") {
+            var instance = $("#Products").ejGrid("instance");
+            instance._filterCollection = [];
+            instance.clearFiltering();
+            instance.clearSearching();
+            this.refreshContent();
+        }
+        if (sender.itemName == "AddNew") {
+            window.location.href = "../Products/Create";
+        }
+    }
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+</script>
+

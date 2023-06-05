@@ -1,0 +1,309 @@
+﻿@model Inventory.Models.SupplierProductRelations
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("Create", "POMain", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Count" name="Count" value="1" />
+    <input type="hidden" id="SupplierId" name="SupplierId" value="" />
+    <input type="hidden" id="ProductId" name="ProductId" value="" />
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Supplier Product Relations</h3>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-2">
+                                @Html.LabelFor(model => model.SupplierId,"Supplier", htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-9">
+                                @Html.EJ().Autocomplete("Supplier").WatermarkText("Select Supplier").Datasource((IEnumerable<Inventory.Models.Suppliers>)ViewBag.datasource).Width("100%").AutocompleteFields(field => field.Key("SupplierID").Text("SupplierName")).HighlightSearch(true).ShowPopupButton(true).Width("50%").ClientSideEvents(e => e.Select("getSupplierId").FocusOut("checkSupplier"))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table table-responsive" display block; overflow-x auto; white-space nowrap; style="width:1030px">
+            <tr>
+                <td>PRODUCT NAME</td>
+                <td>PRICE</td>
+                <td>Discount In</td>
+                <td>Discount</td>
+
+                <td>Delivery</td>
+                <td>Tax</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="mycontainer" id="mainrow">
+                <td>
+                    @Html.EJ().Autocomplete("Product").Width("100%").Datasource((IEnumerable<Inventory.Models.Products>)ViewBag.Productdatasource).ShowPopupButton(true).AutocompleteFields(field => field.Text("ProductName").Key("ProductCode")).ClientSideEvents(e => e.Select("getProductId").FocusOut("checkProduct"))
+                </td>
+                <td>
+                    <input type="text" id="ProductPrice" class="ProductPrice form-control" onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode!=47" />
+                </td>
+                <td>
+                    <select name="DiscountIn" id="DiscountIn" class="form-control">
+                        <option value="Select"> Select </option>
+                        <option value="Rupee">Rupee</option>
+                        <option value="Percentage">Percentage</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" id="Discount" class="Discount form-control" onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode!=47" />
+                </td>
+                <td>
+                    <input type="text" id="Delivery" class="Discount form-control" onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode!=47" placeholder="In Days" />
+                </td>
+                <td>
+                    <input type="text" id="Tax" class="Tax form-control" onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode!=47" placeholder="Tax" />
+                </td>
+                <td>
+                    <input type="button" id="add" value="add" style="width:80px" class="btn btn-success" />
+                </td>
+            </tr>
+        </table>
+        <div id="orderItems">
+            <table class="table table-responsive" id="orderdetailsItems" display block; overflow-x auto; white-space nowrap; style="width:1030px"></table>
+            <span id="orderItemError" style="color:red"></span>
+        </div>
+
+    </div>
+    <div class="row" style="width:1430px">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="col-md-4">
+                    @*@Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })*@
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="col-md-4">
+                    <div style="padding:5px 10px; text-align:right">
+                        <input id="submit" type="button" value="Save Order" class="btn btn-warning" style="padding:4px 4px" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    function Remove(Count) {
+           $("#R" + Count + "").remove();
+    }
+    function getSupplierId(SupplyId) {
+        $("#orderdetailsItems tr").remove();
+        $('#SupplierId').val(SupplyId.key);
+        $('#Product').val('');
+        $('#ProductPrice').val('');
+        $('#Discount').val('');
+        $('#Tax').val('');
+        $('#DiscountIn').val('Select');
+        $.ajax({
+            type: "GET",
+            url: '/SupplierProductRelations/getAllData',
+            data: { 'SupplierId': SupplyId.key },
+            success: function (result) {
+                var Count = parseInt($("#Count").val());
+                $.each(result, function (i, item) {
+                    $(" <tbody> <tr id='R" + Count + "'> <td> <input type='hidden' id='SupplierProductIdNew" + Count + "' readonly style='width:0px' class='SupplierProductIdNew form-control'' /></td><td><input type='text' id='productNew" + Count + "' readonly class='productnew form-control'' /></td> <td><input type='text' id='PriceNew" + Count + "'  class='PriceNew form-control'' /></td> <td> <select  id='DiscountInNew" + Count + "' class='DiscountInNew form-control'> <option value='Rupee'>Rupee</option>  <option value='Percentage'>Percentage</option> </select></td> <td><input type='text' id='DiscountNew" + Count + "'  class='DiscountNew form-control'' /></td> <td><input type='text' id='Delivery" + Count + "'  class='Delivery form-control'' /></td><td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /></td><td> <input type='hidden' id='productIdNew" + Count + "' readonly class='productIdNew form-control'' style='width:0px' /></td></tr> <tbody>").appendTo("#orderdetailsItems");
+                    $("#SupplierProductIdNew" + Count + "").val(result[i].SupplierProductRelationId);
+                    $("#PriceNew" + Count + "").val(result[i].ProductPrice);
+                    $("#productIdNew" + Count + "").val(result[i].ProductCode);
+                    $("#DiscountNew" + Count + "").val(result[i].Discount);
+                    $("#DiscountInNew" + Count + "").val(result[i].DiscountIn);
+                    $("#Delivery" + Count + "").val(result[i].Delivery);       
+                    $("#Tax" + Count + "").val(result[i].Tax);       
+                    GetProductName(Count, result[i].ProductCode);
+                    Count = Count + 1;
+                });
+                $('#Count').val(parseInt($('#Count').val()) + 1)
+
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
+    }
+    function GetProductName(Count, ProductCode) {
+        $.ajax({
+            type: "GET",
+            url: "/SupplierProductRelations/GetProductName",
+            data: { 'productCode': ProductCode },
+            success: function (result) {
+                $("#productNew" + Count + "").val(result.trim());
+            },
+            error: function (error) { console.log(error); }
+        })
+    }
+    function checkSupplier() {
+        $.ajax({
+            type: "GET",
+            url: "/SupplierProductRelations/checkSupplier",
+            data: { 'supplier': $('#Supplier').val() },
+            success: function (result) {
+                if (result == "0") {
+                    $('#Supplier').val('');
+                    toastr.error("Please Select Supplier Name..");
+                    $('#Supplier').css("border", "1px solid #e46f61");
+                } else {
+                    $('#Supplier').css("border", "1px solid #d2d6de");
+                }
+            },
+            error: function (error) { console.log(error); }
+        })
+    }
+    function getProductId(PrdId) {
+        $('#ProductId').val(PrdId.key);       
+    }
+    function checkProduct() {
+        $.ajax({
+            type: "GET",
+            url: "/SupplierProductRelations/checkProduct",
+            data: { 'product': $('#Product').val() },
+            success: function (result) {
+                if (result == "0") {
+                    $('#Product').val('');
+                    //toastr.error("Please Select Product Name..");
+                    $('#Product').css("border", "1px solid #e46f61");
+                } else {
+                    $('#Product').css("border", "1px solid #d2d6de");
+                }
+            },
+            error: function (error) { console.log(error); }
+        })
+    }
+    $(document).ready(function () {
+        $('#add').click(function () {
+            if ($('#SupplierId').val() != "") {
+                var isValid = false;
+                var lenghtcnt = $('#orderdetailsItems tr').length;
+                $("#Count").val(parseInt(lenghtcnt) + 1);
+                if ($('#Product').val() == "") { toastr.error("Please Select Product Name"); $('#Product').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Product').css("border", "1px solid #a5da6b"); isValid = true; }
+                if ($('#ProductPrice').val() == "") { toastr.error("Please Enter Quantity"); $('#ProductPrice').css("border", "1px solid #e46f61"); isValid = false; } else { $('#ProductPrice').css("border", "1px solid #a5da6b"); isValid = true; }
+                if ($('#Discount').val() == "") { toastr.error("Please Enter Quantity"); $('#Discount').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Discount').css("border", "1px solid #a5da6b"); isValid = true; }
+                if ($('#DiscountIn').val() == "Select") { toastr.error("Please Select Discount In"); $('#DiscountIn').css("border", "1px solid #e46f61"); isValid = false; } else { $('#DiscountIn').css("border", "1px solid #a5da6b"); isValid = true; }
+                if (isValid == true && $('#Product').val() != "" && $('#OrderQty').val() != "" && $('#Price').val() != "" && $('#Amount').val() != "") {
+                    var Count = $('#Count').val();
+                    $("#orderdetailsItems").append(" <tbody> <tr id='R" + Count + "'> <td> <input type='hidden' id='SupplierProductIdNew" + Count + "' readonly style='width:0px' class='SupplierProductIdNew form-control'' /></td><td><input type='text' id='productNew" + Count + "' readonly class='productnew form-control'' /></td> <td align:'left'><input type='text' id='PriceNew" + Count + "'  class='PriceNew form-control'' /></td> <td><input type='text' id='DiscountNew" + Count + "' name='DiscountNew" + Count + "'  class='DiscountNew form-control'' /></td><td> <select  id='DiscountInNew" + Count + "' class='DiscountInNew form-control'> <option value='Rupee'>Rupee</option>  <option value='Percentage'>Percentage</option> </select></td><td><input type='text' id='Delivery" + Count + "'  class='Delivery form-control'' /></td><td><input type='text' id='Tax" + Count + "'  class='Tax form-control'' /></td><td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /></td><td> <input type='hidden' id='productIdNew" + Count + "' readonly class='productIdNew form-control'' style='width:0px' /></td></tr> <tbody>");
+                    $("#PriceNew" + Count + "").val($('#ProductPrice').val());
+                    $("#productNew" + Count + "").val($('#Product').val());
+                    $("#productIdNew" + Count + "").val($('#ProductId').val());
+                    $("#DiscountNew" + Count + "").val($('#Discount').val());
+                    $("#Tax" + Count + "").val($('#Tax').val());
+                    $("#Delivery" + Count + "").val($('#Delivery').val());
+
+                    
+                    $("#SupplierProductIdNew" + Count + "").val(0);              
+                    $("#DiscountInNew" + Count + "").val($('#DiscountIn > option:selected').text());
+
+                    // Clear Data
+                    $('#Product').val('');
+                    $('#ProductPrice').val('');
+                    $('#ProductId').val('');
+                    $('#Discount').val('');
+                    $('#Tax').val('');
+                    $('#Product').css("border", "1px solid #d2d6de");
+                    $('#ProductPrice').css("border", "1px solid #d2d6de");
+                    $('#Discount').css("border", "1px solid #d2d6de");
+                }
+                $('#Count').val(parseInt($('#Count').val()) + 1)
+            } else {
+                toastr.error("Please Select Supplier");
+            }
+        });
+
+
+
+        $('#submit').click(function () {
+            var rowCount = $('#orderdetailsItems tr').length;
+            if (rowCount == 0) {
+                toastr.error('Please Add Product..!');
+            } else {               
+                var isAllValid = true;
+                $('#orderItemError').text('');
+                var list = [];
+                var errorItemCount = 0;
+
+                $('#orderdetailsItems tbody tr').each(function (index, ele) {
+                    if ((parseFloat($('.PriceNew', this).val()) || 0) == 0 ||
+                        $('.productNew', this).val() == "" ||
+                        isNaN($('.PriceNew', this).val())) {
+                        errorItemCount++;
+                        $(this).addClass('error');
+                    } else {
+                        var orderItem = {
+                            ProductCode: $('.productIdNew', this).val(),
+                            ProductPrice: $('.PriceNew', this).val(),
+                            SupplierId: $('#SupplierId').val().trim(),
+                            SupplierProductId: $('.SupplierProductIdNew', this).val(),
+                            Discount: $('.DiscountNew', this).val(),
+                            Tax: $('.Tax', this).val(),
+                            DiscountIn: $('select.DiscountInNew', this).val(),
+
+                            Delivery: $('.Delivery', this).val(),
+
+
+                            
+                        }
+                        list.push(orderItem);
+                    }
+                })
+                if (isAllValid) {
+                    var data = {
+                        relation: list
+                    }
+                    $(this).val('Please wait...');
+                    $.ajax({
+                        type: 'POST',
+                        url: '/SupplierProductRelations/save',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            debugger;
+                            if (data.status == true) {
+                                toastr.success("Successfully saved..");
+                                list = [];
+                                $('#orderdetailsItems').empty();
+                                $('#Supplier').val('');
+                                $('#Product').val('');
+                                $('#ProductPrice').val('');
+                                $('#ProductId').val('');
+                                $('#SupplierId').val('');
+                                $('#Count').val(1);
+                            }
+                            else {
+                                toastr.error(data.Message);
+                            }
+                            $('#submit').val('Save');
+                        },
+                        error: function (error) {
+                            console.log(error);
+                            $('#submit').val('Save');
+                        }
+                    });
+                }
+            }
+
+            
+           
+        });
+    })
+</script>

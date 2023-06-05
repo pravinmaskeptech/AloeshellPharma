@@ -1,0 +1,372 @@
+﻿@model Inventory.Models.DoctorMasterModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Create", "DoctorMaster", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+
+
+{
+    @Html.AntiForgeryToken()
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Doctor Master</h3>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        <select name="Type" id="Type" class="Type form-control">
+                            <option value="Select" selected="selected">Select</option>
+                            <option value="NutraAgent">Nutra Agent</option>
+                            <option value="Doctor">Doctor</option>
+                        </select>
+                        @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.RegisterUnder, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        <select name="RegisterUnder" id="RegisterUnder" class="RegisterUnder form-control">
+                            <option value="Select" selected="selected">Select</option>
+                            <option value="NutraAgent">Nutra Agent</option>
+                            <option value="Doctor">Doctor</option>
+                            <option value="SalesPerson">SalesPerson</option>
+                        </select>
+                        @Html.ValidationMessageFor(model => model.RegisterUnder, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.SalesPersonName, "Reference", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                     
+                        @Html.DropDownList("SalesPersonName", new SelectList(ViewBag.Sales, "SalesPersonID", "SalesPersonName"), "--Select SalesPerson--", new { @class = "form-control", Autocomplete = "off" })
+                            @Html.ValidationMessageFor(model => model.SalesPersonName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.DoctorDropdownRegister, "Reference", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("DoctorDropdownRegister", new SelectList(ViewBag.Doctor, "DoctorID", "DoctorName"), "--Select Doctor/NutraAgent--", new { @class = "form-control", Autocomplete = "off" })
+                        @Html.ValidationMessageFor(model => model.DoctorDropdownRegister, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.FirmName, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.FirmName, new { htmlAttributes = new { onchange = "DuplicteFirmName();", @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Firm Name  is required and cannot be empty", maxlength = "100" } })
+                        @Html.ValidationMessageFor(model => model.FirmName)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.DoctorName, "Doctor/NutraAgent Name", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.DoctorName, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Doctor/NutraAgent Name  is required and cannot be empty", maxlength = "100" } })
+                        @Html.ValidationMessageFor(model => model.DoctorName)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.DoctorCode, "Doctor/NutraAgent Code", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.DoctorCode, new { htmlAttributes = new { onchange = "DuplicteCode();", @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Doctor/NutraAgent Code  is required and cannot be empty", maxlength = "3" } })
+                        @Html.ValidationMessageFor(model => model.DoctorCode)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        <textarea rows="3" cols="50" id="Address" name="Address" class="form-control" maxlength="500" data-bv-notempty="true" required="required" data-bv-notempty-message="Address is required and cannot be empty"></textarea>
+                        @Html.ValidationMessageFor(model => model.Address)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "City is required and cannot be empty", maxlength = "50" } })
+                        @Html.ValidationMessageFor(model => model.City)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.Pincode, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.Pincode, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "true", data_bv_notempty_message = "The Pincode is required", data_bv_stringlength = "true", data_bv_stringlength_min = "6", required = "required", autocomplete = "off", data_bv_stringlength_max = "6", data_bv_stringlength_message = "The Pincode must be 6 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-5]", data_bv_regexp_message = "The Pincode can only consist digit" } })
+                        @Html.ValidationMessageFor(model => model.Pincode)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.ContactNo, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.ContactNo, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "true", data_bv_notempty_message = "The Contact No. is required", data_bv_stringlength = "true", data_bv_stringlength_min = "10", required = "required", autocomplete = "off", data_bv_stringlength_max = "15", data_bv_stringlength_message = "The Phone No. must be 10 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-9]", data_bv_regexp_message = "The Contact can only consist digit" } })
+                        @Html.ValidationMessageFor(model => model.ContactNo)
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { onchange = "DuplicteBillEmail();", @class = "form-control", maxlength = "100", data_bv_regexp_message = "Input string is not valid Email Id.", @Pattern = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$", data_bv_notempty_message = "Email Id is required", data_bv_emailaddress_message = "The input is not a valid email address", data_bv_notempty = "true", Autocomplete = "off" } })
+                        @Html.ValidationMessageFor(model => model.Email)
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { onchange = "DuplicteName();", @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Password  is required and cannot be empty", maxlength = "100" } })
+                            @Html.ValidationMessageFor(model => model.Password)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-8">
+                                    <input type="submit" value="Create" onclick="CheckDropdown();" class="btn btn-primary" />
+                                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary ml-2" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $("#RegisterUnder").on("change", function () {
+        var selectedOption = $(this).val();
+        if (selectedOption === "SalesPerson") {
+            $("#SalesPersonName").show();
+            $("#DoctorDropdownRegister").hide();
+         
+
+        } else {
+            $("#DoctorDropdownRegister").show();
+            $("#SalesPersonName").hide();
+        }
+    });
+
+
+    function CheckDropdown() {
+        var registerUnder = document.getElementById("RegisterUnder").value;
+        var salesPersonName = document.getElementById("SalesPersonName");
+        var doctorDropdownRegister = document.getElementById("DoctorDropdownRegister");
+
+        if (registerUnder === "") {
+            toastr.error("Please select a SalesPerson/Doctor/NutraAgent.");
+           return ;
+
+        }
+
+        if (registerUnder === "SalesPerson" && salesPersonName.value === "") {
+            toastr.error("Please select a SalesPerson.");
+           
+        }
+
+        if (registerUnder !== "SalesPerson" && doctorDropdownRegister.value === "") {
+            toastr.error("Please select a Doctor/NutraAgent.");
+           
+        }    
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+        var Message = '@TempData["Msg"]';
+        if(Message!="")
+            toastr.error(Message);
+        $("#SalesPersonName").hide();
+        $("#DoctorDropdownRegister").hide();
+    })
+
+    function DuplicteCode() {
+          debugger
+        var DoctorCode = $("#DoctorCode").val();
+        var Type = $("#Type").val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateCode", "DoctorMaster")',
+            type:"GET",
+            dataType: "JSON",
+            data: { DoctorCode: DoctorCode, Mode: "Create", Type: Type },
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#DoctorCode').val("");
+                        $("#form0").bootstrapValidator('revalidateField', 'DoctorCode');
+                        toastr.error("Doctor/NutraAgent Code already exist");
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+
+    @*function DuplicteName() {
+          var Name = $("#DoctorName").val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateName", "DoctorMaster")',
+            type:"GET",
+            dataType: "JSON",
+            data: { Name: Name , Mode:"Create", Id:0},
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#DoctorName').val("");
+                        $("#form0").bootstrapValidator('revalidateField', 'DoctorName');
+                        toastr.error("Doctor Name already exist");
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }*@
+
+    function SetSalesPersonId(id) {
+        debugger
+        $('#SalesPersonID').val(id.key)
+        $('#SalesPersonName').val(id.value)
+    };
+
+    function SetDoctorId(id) {
+        debugger
+        $('#DoctorID').val(id.key)
+        $('#DoctorName').val(id.value)
+    };
+
+       function DuplicteFirmName() {
+           var FirmName = $("#FirmName").val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateFirmName", "DoctorMaster")',
+            type:"GET",
+            dataType: "JSON",
+            data: { FirmName: FirmName , Mode:"Create", Id:0},
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#FirmName').val("");
+                        $("#form0").bootstrapValidator('revalidateField', 'FirmName');
+                        toastr.error("Firm Name already exist");
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+
+</script>
+
+

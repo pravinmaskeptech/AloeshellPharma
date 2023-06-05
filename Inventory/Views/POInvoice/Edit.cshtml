@@ -1,0 +1,551 @@
+﻿@model Inventory.Models.POInvoice
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .iframe-container {
+        padding-bottom: 60%;
+        padding-top: 30px;
+        height: 0;
+        overflow: hidden;
+    }
+
+        .iframe-container iframe,
+        .iframe-container object,
+        .iframe-container embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+</style>
+
+<div class="box-body">
+    <div class="row" style="background-color:white">
+        <div class="col-lg-12 col-sm-4 col-xs-12">
+            @using (Html.BeginForm("Edit", "POInvoice", FormMethod.Post, new
+            {
+                enctype = "multipart/form-data",
+                @class = "form-horizontal",
+                data_bv_message = "This value is not valid",
+                data_toggle = "validator",
+                data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+                data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+                data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+            }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    <h3>Edit POInvoice</h3>
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.DocunentNo)
+                    <input type="hidden" id="SupplierId" name="SupplierId" value="@Model.SupplierId">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h2 class="box-title">Purchase Invoice</h2>
+                            <div class="box-tools pull-right">
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div class="col-md-4">
+                                                Document No
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input type="text" id="DocumentNo" name="DocumentNo" required class="form-control" value="@Model.DocunentNo" readonly="readonly" style="width:100%" autocomplete="off" data-bv-notempty="true" data-bv-notempty-message="Document No is required and cannot be empty" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div class="col-md-4">
+                                                Document Date
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input type="text" id="DocumentDate" name="DocumentDate" required class="form-control" value="@Model.DocumentDate" style="width:100%" autocomplete="off" data-bv-notempty="true" data-bv-notempty-message="Purchase Order Date is required and cannot be empty" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div class="col-md-4">
+                                                Supplier Name
+                                            </div>
+
+                                            <div class="col-md-8">
+                                                @*@Html.EJ().Autocomplete("SupplierName").WatermarkText("Select Supplier Name").Datasource((IEnumerable<Inventory.Models.Suppliers>)ViewBag.SPLYdatasource).Width("100%").AutocompleteFields(field => field.Key("SupplierID").Text("SupplierName")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("getSupplierId").FocusOut("CheckValidSupplier"))*@
+
+                                                <input type="text" id="Supplier" name="Supplier" readonly required class="form-control" @*value="@Model.SupplierId"*@ style="width:100%" autocomplete="off" data-bv-notempty="true" data-bv-notempty-message="Supplier is required and cannot be empty" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div class="col-md-4">
+                                                Invoice Date
+                                            </div>
+
+                                            <div class="col-md-8">
+                                                <input type="text" id="InvoiceDate" name="InvoiceDate" required class="form-control" style="width:100%" value="@Model.InvoiceDate" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Purchase Order Date is required and cannot be empty" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div class="col-md-4">
+                                                Invoice No
+                                            </div>
+                                            <div class="col-md-8">
+                                                @*@Html.EJ().Autocomplete("InvoiceNo").WatermarkText("Select Invoice Number").Datasource((IEnumerable<string>)ViewBag.Invoicedatasource).Width("100%").AutocompleteFields(field => field.Key("InvoiceNo").Text("InvoiceNo")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("ShowDetails"))*@
+                                                <input type="text" id="InvoiceNo" name="InvoiceNo" required readonly class="form-control" value="@Model.InvoiceNo" style="width:100%" autocomplete="off" data-bv-notempty="true" data-bv-notempty-message="Purchase Order Date is required and cannot be empty" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div class="col-md-4">
+                                                Purchase Date
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input type="text" id="PoDate" name="PoDate" value="@Model.PoDate" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Purchase Order Date is required and cannot be empty" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                @*<div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <div class="col-md-4">
+                                                    GRN No
+                                                </div>
+                                                <div class="col-md-8">
+                                                    @Html.EJ().Autocomplete("GRNNo").WatermarkText("Select GRNNo").Datasource((IEnumerable<string>)ViewBag.grnNodatasource).Width("100%").AutocompleteFields(field => field.Key("GRNNo").Text("GRNNo")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("ShowGRNDetails"))
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div class="col-md-4">
+                                                Invoice Amount
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input type="text" id="InvoiceAmount" name="InvoiceAmount" value="@Model.TotalAmount" readonly class="form-control" style="width:100%" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <table class="table table-responsive" style="width: 100%; overflow-x:auto; white-space:nowrap;">
+                                <tr style="background-color:#3c8dbc; color:white">
+                                    <td>GRN No</td>
+                                    @*<td>Basic Amount</td>
+                                    <td>Discount Amount</td>
+                                    <td>Transportation Amount</td>*@
+                                    <td>Total Amount</td>
+                                    <td></td>
+
+                                </tr>
+
+                            </table>
+
+                            <div class="row">
+                                <div id="orderItems">
+                                    <table class="table table-responsive" id="orderdetailsItems" display block; overflow-x auto; white-space nowrap; style="width:100%"><tbody id="AppendForGRN"></tbody></table>
+                                    <span id="orderItemError" style="color:red"></span>
+                                </div>
+                            </div>
+
+                            @*<div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table table-responsive" style="width: 100%; overflow-x:auto; white-space:nowrap;">
+                                            <tr style="background-color:#3c8dbc; color:white">
+                                                <td>Payment Date</td>
+                                                <td>Payment Mode</td>
+                                                <td>Reference No</td>
+                                                <td>Payment Amount</td>
+
+                                            </tr>
+                                            <tr class="mycontainer" id="mainrow">
+
+                                                <td>
+                                                    <input type="text" value="@Model.PaymentDate" id="PaymentDate" class="Tax form-control" />
+                                                </td>
+                                                <td>
+                                                    <input type="text" value="@Model.PaymentMode" id="PaymentMode" class="Discount form-control" />
+                                                </td>
+
+                                                <td>
+                                                    <input type="text" value="@Model.ReferenceNo" id="ReferenceNo" class="Transportation form-control" />
+                                                </td>
+                                                <td>
+                                                    <input type="text" value="@Model.PayAmount" id="PayAmount" class="PayAmount form-control" onchange="checkvalidAmount();" />
+                                                </td>
+
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>*@
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div class="col-md-4">
+                                                GRN Total Amount
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="text" id="grnTotalAmt" readonly name="grnTotalAmt" class="form-control" style="width:100%" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    @*<div class="form-group">
+                                        <div class="col-md-12" id="reason">
+                                            <div class="col-md-4">
+                                                Reason
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input type="text" id="reason1" name="reason1" class="form-control" style="width:100%" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                </div>
+                            </div>
+
+
+                            <div class="row" style="width:100%">
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <div style="padding:6px 10px; text-align:right">
+                                                <input id="btnsave" type="button" value="Save Invoice" onclick="SaveInvoiceDetails()" class="btn btn-warning" style="padding:6px 6px" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>}
+            <script>
+                $(document).ready(function () {
+
+
+                    $.ajax({
+                        type: "GET",
+                        url: '/POInvoice/ShowDetails',
+                        data: { 'InvoiceNo': $('#InvoiceNo').val() },
+                        success: function (result) {
+
+                            var Count = parseInt($("#Count").val());
+                            if (isNaN(Count)) {
+                                Count = 0;
+                            }
+                            var TotalAmount1 = 0;
+                            $.each(result, function (i, item) {
+                                var tAmtCalc = result[i].TotalAmount;
+                                var formattedAmtCalc = tAmtCalc.toFixed(2);
+
+
+
+
+                                $("#AppendForGRN").append("<tr id='R" + Count + "'> <td> <input type='hidden' value=" + result[i].GRNId + " id='SupplierProductIdNew" + Count + "' readonly style='width:0px' class='SupplierProductIdNew form-control'' /></td><td> <input type='text'' value=" + result[i].GRNNo + " id='GRNNoNew" + Count + "' readonly class='GRNNoNew form-control'' /></td> <td> <input type='text' value=" + formattedAmtCalc + " id='TotalAmount1" + Count + "' class='TotalAmount1 form-control'' /></td><td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /></td> </tr>");
+
+                                TotalAmount1 += parseFloat($('#TotalAmount1' + Count).val());
+                                Count = Count + 1;
+
+                            });
+                            $('#Count').val(parseInt($('#Count').val()) + 1)
+                            $('#grnTotalAmt').val(TotalAmount1.toFixed(2));
+
+                            ShowAmount();
+                            GetTime();
+                            GetSupplierName();
+                        }
+                    })
+                })
+
+                function GetSupplierName() {
+                    $.ajax({
+                        type: "GET",
+                        url: '/POInvoice/GetSupplierName',
+                        data: { 'SupplierId': $('#SupplierId').val() },
+                        success: function (result) {
+                            $("#Supplier").val(result.SupplierName);
+                        }
+                    })
+                }
+
+                function GetTime() {
+                    $.ajax({
+                        type: "GET",
+                        url: '/POInvoice/getData',
+                        data: { 'InvoiceNo': $('#InvoiceNo').val() },
+                        success: function (result) {
+                            debugger
+                            $("#reason1").val(result.Reason);
+                            $("#DocumentDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+                            $("#InvoiceDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+                            $("#PoDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+                            /*  $("#PaymentDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });*/
+
+                            var date = new Date(parseInt(result.InvoiceDate.substr(6)));
+                            $("#InvoiceDate").val($.datepicker.formatDate("dd/mm/yy", date));
+
+                            var date3 = new Date(parseInt(result.DocumentDate.substr(6)));
+                            $("#DocumentDate").val($.datepicker.formatDate("dd/mm/yy", date3));
+
+                            var date1 = new Date(parseInt(result.PoDate.substr(6)));
+                            $("#PoDate").val($.datepicker.formatDate("dd/mm/yy", date1));
+
+                            //var date2 = new Date(parseInt(result.PaymentDate.substr(6)));
+                            //$("#PaymentDate").val($.datepicker.formatDate("dd/mm/yy", date2));
+
+
+
+                        }
+
+                    })
+                }
+                function Remove(Count) {
+                    $("#R" + Count + "").remove();
+                }
+
+                function ShowDetails(Id) {
+                    debugger
+
+                    var invNo = $('#InvoiceNo').val();
+                    $.ajax({
+                        type: "GET",
+                        url: '/POInvoice/ShowDetails',
+                        data: { 'InvoiceNo': invNo },
+                        success: function (result) {
+                            debugger
+
+                            var Count = parseInt($("#Count").val());
+                            if (isNaN(Count)) {
+                                Count = 0;
+                            }
+                            $.each(result, function (i, item) {
+                                debugger
+                                $("#AppendForGRN").append("<tr id='R" + Count + "'> <td> <input type='hidden' value=" + result[i].GRNId + " id='SupplierProductIdNew" + Count + "' readonly style='width:0px' class='SupplierProductIdNew form-control'' /></td><td> <input type='text' style='width:100px' value=" + result[i].GRNNo + " id='GRNNoNew" + Count + "' readonly class='GRNNoNew form-control'' /></td><td><input type='text' value=" + result[i].BasicAmount + " id='BasicAmount1" + Count + "' class='BasicAmount1 form-control'' /></td> <td><input type='text' value=" + result[i].DiscAmount + " id='DiscountAmount1" + Count + "'  class='DiscountAmount1 form-control'' /></td> <td><input type='text' value=" + result[i].TransportAmount + " id='TransportAmount1" + Count + "'  class='TransportAmount1 form-control'' /></td> <td> <input type='text' value=" + result[i].TAmount + " id='TotalAmount1" + Count + "' class='TotalAmount1 form-control'' /></td> </tr>");
+                                //$(" <tbody> <tr id='R" + Count + "'> <td> <input type='hidden' id='SupplierProductIdNew" + Count + "' readonly style='width:0px' class='SupplierProductIdNew form-control'' /></td><td> <input type='text' style='width:100px' id='GRNNoNew" + Count + "' readonly class='GRNNoNew form-control'' /></td><td><input type='text' id='BasicAmount1" + Count + "' class='BasicAmount1 form-control'' /></td> <td><input type='text' id='DiscountAmount1" + Count + "'  class='DiscountAmount1 form-control'' /></td> <td><input type='text' id='TransportAmount1" + Count + "'  class='TransportAmount1 form-control'' /></td> <td> <input type='text' id='TotalAmount1" + Count + "' class='TotalAmount1 form-control'' /></td> <td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /></td> </tr> <tbody>").appendTo("#orderdetailsItems");
+                                //$(" <tbody> <tr id='R" + Count + "'> <td> <input type='hidden' id='SupplierProductIdNew" + Count + "' readonly style='width:0px' class='SupplierProductIdNew form-control'' /></td><td> <input type='text' style='width:100px' id='GRNNoNew" + Count + "' readonly class='GRNNoNew form-control'' /></td><td><input type='text' id='BasicAmount1" + Count + "' class='BasicAmount1 form-control'' /></td> <td><input type='text' id='DiscountAmount1" + Count + "'  class='DiscountAmount1 form-control'' /></td> <td><input type='text' id='TransportAmount1" + Count + "'  class='TransportAmount1 form-control'' /></td> <td> <input type='text' id='TotalAmount1" + Count + "' class='TotalAmount1 form-control'' /></td> <td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /></td> </tr> <tbody>").appendTo("#orderdetailsItems");
+                                //$("#SupplierProductIdNew" + Count + "").val(result[i].GRNId);
+                                //$("#GRNNoNew" + Count + "").val(result[i].GRNNo);
+                                //$("#BasicAmount1" + Count + "").val(result[i].BasicAmount);
+                                //$("#DiscountAmount1" + Count + "").val(result[i].DiscAmount);
+                                //$("#TransportAmount1" + Count + "").val(result[i].TransportAmount);
+                                //$("#TotalAmount1" + Count + "").val(result[i].TAmount);
+                                //GetGRNNo(Count, result[i].GRNNo);
+                                Count = Count + 1;
+                            });
+                            $('#Count').val(parseInt($('#Count').val()) + 1)
+                            ShowAmount();
+                        }
+
+                    })
+                }
+
+                //function ShowDetails(Id) {
+
+                //    $.ajax({
+                //        type: "GET",
+                //        url: '/POInvoice/ShowDetails',
+                //        data: { 'InvoiceNo': $('#InvoiceNo').val() },
+                //        success: function (result) {
+                //            debugger
+
+                //            var ViewBackData = result;
+                //            if (result.length == "0") {
+                //                $('#GRNNo').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: 200, });
+                //            } else {
+                //                $('<option></option>').val(null).html('Select');
+                //                $.each(result, function (i, result) {
+                //                    $('#GRNNo').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "GRNNo", text: "GRNNo" }, EnablePersistence: false, ShowPopupButton: true, width: "100%", });
+                //                });
+
+                //            }
+                //            ShowAmount();
+                //        }
+
+                //    })
+                //}
+
+                function ShowAmount() {
+                    debugger
+                    $.ajax({
+                        type: "GET",
+                        url: '/POInvoice/ShowAmount',
+                        data: { 'InvoiceNo': $('#InvoiceNo').val() },
+                        success: function (result) {
+                            debugger
+                            $('#InvoiceAmount').val(result.TAmount);
+                        }
+
+                    })
+                }
+
+
+                function ShowGRNDetails(Id) {
+
+                    $.ajax({
+                        type: "GET",
+                        url: '/POInvoice/ShowGRNDetails',
+                        data: { 'GRNNo': $('#GRNNo').val() },
+                        success: function (result) {
+                            debugger
+                            var Count = parseInt($("#Count").val());
+                            if (isNaN(Count)) {
+                                Count = 0;
+                            }
+                            $.each(result, function (i, item) {
+                                debugger
+                                $("#AppendForGRN").append("<tr id='R" + Count + "'> <td> <input type='hidden' value=" + result[i].GRNId + " id='SupplierProductIdNew" + Count + "' readonly style='width:0px' class='SupplierProductIdNew form-control'' /></td><td> <input type='text' style='width:100px' value=" + result[i].GRNNo + " id='GRNNoNew" + Count + "' readonly class='GRNNoNew form-control'' /></td><td><input type='text' value=" + result[i].BasicAmount + " id='BasicAmount1" + Count + "' class='BasicAmount1 form-control'' /></td> <td><input type='text' value=" + result[i].DiscAmount + " id='DiscountAmount1" + Count + "'  class='DiscountAmount1 form-control'' /></td> <td><input type='text' value=" + result[i].TransportAmount + " id='TransportAmount1" + Count + "'  class='TransportAmount1 form-control'' /></td> <td> <input type='text' value=" + result[i].TAmount + " id='TotalAmount1" + Count + "' class='TotalAmount1 form-control'' /></td>  </tr>");
+
+                                Count = Count + 1;
+                            });
+                            $('#Count').val(parseInt($('#Count').val()) + 1)
+                        }
+                    })
+                }
+                function checkvalidAmount() {
+                    if (parseFloat($('#PayAmount').val()) > parseFloat($('#InvoiceAmount').val())) {
+                        $('#PayAmount').val('');
+                        toastr.warning('Payment amount must not greater than Invoice amount.....    Invoice amount Is ' + $('#InvoiceAmount').val() + '');
+                    };
+                }
+
+
+
+                function SaveInvoiceDetails() {
+                    debugger;
+
+                    var DocumentDate = $('#DocumentDate').val();
+                    var datearray1 = DocumentDate.split("/");
+                    var docdate = datearray1[1] + '/' + datearray1[0] + '/' + datearray1[2];
+
+                    var InvoiceDate = $('#InvoiceDate').val();
+                    var datearray2 = InvoiceDate.split("/");
+                    var InvDate = datearray2[1] + '/' + datearray2[0] + '/' + datearray2[2];
+
+                    var PoDate = $('#PoDate').val();
+                    var datearray3 = PoDate.split("/");
+                    var podate = datearray3[1] + '/' + datearray3[0] + '/' + datearray3[2];
+
+                    //var PaymentDate = $('#PaymentDate').val();
+                    //var datearray4 = PaymentDate.split("/");
+                    //var paymentDate = datearray4[1] + '/' + datearray4[0] + '/' + datearray4[2];
+
+                    var orderItem = {
+                        DocunentNo: $('#DocumentNo').val(),
+                        DocumentDate: docdate,
+                        InvoiceNo: $('#InvoiceNo').val(),
+                        InvoiceDate: InvDate,
+                        PoDate: podate,
+                        BasicAmount: $('#BasicAmount1').val(),
+                        TransportAmount: $('#TransportAmount1').val(),
+                        DiscAmount: $('#DiscountAmount1').val(),
+                        SupplierId: SupplierId.defaultValue,
+                        TotalAmount: $('#InvoiceAmount').val(),
+                        PayAmount: $('#PayAmount').val(),
+                        ReferenceNo: $('#ReferenceNo').val(),
+                        Reason: $('#reason1').val(),
+                        PaymentMode: $('#PaymentMode').val()
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: '/POInvoice/Edit',
+                        data: JSON.stringify(orderItem),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if (data.status == true) {
+                                toastr.success("Successfully saved..");
+                                window.location.href = "/POInvoice/Index";
+                            } else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    });
+                }
+
+
+                function getSupplierId(id) {
+                    debugger;
+                    var SupplierID = id.key;
+
+                    $.ajax({
+                        type: "GET",
+                        url: '/POInvoice/getInvoice',
+                        data: { SupplierID: SupplierID },
+                        success: function (result) {
+                            debugger
+                            var ViewBackData = result;
+                            if (result.length == "0") {
+                                $('#InvoiceNo').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: "100%", });
+                            } else {
+                                $('<option></option>').val(null).html('Select');
+                                $.each(result, function (i, result) {
+                                    $('#InvoiceNo').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "InvoiceNo", text: "InvoiceNo" }, EnablePersistence: false, ShowPopupButton: true, width: "100%", });
+                                });
+                            }
+                        }
+                    })
+                };
+                function CheckValidSupplier() {
+                    debugger
+                    $.ajax({
+                        type: "GET",
+                        url: '/POInvoice/CheckValidSupplier',
+                        data: { 'SupplierName': $('#SupplierName').val() },
+                        success: function (result) {
+                            if (result == "0") {
+                                toastr.warning('invalid supplier name ....');
+                                $('#SupplierName').val('');
+                            }
+
+                        }
+                    })
+                }
+            </script>

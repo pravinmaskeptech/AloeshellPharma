@@ -1,0 +1,524 @@
+﻿@model Inventory.Models.Products
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .iframe-container {
+        padding-bottom: 60%;
+        padding-top: 30px;
+        height: 0;
+        overflow: hidden;
+    }
+
+        .iframe-container iframe,
+        .iframe-container object,
+        .iframe-container embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+</style>
+<div class="row" style="background-color:white">
+    <div class="col-lg-12 col-sm-12 col-xs-12">
+        @using (Html.BeginForm("Create", "Products", FormMethod.Post, new
+        {
+        enctype = "multipart/form-data",
+        @class = "form-horizontal",
+        data_bv_message = "This value is not valid",
+        data_toggle = "validator",
+        data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+        data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+        data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+        }))
+        {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            <h4>Products</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.CategoryId)
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.ProductType, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                <select name="ProductType" id="ProductType" class="ProductType form-control">
+                                    <option value="Select" selected="selected">Select</option>
+                                    <option value="Finished Good">Finished Good</option>
+                                    <option value="Raw Material">Raw Material</option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.ProductType, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EJ().Autocomplete("Category").WatermarkText("Select Category").Datasource((IEnumerable<Inventory.Models.Category>)ViewBag.CatDataSource).Width("100%").AutocompleteFields(field => field.Key("CategoryId").Text("CategoryName")).HighlightSearch(true).ShowPopupButton(true).ClientSideEvents(e => e.FocusOut("ChkCategory").Select("SetCategoryId"))
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.ProductClass, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                <select name="ProductClass" id="ProductClass" class="ProductClass form-control">
+                                    <option value="Select" selected="selected">Select</option>
+                                    <option value="Manufacture">Manufacture</option>
+                                    <option value="Bought Out">Bought Out</option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.ProductClass, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                   
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Product Name is required and cannot be empty", maxlength = "250", onchange = "CheckDuplicateName();" } })
+                                @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.ModelName, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.ModelName, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Model Name is required and cannot be empty", maxlength = "100" } })
+                                @Html.ValidationMessageFor(model => model.ModelName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-2">
+                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-9">
+                                <textarea id="Description" name="Description" class="input-validation-error form-control" cols="50" data-val="true" data-val-required="The Message field is required." placeholder="Description" rows="2" required data-bv-notempty-message="Description is required and cannot be empty" maxlength="500"></textarea>
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.OpeningQuantity, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.OpeningQuantity, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Opening Quantity is required and cannot be empty", maxlength = "10", onkeypress = "return event.charCode >= 48 && event.charCode <= 57", onchange = "SetClosingBalance()" } })
+                                @Html.ValidationMessageFor(model => model.OpeningQuantity, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.ClosingQuantity, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.ClosingQuantity, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "false", maxlength = "10", onkeypress = "return event.charCode >= 48 && event.charCode <= 57", @readonly = "readonly" } })
+                                @Html.ValidationMessageFor(model => model.ClosingQuantity, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.SellingPrice, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.SellingPrice, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Selling Price is required and cannot be empty", maxlength = "10", onkeypress = "return event.charCode >= 46 && event.charCode <= 57" } })
+                                @Html.ValidationMessageFor(model => model.SellingPrice, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Weight, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Weight, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Closing Quantity is required and cannot be empty", maxlength = "10", onkeypress = "return event.charCode >= 46 && event.charCode <= 57" } })
+                                @Html.ValidationMessageFor(model => model.Weight, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Size, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Size, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Size is required and cannot be empty", maxlength = "50", } })
+                                @Html.ValidationMessageFor(model => model.Size, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Discount, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Discount, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Discount is required and cannot be empty", maxlength = "5", onkeypress = "return event.charCode >= 46 && event.charCode <= 57" } })
+                                @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.DiscountIn, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                <select name="DiscountIn" id="DiscountIn" class="discIn form-control">
+                                    <option value="Rupee">Rupee</option>
+                                    <option value="Percentage">Percentage</option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.DiscountIn, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.ReorderLevel, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.ReorderLevel, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Reorder Level is required and cannot be empty", maxlength = "4", onkeypress = "return event.charCode >= 48 && event.charCode <= 57" } })
+                                @Html.ValidationMessageFor(model => model.ReorderLevel, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.MaxLevel, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.MaxLevel, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "max Level is required and cannot be empty", maxlength = "4", onkeypress = "return event.charCode >= 48 && event.charCode <= 57" } })
+                                @Html.ValidationMessageFor(model => model.MaxLevel, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.HsnCode, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EJ().AutocompleteFor(model => model.HsnCode).Width("100%").WatermarkText("Select HSN Code").Datasource((IEnumerable<Inventory.Models.TaxMaster>)ViewBag.HsnDataSource).HighlightSearch(true).ShowPopupButton(true).MultiColumnSettings(obj => obj.Enable(true).Columns(obj1 => { obj1.Field("HSNCode").HeaderText("HSN Code").Add(); }).ShowHeader(true)).ClientSideEvents(e => e.Select("CheckHSN").FocusOut("CheckHSN"))
+                                @Html.ValidationMessageFor(model => model.HsnCode, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.LeadTimePurchase, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.LeadTimePurchase, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Lead Time Purchase is required and cannot be empty", maxlength = "2", placeholder = "In Days" } })
+                                @Html.ValidationMessageFor(model => model.LeadTimePurchase, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.LeadTimeSell, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.LeadTimeSell, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Lead Time Sell is required and cannot be empty", maxlength = "2", onkeypress = "return event.charCode >= 48 && event.charCode <= 57", placeholder = "In Days" } })
+                                @Html.ValidationMessageFor(model => model.LeadTimeSell, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                <textarea id="Note" name="Note" class="input-validation-error form-control" cols="50" data-val="true" data-val-required="The Message field is required." rows="2" required data-bv-notempty-message="Description is required and cannot be empty" maxlength="200"></textarea>
+                                @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.StandardWarranty, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.StandardWarranty, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Standard Warranty is required and cannot be empty", maxlength = "1", onkeypress = "return event.charCode >= 48 && event.charCode <= 57", placeholder = "Years" } })
+                                @Html.ValidationMessageFor(model => model.StandardWarranty, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.SerialNoApplicable, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.SerialNoApplicable, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Serial No Applicable required and cannot be empty" } })
+                                @Html.ValidationMessageFor(model => model.SerialNoApplicable, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.UOM, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.UOM, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "UOM is required and cannot be empty", maxlength = "50" } })
+                                @Html.ValidationMessageFor(model => model.UOM, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" id="create" value="Create" class="btn btn-primary" onclick="CheckDuplicateName(); CheckHSN();" />
+                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        $("#form0").bootstrapValidator();
+        $('#OpeningQuantity').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+        $('#ClosingQuantity').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+
+        $('#MaxLevel').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+
+        $('#SellingPrice').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+        $('#Weight').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+        $('#Discount').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+        $('#MaxLevel').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+        $('#ReorderLevel').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+        $('#LeadTimeSell').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+        $('#LeadTimePurchase').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+    })
+    function SetClosingBalance() {
+        $('#ClosingQuantity').val($('#OpeningQuantity').val());
+    }
+    function CheckDuplicateName() {
+        var Name = $('#ProductName').val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateName", "Products")',
+            type: "GET",
+            dataType: "JSON",
+            data: { Name: Name, Mode: "Create", Code: "0" },
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        var Code = result[0].ProductName;
+                        if (Code != "" || Code != null) {
+                            $('#ProductName').val('');
+                            toastr.error("Product Name already exist");
+                            $("#form0").bootstrapValidator('revalidateField', 'ProductName');
+                        }
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+                }
+            }
+        });
+    }
+    function CheckHSN() {
+        
+        var hsn = $('#HsnCode').val();
+        
+        if (hsn != "") {
+            $.ajax({
+                url: '@Url.Action("CheckHSN", "Products")',
+                type: "GET",
+                dataType: "JSON",
+                data: { hsnCode: hsn },
+                success: function (Gethsn) {
+                    if (Gethsn.length == 0) {
+                        toastr.error("HSN Code not Exist");
+                        $("#HsnCode").css("border", "1px solid #e46f61");
+                        $('#HsnCode').val('');
+                        return false;
+                        event.preventDefault();
+                    } else {
+                        $("#HsnCode").css("border", "1px solid #a5da6b");
+                    }
+                }
+            });
+        }
+        else {
+            toastr.error("please Enter HSN Code");
+            $("#HsnCode").css("border", "1px solid #e46f61");
+        }
+    }
+
+    function ChkCategory(id) {        
+        var Category = $('#Category').val();     
+        if (Category != "") {
+            $.ajax({
+                url: '@Url.Action("ChkCategory", "Products")',
+                type: "GET",
+                dataType: "JSON",
+                data: { Cat: Category },
+                success: function (result) {
+                    if (result.length == 0) {
+                        toastr.error("Category not Exist");
+                        $("#Category").css("border", "1px solid #e46f61");
+                        $('#Category').val('');
+                        return false;
+                        event.preventDefault();
+                    } else {
+                        $("#Category").css("border", "1px solid #a5da6b");
+                    }
+                }
+            });
+        }
+        else {
+            toastr.error("please Enter Category");
+            $("#Category").css("border", "1px solid #e46f61");
+        }
+    }
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+        
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+    })
+    function SetCategoryId(id) {
+        $('#CategoryId').val(id.key)
+    };
+
+</script>

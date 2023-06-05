@@ -1,0 +1,203 @@
+﻿@model IEnumerable<Inventory.Models.POInvoice>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4><b>PO INVOICE</b></h4>
+
+<style>
+    .e-grid .e-headercell, .e-grid .e-grouptopleftcell {
+        background-color: #3c8dbc;
+        border-top-color: #3c8dbc;
+        border-left-color: #3c8dbc;
+        border-bottom-color: #3c8dbc;
+        color: #fff;
+    }
+
+    .e-grid .e-gridheader .e-icon {
+        color: #fff;
+    }
+
+    .Expand {
+        background-position: -180px 3px;
+    }
+
+    .Collapse {
+        background-position: -205px 3px;
+    }
+
+    .refresh {
+        background-position: -76px 3px;
+    }
+
+    .e-toolbaricons {
+        background-image: url("../../Content/ej/web/common-images/icons-gray.png");
+    }
+
+    .Expand:hover, .Collapse:hover, .refresh:hover {
+        background-image: url("../../Content/ej/web/common-images/icons-white.png");
+    }
+</style>
+<div class="box-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                @(Html.EJ().Grid<Inventory.Models.POInvoice>
+                    ("POInvoice").Datasource((IEnumerable<object>
+                        )ViewBag.datasource)
+                        .AllowScrolling()
+                        .AllowFiltering()
+                        .AllowTextWrap()
+                        .FilterSettings(filter => { filter.ShowFilterBarStatus().StatusBarWidth(500).FilterBarMode(FilterBarMode.Immediate).MaxFilterChoices(1000).FilterType(FilterType.Menu); })   /*Filtering Enabled*/
+                        .AllowSorting()    /*Sorting Enabled*/
+                        .AllowMultiSorting()
+                        .AllowPaging()    /*Paging Enabled*/
+                        .SelectionType(SelectionType.Multiple)
+                        .AllowResizing()
+                        .IsResponsive()
+                        .MinWidth(1000)
+                        .AllowReordering()
+                        .AllowResizeToFit()
+                        .AllowResizing()
+                        .ScrollSettings(scroll => { scroll.Height(300); })
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar().ToolbarItems(items =>
+                            {
+                                items.AddTool(ToolBarItems.Search); items.AddTool(ToolBarItems.ExcelExport);
+                            });
+                        })
+                                .Mappers(map => map.ExportToExcelAction("/POInvoices/ExportToExcel"))
+                        .AllowSearching(true)
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar(true).CustomToolbarItems(new List<object>
+                                () { new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#Refresh" }, new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#AddNew" } });
+                        })
+                            .ClientSideEvents(eve => { eve.ToolbarClick("onToolBarClick"); })
+                            .Columns(col =>
+                            {
+
+                                col.HeaderText("Edit").Template("<a href='/POInvoice/Edit/{{:DocunentNo}}'><input type='Button' class='btn btn-sm btn-primary' id='Button1' Value='Edit' /></a> ").AllowFiltering(false).Width(70).Add();
+                                //col.HeaderText("Edit").Template("<input type='Button' class='btn btn-sm btn-primary' id='{{:DocunentNo}}' onclick='getData(this.id)' Value='Edit' /> ").AllowFiltering(false).Width(70).Add();
+
+                                //col.Field("DocunentNo").HeaderText("Docunent No").TextAlign(TextAlign.Left).Visible(true).Width(130).Add();
+                                //col.Field("DocumentDate").HeaderText("Document Date").TextAlign(TextAlign.Left).Width(150).Format("{0:dd/MM/yyyy}").EditType(EditingType.String).Add();
+                                col.Field("InvoiceNo").HeaderText("Invoice No").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(130).Add();
+                                col.Field("InvoiceDate").HeaderText("Invoice Date").TextAlign(TextAlign.Left).Width(150).EditType(EditingType.String).Format("{0:dd/MM/yyyy}").Add();
+                                col.Field("SupplierName").HeaderText("Supplier").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(130).Add();
+                                //col.Field("PoNo").HeaderText("Po No").TextAlign(TextAlign.Left).Visible(true).Width(100).Add();
+                                col.Field("PoDate").HeaderText("Po Date").TextAlign(TextAlign.Left).Width(150).EditType(EditingType.String).Format("{0:dd/MM/yyyy}").Add();
+                                col.Field("BasicAmount").HeaderText("Basic Amount").TextAlign(TextAlign.Left).Width(130).EditType(EditingType.String).Add();
+                                col.Field("DiscAmount").HeaderText("Disc Amount").TextAlign(TextAlign.Left).Width(130).EditType(EditingType.String).Add();
+                                //col.Field("TaxAmount").HeaderText("Tax Amount").TextAlign(TextAlign.Left).Width(130).EditType(EditingType.String).Add();
+                                col.Field("TransportAmount").HeaderText("Transport Amount").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(130).Add();
+                                col.Field("TotalAmount").HeaderText("Total Amount").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(130).Add();
+                            }))
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script id="Refresh" type="text/x-jsrender">
+    <a href="#" class="e-toolbaricons refresh" />
+</script>
+<script id="AddNew" type="text/x-jsrender">
+    <button class="btn btn-primary btn-sm add">Add New</button>
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+           var tanId = '@TempData["Temp"]';
+       if (tanId != "" && tanId != undefined && tanId != null) {
+           toastr.success(tanId);
+       }
+       });
+</script>
+<script type="text/javascript">
+    function onToolBarClick(sender) {
+        if (sender.itemName == "Expand")
+            this.expandAll();
+        else if (sender.itemName == "Collapse")
+            this.collapseAll();
+        else if (sender.itemName == "Refresh") {
+            var instance = $("#POInvoice").ejGrid("instance");
+            instance._filterCollection = [];
+            instance.clearFiltering();
+            instance.clearSearching();
+            this.refreshContent();
+        }
+        if (sender.itemName == "AddNew") {
+            window.location.href = "../POInvoice/Invoice";
+        }
+    }
+
+     @*function getData(DocunentNo) {
+        $("#form0").bootstrapValidator();
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+
+
+
+        $.ajax({
+            url: '@Url.Action("getDocument", "POInvoice")',
+            type: "GET",
+            dataType: "JSON",
+            data: { DocunentNo: DocunentNo },
+            success: function (category) {
+                debugger
+                try {
+                    if (category.error == "error") {
+                        toastr.error(category.msg);
+                    }
+                    else {
+
+                        window.location.href = "../SalesPerson/Create";
+
+                        $("#DocumentDate").val(category.DocumentDate);
+                        $("#InvoiceDate").val(category.InvoiceDate);
+                        $("#BasicAmount").val(category.BasicAmount);
+                        $("#Transportation").val(category.TransportAmount);
+                        $("#Tax").val(category.TaxAmount);
+                        $("#TotalAmount").val(category.TotalAmount);
+                        $("#PONO").val(category.PoNo);
+                        $("#Discount").val(category.DiscAmount);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }*@
+
+
+    function EditEntry(DocunentNo) {
+        debugger
+             $.ajax({
+            url: '@Url.Action("Edit", "POInvoice")',
+            type:"GET",
+            dataType: "JSON",
+                 data: { DocunentNo: DocunentNo },
+            success: function (result) {
+                try {
+                    if (result.Message == "success") {
+                        alert("POInvoice Successfully Updated...");
+                     window.location.reload();
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+
+
+
+    }
+</script>

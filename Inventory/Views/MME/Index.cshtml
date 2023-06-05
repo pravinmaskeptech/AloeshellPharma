@@ -1,0 +1,169 @@
+﻿@model IEnumerable<Inventory.Models.MMEMaster>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .e-grid .e-headercell, .e-grid .e-grouptopleftcell {
+        background-color: #3c8dbc;
+        border-top-color: teal;
+        border-left-color: teal;
+        border-bottom-color: teal;
+        color: #fff;
+    }
+
+    .e-grid .e-gridheader .e-icon {
+        color: #fff;
+    }
+
+    .Expand {
+        background-position: -180px 3px;
+    }
+
+    .Collapse {
+        background-position: -205px 3px;
+    }
+
+    .refresh {
+        background-position: -76px 3px;
+    }
+
+    .e-toolbaricons {
+        background-image: url("../../Content/ej/web/common-images/icons-gray.png");
+    }
+
+    .Expand:hover, .Collapse:hover, .refresh:hover {
+        background-image: url("../../Content/ej/web/common-images/icons-white.png");
+    }
+</style>
+
+                    <div class="container-fluid">
+                              <div class="row">
+                                  <div class="col-md-12 col-xs-12">
+                                      @(Html.EJ().Grid<Inventory.Models.MMEMaster>
+                                    ("MME").Datasource((IEnumerable<object>
+                        )ViewBag.datasource)
+                        .AllowScrolling()
+                        .AllowFiltering()
+                        .AllowTextWrap()
+                        .FilterSettings(filter => { filter.ShowFilterBarStatus().StatusBarWidth(500).FilterBarMode(FilterBarMode.Immediate).MaxFilterChoices(1000).FilterType(FilterType.Menu); })   /*Filtering Enabled*/
+                        .AllowSorting()    /*Sorting Enabled*/
+                        .AllowMultiSorting()
+                        .AllowPaging()    /*Paging Enabled*/
+                        .SelectionType(SelectionType.Multiple)
+                        .AllowResizing()
+                        .IsResponsive()
+                        .MinWidth(1000)
+                        .AllowReordering()
+                        .AllowResizeToFit()
+                        .AllowResizing()
+                        .ScrollSettings(scroll => { scroll.Height(300); })
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar().ToolbarItems(items =>
+                            {
+                                items.AddTool(ToolBarItems.Search); items.AddTool(ToolBarItems.ExcelExport);
+                            });
+                        })
+                                                .Mappers(map => map.ExportToExcelAction("/MME/ExportToExcel"))
+                        .AllowSearching(true)
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar(true).CustomToolbarItems(new List<object>
+                                () { new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#Refresh" }, new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#AddNew" } });
+                        })
+                            .ClientSideEvents(eve => { eve.ToolbarClick("onToolBarClick"); })
+                            .Columns(col =>
+                            {
+                                col.HeaderText("Edit").Template("<a href='/MME/Edit/{{:MMEID}}'><input type='Button' class='btn btn-sm btn-primary' id='Button1' Value='Edit' /></a> ").TextAlign(TextAlign.Left).Width(35).AllowFiltering(false).Add();
+                                col.HeaderText("Delete").Template("<a href='/MME/Delete/{{:MMEID}}'><input type='Button' class='btn btn-sm btn-danger' id='{{:MMEID}}'  Value='Delete' onclick='DeleteEntry(this.id)' /></a> ").TextAlign(TextAlign.Left).Width(60).AllowFiltering(false).Add();
+                                col.Field("MMECode").HeaderText("MME Code").IsPrimaryKey(true).TextAlign(TextAlign.Left).Visible(true).Width(90).Add();
+                                col.Field("MMEName").HeaderText("MME Name").IsPrimaryKey(true).TextAlign(TextAlign.Left).Visible(true).Width(90).Add();
+                                col.Field("Address").HeaderText("Address").IsPrimaryKey(true).TextAlign(TextAlign.Left).Visible(true).Width(90).Add();
+                                col.Field("City").HeaderText("City").TextAlign(TextAlign.Left).Visible(true).Width(100).EditType(EditingType.String).Add();
+                                col.Field("Pincode").HeaderText("Pincode").TextAlign(TextAlign.Left).Visible(true).Width(100).EditType(EditingType.String).Add();
+                                col.Field("ContactNo").HeaderText("ContactNo").TextAlign(TextAlign.Left).Visible(true).Width(150).EditType(EditingType.String).Add();
+                                col.Field("IsActive").HeaderText("Freeze").TextAlign(TextAlign.Left).Visible(true).Width(45).Add();
+                            }))
+                                  </div>
+                              </div>
+                          </div>
+</div>
+
+
+<script src="~/assets/js/validation/bootstrapValidator.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script src="~/js/moderniz.2.8.1.js"></script>
+<script id="Refresh" type="text/x-jsrender">
+    <a href="#" class="e-toolbaricons refresh" />
+</script>
+<script id="AddNew" type="text/x-jsrender">
+    <button class="btn btn-primary btn-sm add">Add MME</button>
+</script>
+
+<script src="~/js/toastr.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#pnlFreeze").hide();
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+
+            var Temp = '@TempData["Temp"]';
+        if (Temp != "" && Temp != undefined && Temp != null) {
+            toastr.success(Temp);
+        }
+       });
+</script>
+<script type="text/javascript">
+        function onToolBarClick(sender) {
+            if (sender.itemName == "Expand")
+                this.expandAll();
+            else if (sender.itemName == "Collapse")
+                this.collapseAll();
+            else if (sender.itemName == "Refresh") {
+                var instance = $("#MME").ejGrid("instance");
+                instance._filterCollection = [];
+                instance.clearFiltering();
+                instance.clearSearching();
+                this.refreshContent();
+            }
+            if (sender.itemName == "AddNew") {
+                window.location.href = "../MME/Create";
+            }
+    }
+
+   function DeleteEntry(ID) {
+
+
+        var result = confirm("Are You Sure You Want to delete?");
+        if (result) {
+             $.ajax({
+            url: '@Url.Action("Delete", "MME")',
+            type:"GET",
+            dataType: "JSON",
+            data: { ID: ID},
+            success: function (result) {
+                try {
+                    if (result.Message == "success") {
+                        alert("Entry Successfully Deleted...");
+                     window.location.reload();
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+        }
+
+
+    }
+
+
+</script>

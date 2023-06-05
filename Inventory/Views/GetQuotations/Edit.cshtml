@@ -1,0 +1,424 @@
+﻿@model Inventory.Models.PRNMain
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="ProductCode" name="ProductCode" value="" />
+    <input type="hidden" id="Count" name="Count" value="1" />    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="box box-info">
+            <div class="box-header with-border" style="background-color:#3c8dbc; color:white">
+                <h3 class="box-title">New PRN Order</h3>
+                <div class="box-tools pull-right">
+                </div>
+            </div>
+            <div class="box-body">
+              
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <strong>PRN No</strong>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.PRNNo, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", @disabled = "disabled", maxlength = "20", } })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <strong>Raised Date</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" id="RaisedDate" name="RaisedDate" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Purchase Order Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <strong>Required Date</strong>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="RequiredDate" name="RequiredDate" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Purchase Order Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <strong>Department</strong>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.Department, new SelectList(ViewBag.Dept, "DeptName", "DeptName"), "Select Department", new { @class = "form-control", required = "required", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Department is required and cannot be empty", maxlength = "25" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <strong>Status</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <select id="Status" name="Status" class="form-control" onchange="Disapprove();">
+                                    <option value="">Select</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Approve">Approve</option>
+                                    <option value="Disapprove">Disapprove</option>
+                                </select>    
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" id="hfDisapproveReason" style="display:none">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <strong>Disapprove Reason</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <textarea id="DisapproveReason" name="DisapproveReason" class="form-control" ></textarea>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="orderItems" style="overflow-x: auto;">
+                    <table class="table table-responsive" style="width: 100%; overflow-x:auto; white-space:nowrap;">
+                        <tr style="background-color:#3c8dbc; color:white">
+                            
+                            <td></td>
+                            <td style="text-align: center; width:50px"></td>
+                            <td style="text-align: center;">Product</td>
+                            <td style="text-align: center;">Supplier</td>
+                            <td style="text-align: right;">Rate</td>
+                            <td style="text-align: right;">Delivery(Days)</td>
+                           
+                            <td>&nbsp;</td>
+                        </tr>
+                        
+                    </table>
+                    <div class="ScrollStyle">
+                        <table class="table table-responsive" id="Orderdetails" style="width: 100%; overflow-x:auto; white-space:nowrap;"></table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                @Html.ActionLink("Back to List", "PRNApproverIndex", null, new { @class = "btn btn-primary" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div style="padding:5px 10px; text-align:right">
+                                    <input id="submit" type="button" value="CreatePO" onclick="SaveList()" class="btn btn-warning" style="padding:5px 5px" /> &nbsp;&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        $("#RequiredDate").ejDatePicker({ minDate: new Date(), locale: "en-IN", });
+        $("#RaisedDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+        GETPRNDetails();
+    })
+    function GETPRNDetails()
+    {
+        var url = window.location.href
+        var array = url.split('/');
+        var lastsegment = array[array.length - 1];
+        $.ajax({
+            type: "GET",
+            url: '/GetQuotations/GETPRNData',
+            data: { 'ID': lastsegment },
+            success: function (result) {
+                var ResultCount = result.length;
+                if (result.Message=="success") {                 
+                    $('#Department').val(result.PRN.Department);
+                    $('#PRNNo').val(result.PRN.PRNNo);
+                    $('#Status').val(result.PRN.Status);                    
+
+                   // if (result.PRN.Status == "Approve" || result.PRN.Status == "Disapprove") {
+                   //     //$('#POStatus').val(result[0].CurrentStatus);
+                   ////     $(".DisabledControls").find("input,button,textarea,select").attr("disabled", "disabled");
+                   //    // $("#submit").attr("disabled", true);
+                   //     $("#submit").hide();
+                   // }
+
+                    if ($('#Status').val() == "Disapprove") {
+                        $('#hfDisapproveReason').show();
+                    } else {
+                        $('#hfDisapproveReason').hide();
+                    }
+                    $('#DisapproveReason').val(result.PRN.DisapproveReason);
+                    
+                   
+                    try    {var date = new Date(parseInt(result.PRN.RequiredDate.substr(6)));   $("#RequiredDate").val($.datepicker.formatDate("dd/mm/yy", date));                    }catch(e) {  }
+                    try {  var date = new Date(parseInt(result.PRN.RaisedDate.substr(6)));  $("#RaisedDate").val($.datepicker.formatDate("dd/mm/yy", date));   } catch (e) {       }
+
+                    var Count = $('#Count').val();
+
+
+
+                    $("#RequiredDate").attr("disabled", true);
+                    $("#RaisedDate").attr("disabled", true);
+                    $("#Department").prop("disabled", true);
+                    $("#Status").prop("disabled", true);
+                    debugger;
+                    $.each(result.DTL, function (i, item) {                       
+                        $("#Orderdetails").append(" <tbody> <tr id='R" + Count + "'>   <td style='width:70px'><input type='text' id='SRNO" + Count + "' readonly  class='SRNO form-control'' /></td> <td><input type='checkbox' id='CHKSelect" + Count + "' onclick='CheckDuplicate(" + Count + ")' name='" + result.DTL[i].ProductCode + "'></td>  <td><input type='text' id='ProductName" + Count + "' readonly  class='ProductName form-control'' /></td>                            <td><input type='text' id='SupplierName" + Count + "' readonly  class='SupplierName form-control'' /><input type='text' id='SupplierproductrelationID" + Count + "' readonly style='display:none'  class='SupplierproductrelationID form-control'' /></td>                        <td><input type='text' id='ProductPrice" + Count + "' readonly  class='ProductPrice form-control'' /></td>                            <td><input type='text' id='DeliveryInDays" + Count + "' readonly  class='DeliveryInDays form-control'' /><input type='text' id='ProductCode" + Count + "' style='display:none' readonly  class='ProductCode form-control'' /></td>                                                                                   </tr> <tbody>");
+                        $("#ProductName" + Count + "").val(result.DTL[i].ProductName);                       
+                        $("#SupplierName" + Count + "").val(result.DTL[i].SupplierName);
+                        $("#DeliveryInDays" + Count + "").val(result.DTL[i].DeliveryInDays);
+                        $("#ProductPrice" + Count + "").val(result.DTL[i].ProductPrice);
+                        $("#SupplierproductrelationID" + Count + "").val(result.DTL[i].SupplierproductrelationID);
+                        $("#ProductCode" + Count + "").val(result.DTL[i].ProductCode);
+                        $("#ID" + Count + "").val(result.DTL[i].ID)
+                        $("#SRNO" + Count + "").val(Count)
+                        
+                        Count = parseInt(Count) + 1;
+                        $('#Count').val(parseInt(Count));
+                    });
+                   
+                } else {
+                    toastr.warning('NO data Found...');
+                    $('#Orderdetails').empty();
+                }
+               
+            }
+        })
+    }
+    function CheckValidProduct(Product)
+    {
+        $('#ProductCode').val('');
+        var isduplicate = false;
+        $('#Orderdetails tbody tr').each(function (index, e) {
+            var inputEl = $(e).children().get(0);
+            var Qty = $(e).children().get(1);
+            if ($('#ProductName').val() == inputEl.firstElementChild.value) {
+                isduplicate = true;
+            }
+        })
+        if (isduplicate == true) {
+            toastr.warning("product already added");
+            $('#ProductName').val('');
+            $('#ProductCode').val('');
+        }else
+            {
+
+            if ($('#ProductName').val() != "") {
+                $.ajax({
+                    type: "GET",
+                    url: '/PRNMains/CheckValidProduct',
+                    data: { 'ProductName': $('#ProductName').val() },
+                    success: function (result) {
+                        debugger;
+
+                        if (result.Message == "success") {
+                            $('#ProductCode').val(result.data[0]);
+                            $('#OrderQty').focus();
+                        }else
+                        {
+                            $('#ProductCode').val('');
+                            $('#ProductName').val('');
+                            toastr.error(result.Message);
+                        }
+                    }
+                })
+            }else
+            {
+                toastr.error('Select Product Name');
+            }
+        }
+    }
+
+    function AddProduct() {
+        debugger;
+        var isduplicate = "";
+        var temp = true;
+
+        $('#Orderdetails tbody tr').each(function (index, e) {
+            var PrdName = $(e).children().get(0);
+            if ($('#ProductName').val() == PrdName.firstElementChild.value) {
+                isduplicate = true;
+
+            }
+        })
+
+        if (isduplicate == true) {
+            toastr.error('Product Name Already Added');
+            temp = false;
+        }
+
+        if ($('#ProductName').val() == "") {
+            toastr.error('Product Name Not Found');
+            temp = false;
+        }
+
+        if ($('#OrderQty').val() == "") {
+            toastr.error('Quantity Not Found');
+            temp = false;
+        }
+
+        if(temp==true)
+            {
+            var Count = $('#Count').val();
+            $("#Orderdetails").append(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='ProductName" + Count + "' readonly  class='ProductName form-control'' /></td> <td align:'left'><input type='text' id='Quantity" + Count + "'  readonly class='Quantity form-control'' /></td><td><input type='text' id='ProductCode" + Count + "'  readonly style='display:none' class='ProductCode form-control'' /><input type='text' id='ID" + Count + "'  readonly style='display:none' class='ID form-control'' /></td></tr> <tbody>");
+            $("#ProductName" + Count + "").val($('#ProductName').val());
+            $("#Quantity" + Count + "").val($('#OrderQty').val());
+            $("#ProductCode" + Count + "").val($('#ProductCode').val())
+            $("#ID" + Count + "").val(0)
+            $('#Count').val(Count + 1);
+            $('#ProductName').val('');
+            $('#OrderQty').val('');
+            $('#ProductCode').val('');
+        }
+    }
+
+    //$('#submit').click(function () {
+    //    var temp = true;
+    //    if ($('#Status').val() == "")
+    //    {
+    //        toastr.error('Please Select Status');
+    //        temp = false;
+    //    }
+
+    //    if ($('#Status').val() == "Disapprove" && $('#DisapproveReason').val() == "") {
+    //        toastr.error('Please Enter Disapprove Reason');
+    //        temp = false;
+    //    }
+
+    //    if ($('#Status').val() == "") {
+    //        toastr.error('Please Select Status');
+    //        temp = false;
+    //    }
+    //    if (temp == true) {
+    //        var url = window.location.href
+    //        var array = url.split('/');
+    //        var lastsegment = array[array.length - 1];
+
+    //        $.ajax({
+    //            type: "GET",
+    //            url: '/PRNMains/SaveApproveStatus',
+    //            data: { 'ID': lastsegment, Status: $('#Status').val(), DisapproveReason: $('#DisapproveReason').val() },
+    //            success: function (result) {                 
+    //                if (result.Message == "success") {                  
+    //                    toastr.success("Status Successfully Updated..");
+    //                    window.location.href = "/PRNMains/PRNApproverIndex";
+    //                } else {
+    //                    toastr.error(result.Message);                       
+    //                }
+    //            }
+    //        })
+    //    }
+
+    //});
+    function Disapprove() {
+        $('#DisapproveReason').val('');
+        if ($('#Status').val() == "Disapprove") {
+            $('#hfDisapproveReason').show();
+        } else {
+            $('#hfDisapproveReason').hide();
+        }
+    }
+
+    function CheckDuplicate(Count)
+    {
+        
+        var isChecked = $('#CHKSelect' + Count).is(":checked");
+       
+        $('#Orderdetails tbody tr').each(function (index, e) {
+            
+            var SRNO = $(e).children().get(0);
+            var PRD = $(e).children().get(2);
+            
+            if ($('#SRNO' + Count).val() != SRNO.firstElementChild.value && $('#ProductName' + Count).val() == PRD.firstElementChild.value) {               
+                var Chkname=SRNO.firstElementChild.value;
+                $('#CHKSelect' + Chkname).prop('checked', false);
+            }           
+        })
+    }
+
+    function SaveList() {
+        var temp = false;
+        var list = [];
+        $('#Orderdetails tbody tr').each(function (index, e) {
+            try {
+                var inputEl = $(e).children().get(0);
+                var Count = inputEl.firstElementChild.value;
+                var CheValue = $("#CHKSelect" + Count).is(':checked') ? 1 : 0;
+
+
+                if (CheValue == 1) {
+                    var orderItem = {
+                        ProductCode: $('.ProductCode', this).val(),
+                        ProductName: $('.ProductName', this).val(),
+                        SupplierName: $('.SupplierName', this).val(),
+                        DeliveryInDays: $('.DeliveryInDays', this).val(),
+                        SupplierproductrelationID: $('.SupplierproductrelationID', this).val(),
+                        ProductPrice: $('.ProductPrice', this).val(),
+                        
+                        SupplierProductID: $('.SupplierproductrelationID', this).val(),
+                        SRNO: $('.SRNO', this).val(),
+                        PRNNo: $('#PRNNo').val(),
+                    }
+                    temp = true;
+                    list.push(orderItem);
+                }else
+                {
+                    
+                }
+            } catch (ee) {
+
+            }
+        })
+        debugger;
+        if (temp == true) {
+            debugger;
+            var data = {
+                OrderDetails: list 
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/GetQuotations/GenrateQuotations',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function (result) {
+                    debugger;
+                    if (result.Message == "success") {
+                        toastr.success("Invoice Genrated Successfully..");
+                        window.location.href = "/GetQuotations/Index";
+                    }
+                    else {
+                        toastr.error(result.Message);
+                    }
+                },
+
+            });
+        } else {
+            toastr.error('Please Select Data..');
+        }
+
+    }
+</script>

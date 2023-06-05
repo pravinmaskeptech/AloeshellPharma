@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "Supplier Wise Stock";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Supplier Wise Stock</h2>
+
+<style>
+    #reportviewer {
+        min-height: 500px;
+        min-width: 100%;
+    }
+</style>
+@(Html.EJ().ReportViewer("reportviewer")
+    .ProcessingMode(Syncfusion.JavaScript.ReportViewerEnums.ProcessingMode.Remote)
+    .ReportServiceUrl(VirtualPathUtility.ToAbsolute("~/api/ReportApi"))
+    .ReportPath("~/App_Data/rptSupplierWiseStock.rdl").Parameters(param =>
+                              {
+                                  param.Name("Supplier").Labels(new List<string>() { "Supplier" }).Values(new List<string>() { ViewBag.Supplier}).Add();
+                              })
+)
+

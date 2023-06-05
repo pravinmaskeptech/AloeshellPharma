@@ -1,0 +1,2058 @@
+<?xml version="1.0"?>
+<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition">
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+        </Style>
+        <ReportItems>
+          <Tablix Name="Tablix1">
+            <Left>9pt</Left>
+            <Top>3.75pt</Top>
+            <Height>36pt</Height>
+            <Width>936pt</Width>
+            <Style>
+              <Border>
+                <Width>1.07475pt</Width>
+                <Style>Solid</Style>
+              </Border>
+            </Style>
+            <DataSetName>DataSet1</DataSetName>
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>72pt</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>18pt</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox1">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Code</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox2">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Production Name</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox3">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>GRN No</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox16">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Supplier</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox11">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Mfg Date</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox9">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Expiry Date</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox19">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>GRN No</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox17">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>grn date</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox7">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>PO No</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox25">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Bill No</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox23">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Warehouse</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox21">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Batch No</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox28">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <BackgroundColor>#f7971d</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Location</Value>
+                                  <Style>
+                                    <FontSize>11.4998pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>18pt</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox4">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!ProductCode.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox5">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!ProductName.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox6">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!GRNNo.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox15">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!SupplierName.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox12">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=FormatDateTime(Fields!ManufacturingDate.Value, DateFormat.ShortDate)</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox10">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=FormatDateTime(Fields!ExpiryDate.Value, DateFormat.ShortDate)</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox20">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!GRNNo.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox18">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=FormatDateTime(Fields!GRNDate.Value, DateFormat.ShortDate)</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox8">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!PONo.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox26">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!BillNo.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox27">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!WareHouseName.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox22">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!BatchNo.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox29">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>18pt</Height>
+                          <Width>72pt</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!StoreLocation.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <KeepWithGroup>After</KeepWithGroup>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="Details" />
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+          </Tablix>
+        </ReportItems>
+        <Height>3.125in</Height>
+      </Body>
+      <Width>952.5pt</Width>
+      <Page>
+        <PageHeader>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+          <Height>25.5pt</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="TextBox30">
+              <Left>0pt</Left>
+              <Top>0pt</Top>
+              <Height>25.5pt</Height>
+              <Width>951pt</Width>
+              <Style>
+                <BackgroundColor>#ffffff</BackgroundColor>
+                <VerticalAlign>Middle</VerticalAlign>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+                <Border>
+                  <Width>0.24975pt</Width>
+                  <Style>None</Style>
+                </Border>
+              </Style>
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Stock Expiry Report</Value>
+                      <Style>
+                        <FontSize>17.4997pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                        <Color>black</Color>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+            </Textbox>
+          </ReportItems>
+        </PageHeader>
+        <PageFooter>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+          <Height>0.72917in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+        </PageFooter>
+        <LeftMargin>1in</LeftMargin>
+        <RightMargin>1in</RightMargin>
+        <TopMargin>1in</TopMargin>
+        <BottomMargin>1in</BottomMargin>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+        </Style>
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DataSource1">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>Data Source=DELL-INSP-3558\ADMINSQLEXPRESS;Initial Catalog=InventoryPurchaseSales;</ConnectString>
+        <IntegratedSecurity>true</IntegratedSecurity>
+      </ConnectionProperties>
+      <rd:SecurityType>Integrated</rd:SecurityType>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet1">
+      <Fields>
+        <Field Name="GRNId">
+          <DataField>GRNId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="PurchaseOrderDetailsID">
+          <DataField>PurchaseOrderDetailsID</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="GRNNo">
+          <DataField>GRNNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="WarehouseID">
+          <DataField>WarehouseID</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="StoreLocationId">
+          <DataField>StoreLocationId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="SupplierID">
+          <DataField>SupplierID</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="GRNDate">
+          <DataField>GRNDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="PONo">
+          <DataField>PONo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BillNo">
+          <DataField>BillNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ProductCode">
+          <DataField>ProductCode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BatchNo">
+          <DataField>BatchNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ReceivedQty">
+          <DataField>ReceivedQty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="SalesQty">
+          <DataField>SalesQty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="ReturnQty">
+          <DataField>ReturnQty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="ReturnReason">
+          <DataField>ReturnReason</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ReplaceQty">
+          <DataField>ReplaceQty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="ReplaceReason">
+          <DataField>ReplaceReason</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ManufacturingDate">
+          <DataField>ManufacturingDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="ExpiryDate">
+          <DataField>ExpiryDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="CreatedBy">
+          <DataField>CreatedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CreatedDate">
+          <DataField>CreatedDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="ModifiedBy">
+          <DataField>ModifiedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ModifiedDate">
+          <DataField>ModifiedDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="SerialNoApplicable">
+          <DataField>SerialNoApplicable</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="DamageQty">
+          <DataField>DamageQty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="PODate">
+          <DataField>PODate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="DebitDocNo">
+          <DataField>DebitDocNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="DiscountAs">
+          <DataField>DiscountAs</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BasicRate">
+          <DataField>BasicRate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="Discount">
+          <DataField>Discount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="IGST">
+          <DataField>IGST</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="CGST">
+          <DataField>CGST</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="SGST">
+          <DataField>SGST</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="Tax">
+          <DataField>Tax</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AmountPerItem">
+          <DataField>AmountPerItem</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="TotalAmount">
+          <DataField>TotalAmount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="CompanyID">
+          <DataField>CompanyID</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="SerialNoId">
+          <DataField>SerialNoId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Products_ProductCode">
+          <DataField>Products_ProductCode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ProductName">
+          <DataField>ProductName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ProductClass">
+          <DataField>ProductClass</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ModelName">
+          <DataField>ModelName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Description">
+          <DataField>Description</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CategoryId">
+          <DataField>CategoryId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="OpeningQuantity">
+          <DataField>OpeningQuantity</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="InwardQuantity">
+          <DataField>InwardQuantity</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="OutwardQuantity">
+          <DataField>OutwardQuantity</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="ClosingQuantity">
+          <DataField>ClosingQuantity</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AllocatedQty">
+          <DataField>AllocatedQty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="PurchasePrice">
+          <DataField>PurchasePrice</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="SellingPrice">
+          <DataField>SellingPrice</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="Products_DamageQty">
+          <DataField>Products_DamageQty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="Weight">
+          <DataField>Weight</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="Size">
+          <DataField>Size</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="StandardWarranty">
+          <DataField>StandardWarranty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="Products_Discount">
+          <DataField>Products_Discount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="DiscountIn">
+          <DataField>DiscountIn</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ReorderLevel">
+          <DataField>ReorderLevel</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MaxLevel">
+          <DataField>MaxLevel</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="HsnCode">
+          <DataField>HsnCode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Note">
+          <DataField>Note</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Image">
+          <DataField>Image</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Products_SerialNoApplicable">
+          <DataField>Products_SerialNoApplicable</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="LeadTimePurchase">
+          <DataField>LeadTimePurchase</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="LeadTimeSell">
+          <DataField>LeadTimeSell</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="UOM">
+          <DataField>UOM</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Products_CreatedBy">
+          <DataField>Products_CreatedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Products_CreatedDate">
+          <DataField>Products_CreatedDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="UpdatedBy">
+          <DataField>UpdatedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="UpdateDate">
+          <DataField>UpdateDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="IsActive">
+          <DataField>IsActive</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="ProductType">
+          <DataField>ProductType</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Suppliers_SupplierID">
+          <DataField>Suppliers_SupplierID</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="SupplierName">
+          <DataField>SupplierName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BillingAddress">
+          <DataField>BillingAddress</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BillingCity">
+          <DataField>BillingCity</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BillingPincode">
+          <DataField>BillingPincode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BillingState">
+          <DataField>BillingState</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BillingCountry">
+          <DataField>BillingCountry</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BillingPhone">
+          <DataField>BillingPhone</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BillingEmail">
+          <DataField>BillingEmail</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ShippingAddress">
+          <DataField>ShippingAddress</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ShippingCity">
+          <DataField>ShippingCity</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ShippingPincode">
+          <DataField>ShippingPincode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ShippingState">
+          <DataField>ShippingState</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ShippingCountry">
+          <DataField>ShippingCountry</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ShippingPhone">
+          <DataField>ShippingPhone</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ShippingEmail">
+          <DataField>ShippingEmail</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Website">
+          <DataField>Website</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PANNo">
+          <DataField>PANNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="TANNo">
+          <DataField>TANNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="GSTTreatment">
+          <DataField>GSTTreatment</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="GSTNo">
+          <DataField>GSTNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Suppliers_IGST">
+          <DataField>Suppliers_IGST</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="IsExempt">
+          <DataField>IsExempt</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="ExepmtionReason">
+          <DataField>ExepmtionReason</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Currency">
+          <DataField>Currency</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PaymentTerms">
+          <DataField>PaymentTerms</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BalanceAmount">
+          <DataField>BalanceAmount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AdvanceAmount">
+          <DataField>AdvanceAmount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="EmployeeID">
+          <DataField>EmployeeID</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Facebook">
+          <DataField>Facebook</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Twitter">
+          <DataField>Twitter</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="WhatsApp">
+          <DataField>WhatsApp</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Notes">
+          <DataField>Notes</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Suppliers_IsActive">
+          <DataField>Suppliers_IsActive</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="Suppliers_CreatedBy">
+          <DataField>Suppliers_CreatedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Suppliers_CreatedDate">
+          <DataField>Suppliers_CreatedDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Suppliers_UpdatedBy">
+          <DataField>Suppliers_UpdatedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Suppliers_UpdateDate">
+          <DataField>Suppliers_UpdateDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Warehouses_WareHouseID">
+          <DataField>Warehouses_WareHouseID</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="WareHouseName">
+          <DataField>WareHouseName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Address">
+          <DataField>Address</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="City">
+          <DataField>City</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Pincode">
+          <DataField>Pincode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Email">
+          <DataField>Email</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Phone">
+          <DataField>Phone</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="State">
+          <DataField>State</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Country">
+          <DataField>Country</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="IsPrimary">
+          <DataField>IsPrimary</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="StoreLocations_StoreLocationId">
+          <DataField>StoreLocations_StoreLocationId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="StoreLocations_WarehouseId">
+          <DataField>StoreLocations_WarehouseId</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="StoreLocation">
+          <DataField>StoreLocation</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="StoreLocations_Description">
+          <DataField>StoreLocations_Description</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="StoreLocations_CreatedBy">
+          <DataField>StoreLocations_CreatedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="StoreLocations_CreatedDate">
+          <DataField>StoreLocations_CreatedDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="StoreLocations_ModifiedBy">
+          <DataField>StoreLocations_ModifiedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="StoreLocations_ModifiedDate">
+          <DataField>StoreLocations_ModifiedDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="StoreLocations_IsActive">
+          <DataField>StoreLocations_IsActive</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource1</DataSourceName>
+        <CommandType>Text</CommandType>
+        <CommandText>SELECT [dbo].[GRNDetails].[GRNId],
+[dbo].[GRNDetails].[PurchaseOrderDetailsID],
+[dbo].[GRNDetails].[GRNNo],
+[dbo].[GRNDetails].[WarehouseID],
+[dbo].[GRNDetails].[StoreLocationId],
+[dbo].[GRNDetails].[SupplierID],
+[dbo].[GRNDetails].[GRNDate],
+[dbo].[GRNDetails].[PONo],
+[dbo].[GRNDetails].[BillNo],
+[dbo].[GRNDetails].[ProductCode],
+[dbo].[GRNDetails].[BatchNo],
+[dbo].[GRNDetails].[ReceivedQty],
+[dbo].[GRNDetails].[SalesQty],
+[dbo].[GRNDetails].[ReturnQty],
+[dbo].[GRNDetails].[ReturnReason],
+[dbo].[GRNDetails].[ReplaceQty],
+[dbo].[GRNDetails].[ReplaceReason],
+[dbo].[GRNDetails].[ManufacturingDate],
+[dbo].[GRNDetails].[ExpiryDate],
+[dbo].[GRNDetails].[CreatedBy],
+[dbo].[GRNDetails].[CreatedDate],
+[dbo].[GRNDetails].[ModifiedBy],
+[dbo].[GRNDetails].[ModifiedDate],
+[dbo].[GRNDetails].[SerialNoApplicable],
+[dbo].[GRNDetails].[DamageQty],
+[dbo].[GRNDetails].[PODate],
+[dbo].[GRNDetails].[DebitDocNo],
+[dbo].[GRNDetails].[DiscountAs],
+[dbo].[GRNDetails].[BasicRate],
+[dbo].[GRNDetails].[Discount],
+[dbo].[GRNDetails].[IGST],
+[dbo].[GRNDetails].[CGST],
+[dbo].[GRNDetails].[SGST],
+[dbo].[GRNDetails].[Tax],
+[dbo].[GRNDetails].[AmountPerItem],
+[dbo].[GRNDetails].[TotalAmount],
+[dbo].[GRNDetails].[CompanyID],
+[dbo].[GRNDetails].[SerialNoId],
+[dbo].[Products].[ProductCode] AS [Products_ProductCode],
+[dbo].[Products].[ProductName],
+[dbo].[Products].[ProductClass],
+[dbo].[Products].[ModelName],
+[dbo].[Products].[Description],
+[dbo].[Products].[CategoryId],
+[dbo].[Products].[OpeningQuantity],
+[dbo].[Products].[InwardQuantity],
+[dbo].[Products].[OutwardQuantity],
+[dbo].[Products].[ClosingQuantity],
+[dbo].[Products].[AllocatedQty],
+[dbo].[Products].[PurchasePrice],
+[dbo].[Products].[SellingPrice],
+[dbo].[Products].[DamageQty] AS [Products_DamageQty],
+[dbo].[Products].[Weight],
+[dbo].[Products].[Size],
+[dbo].[Products].[StandardWarranty],
+[dbo].[Products].[Discount] AS [Products_Discount],
+[dbo].[Products].[DiscountIn],
+[dbo].[Products].[ReorderLevel],
+[dbo].[Products].[MaxLevel],
+[dbo].[Products].[HsnCode],
+[dbo].[Products].[Note],
+[dbo].[Products].[Image],
+[dbo].[Products].[SerialNoApplicable] AS [Products_SerialNoApplicable],
+[dbo].[Products].[LeadTimePurchase],
+[dbo].[Products].[LeadTimeSell],
+[dbo].[Products].[UOM],
+[dbo].[Products].[CreatedBy] AS [Products_CreatedBy],
+[dbo].[Products].[CreatedDate] AS [Products_CreatedDate],
+[dbo].[Products].[UpdatedBy],
+[dbo].[Products].[UpdateDate],
+[dbo].[Products].[IsActive],
+[dbo].[Products].[ProductType],
+[dbo].[Suppliers].[SupplierID] AS [Suppliers_SupplierID],
+[dbo].[Suppliers].[SupplierName],
+[dbo].[Suppliers].[BillingAddress],
+[dbo].[Suppliers].[BillingCity],
+[dbo].[Suppliers].[BillingPincode],
+[dbo].[Suppliers].[BillingState],
+[dbo].[Suppliers].[BillingCountry],
+[dbo].[Suppliers].[BillingPhone],
+[dbo].[Suppliers].[BillingEmail],
+[dbo].[Suppliers].[ShippingAddress],
+[dbo].[Suppliers].[ShippingCity],
+[dbo].[Suppliers].[ShippingPincode],
+[dbo].[Suppliers].[ShippingState],
+[dbo].[Suppliers].[ShippingCountry],
+[dbo].[Suppliers].[ShippingPhone],
+[dbo].[Suppliers].[ShippingEmail],
+[dbo].[Suppliers].[Website],
+[dbo].[Suppliers].[PANNo],
+[dbo].[Suppliers].[TANNo],
+[dbo].[Suppliers].[GSTTreatment],
+[dbo].[Suppliers].[GSTNo],
+[dbo].[Suppliers].[IGST] AS [Suppliers_IGST],
+[dbo].[Suppliers].[IsExempt],
+[dbo].[Suppliers].[ExepmtionReason],
+[dbo].[Suppliers].[Currency],
+[dbo].[Suppliers].[PaymentTerms],
+[dbo].[Suppliers].[BalanceAmount],
+[dbo].[Suppliers].[AdvanceAmount],
+[dbo].[Suppliers].[EmployeeID],
+[dbo].[Suppliers].[Facebook],
+[dbo].[Suppliers].[Twitter],
+[dbo].[Suppliers].[WhatsApp],
+[dbo].[Suppliers].[Notes],
+[dbo].[Suppliers].[IsActive] AS [Suppliers_IsActive],
+[dbo].[Suppliers].[CreatedBy] AS [Suppliers_CreatedBy],
+[dbo].[Suppliers].[CreatedDate] AS [Suppliers_CreatedDate],
+[dbo].[Suppliers].[UpdatedBy] AS [Suppliers_UpdatedBy],
+[dbo].[Suppliers].[UpdateDate] AS [Suppliers_UpdateDate],
+[dbo].[Warehouses].[WareHouseID] AS [Warehouses_WareHouseID],
+[dbo].[Warehouses].[WareHouseName],
+[dbo].[Warehouses].[Address],
+[dbo].[Warehouses].[City],
+[dbo].[Warehouses].[Pincode],
+[dbo].[Warehouses].[Email],
+[dbo].[Warehouses].[Phone],
+[dbo].[Warehouses].[State],
+[dbo].[Warehouses].[Country],
+[dbo].[Warehouses].[IsPrimary],
+[dbo].[StoreLocations].[StoreLocationId] AS [StoreLocations_StoreLocationId],
+[dbo].[StoreLocations].[WarehouseId] AS [StoreLocations_WarehouseId],
+[dbo].[StoreLocations].[StoreLocation],
+[dbo].[StoreLocations].[Description] AS [StoreLocations_Description],
+[dbo].[StoreLocations].[CreatedBy] AS [StoreLocations_CreatedBy],
+[dbo].[StoreLocations].[CreatedDate] AS [StoreLocations_CreatedDate],
+[dbo].[StoreLocations].[ModifiedBy] AS [StoreLocations_ModifiedBy],
+[dbo].[StoreLocations].[ModifiedDate] AS [StoreLocations_ModifiedDate],
+[dbo].[StoreLocations].[IsActive] AS [StoreLocations_IsActive] FROM [dbo].[GRNDetails] INNER JOIN [dbo].[Products] ON [dbo].[GRNDetails].[ProductCode]=[dbo].[Products].[ProductCode] LEFT OUTER JOIN [dbo].[Suppliers] ON [dbo].[GRNDetails].[SupplierID]=[dbo].[Suppliers].[SupplierID] RIGHT OUTER JOIN [dbo].[Warehouses] ON [dbo].[GRNDetails].[WarehouseID]=[dbo].[Warehouses].[WareHouseID] FULL OUTER JOIN [dbo].[StoreLocations] ON [dbo].[GRNDetails].[StoreLocationId]=[dbo].[StoreLocations].[StoreLocationId]</CommandText>
+        <QueryDesignerState xmlns="http://schemas.microsoft.com/ReportingServices/QueryDefinition/Relational">
+          <Tables>
+            <Table Name="GRNDetails" Schema="dbo">
+              <Columns>
+                <Column Name="GRNId" IsDuplicate="False" IsSelected="True" />
+                <Column Name="PurchaseOrderDetailsID" IsDuplicate="False" IsSelected="True" />
+                <Column Name="GRNNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="WarehouseID" IsDuplicate="False" IsSelected="True" />
+                <Column Name="StoreLocationId" IsDuplicate="False" IsSelected="True" />
+                <Column Name="SupplierID" IsDuplicate="False" IsSelected="True" />
+                <Column Name="GRNDate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="PONo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="BillNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ProductCode" IsDuplicate="False" IsSelected="True" />
+                <Column Name="BatchNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ReceivedQty" IsDuplicate="False" IsSelected="True" />
+                <Column Name="SalesQty" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ReturnQty" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ReturnReason" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ReplaceQty" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ReplaceReason" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ManufacturingDate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ExpiryDate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="CreatedBy" IsDuplicate="False" IsSelected="True" />
+                <Column Name="CreatedDate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ModifiedBy" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ModifiedDate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="SerialNoApplicable" IsDuplicate="False" IsSelected="True" />
+                <Column Name="DamageQty" IsDuplicate="False" IsSelected="True" />
+                <Column Name="PODate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="DebitDocNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="DiscountAs" IsDuplicate="False" IsSelected="True" />
+                <Column Name="BasicRate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Discount" IsDuplicate="False" IsSelected="True" />
+                <Column Name="IGST" IsDuplicate="False" IsSelected="True" />
+                <Column Name="CGST" IsDuplicate="False" IsSelected="True" />
+                <Column Name="SGST" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Tax" IsDuplicate="False" IsSelected="True" />
+                <Column Name="AmountPerItem" IsDuplicate="False" IsSelected="True" />
+                <Column Name="TotalAmount" IsDuplicate="False" IsSelected="True" />
+                <Column Name="CompanyID" IsDuplicate="False" IsSelected="True" />
+                <Column Name="SerialNoId" IsDuplicate="False" IsSelected="True" />
+              </Columns>
+              <SchemaLevels>
+                <SchemaInfo Name="dbo" SchemaType="Schema" />
+                <SchemaInfo Name="Tables" SchemaType="Category" />
+                <SchemaInfo Name="GRNDetails" SchemaType="Table" />
+              </SchemaLevels>
+            </Table>
+            <Table Name="Products" Schema="dbo">
+              <Columns>
+                <Column Name="ProductCode" AliasName="Products_ProductCode" IsDuplicate="True" IsSelected="True" />
+                <Column Name="ProductName" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ProductClass" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ModelName" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Description" IsDuplicate="False" IsSelected="True" />
+                <Column Name="CategoryId" IsDuplicate="False" IsSelected="True" />
+                <Column Name="OpeningQuantity" IsDuplicate="False" IsSelected="True" />
+                <Column Name="InwardQuantity" IsDuplicate="False" IsSelected="True" />
+                <Column Name="OutwardQuantity" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ClosingQuantity" IsDuplicate="False" IsSelected="True" />
+                <Column Name="AllocatedQty" IsDuplicate="False" IsSelected="True" />
+                <Column Name="PurchasePrice" IsDuplicate="False" IsSelected="True" />
+                <Column Name="SellingPrice" IsDuplicate="False" IsSelected="True" />
+                <Column Name="DamageQty" AliasName="Products_DamageQty" IsDuplicate="True" IsSelected="True" />
+                <Column Name="Weight" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Size" IsDuplicate="False" IsSelected="True" />
+                <Column Name="StandardWarranty" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Discount" AliasName="Products_Discount" IsDuplicate="True" IsSelected="True" />
+                <Column Name="DiscountIn" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ReorderLevel" IsDuplicate="False" IsSelected="True" />
+                <Column Name="MaxLevel" IsDuplicate="False" IsSelected="True" />
+                <Column Name="HsnCode" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Note" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Image" IsDuplicate="False" IsSelected="True" />
+                <Column Name="SerialNoApplicable" AliasName="Products_SerialNoApplicable" IsDuplicate="True" IsSelected="True" />
+                <Column Name="LeadTimePurchase" IsDuplicate="False" IsSelected="True" />
+                <Column Name="LeadTimeSell" IsDuplicate="False" IsSelected="True" />
+                <Column Name="UOM" IsDuplicate="False" IsSelected="True" />
+                <Column Name="CreatedBy" AliasName="Products_CreatedBy" IsDuplicate="True" IsSelected="True" />
+                <Column Name="CreatedDate" AliasName="Products_CreatedDate" IsDuplicate="True" IsSelected="True" />
+                <Column Name="UpdatedBy" IsDuplicate="False" IsSelected="True" />
+                <Column Name="UpdateDate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="IsActive" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ProductType" IsDuplicate="False" IsSelected="True" />
+              </Columns>
+              <SchemaLevels>
+                <SchemaInfo Name="dbo" SchemaType="Schema" />
+                <SchemaInfo Name="Tables" SchemaType="Category" />
+                <SchemaInfo Name="Products" SchemaType="Table" />
+              </SchemaLevels>
+            </Table>
+            <Table Name="Suppliers" Schema="dbo">
+              <Columns>
+                <Column Name="SupplierID" AliasName="Suppliers_SupplierID" IsDuplicate="True" IsSelected="True" />
+                <Column Name="SupplierName" IsDuplicate="False" IsSelected="True" />
+                <Column Name="BillingAddress" IsDuplicate="False" IsSelected="True" />
+                <Column Name="BillingCity" IsDuplicate="False" IsSelected="True" />
+                <Column Name="BillingPincode" IsDuplicate="False" IsSelected="True" />
+                <Column Name="BillingState" IsDuplicate="False" IsSelected="True" />
+                <Column Name="BillingCountry" IsDuplicate="False" IsSelected="True" />
+                <Column Name="BillingPhone" IsDuplicate="False" IsSelected="True" />
+                <Column Name="BillingEmail" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ShippingAddress" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ShippingCity" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ShippingPincode" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ShippingState" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ShippingCountry" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ShippingPhone" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ShippingEmail" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Website" IsDuplicate="False" IsSelected="True" />
+                <Column Name="PANNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="TANNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="GSTTreatment" IsDuplicate="False" IsSelected="True" />
+                <Column Name="GSTNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="IGST" AliasName="Suppliers_IGST" IsDuplicate="True" IsSelected="True" />
+                <Column Name="IsExempt" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ExepmtionReason" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Currency" IsDuplicate="False" IsSelected="True" />
+                <Column Name="PaymentTerms" IsDuplicate="False" IsSelected="True" />
+                <Column Name="BalanceAmount" IsDuplicate="False" IsSelected="True" />
+                <Column Name="AdvanceAmount" IsDuplicate="False" IsSelected="True" />
+                <Column Name="EmployeeID" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Facebook" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Twitter" IsDuplicate="False" IsSelected="True" />
+                <Column Name="WhatsApp" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Notes" IsDuplicate="False" IsSelected="True" />
+                <Column Name="IsActive" AliasName="Suppliers_IsActive" IsDuplicate="True" IsSelected="True" />
+                <Column Name="CreatedBy" AliasName="Suppliers_CreatedBy" IsDuplicate="True" IsSelected="True" />
+                <Column Name="CreatedDate" AliasName="Suppliers_CreatedDate" IsDuplicate="True" IsSelected="True" />
+                <Column Name="UpdatedBy" AliasName="Suppliers_UpdatedBy" IsDuplicate="True" IsSelected="True" />
+                <Column Name="UpdateDate" AliasName="Suppliers_UpdateDate" IsDuplicate="True" IsSelected="True" />
+              </Columns>
+              <SchemaLevels>
+                <SchemaInfo Name="dbo" SchemaType="Schema" />
+                <SchemaInfo Name="Tables" SchemaType="Category" />
+                <SchemaInfo Name="Suppliers" SchemaType="Table" />
+              </SchemaLevels>
+            </Table>
+            <Table Name="Warehouses" Schema="dbo">
+              <Columns>
+                <Column Name="WareHouseID" AliasName="Warehouses_WareHouseID" IsDuplicate="True" IsSelected="True" />
+                <Column Name="WareHouseName" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Address" IsDuplicate="False" IsSelected="True" />
+                <Column Name="City" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Pincode" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Email" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Phone" IsDuplicate="False" IsSelected="True" />
+                <Column Name="State" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Country" IsDuplicate="False" IsSelected="True" />
+                <Column Name="IsPrimary" IsDuplicate="False" IsSelected="True" />
+              </Columns>
+              <SchemaLevels>
+                <SchemaInfo Name="dbo" SchemaType="Schema" />
+                <SchemaInfo Name="Tables" SchemaType="Category" />
+                <SchemaInfo Name="Warehouses" SchemaType="Table" />
+              </SchemaLevels>
+            </Table>
+            <Table Name="StoreLocations" Schema="dbo">
+              <Columns>
+                <Column Name="StoreLocationId" AliasName="StoreLocations_StoreLocationId" IsDuplicate="True" IsSelected="True" />
+                <Column Name="WarehouseId" AliasName="StoreLocations_WarehouseId" IsDuplicate="True" IsSelected="True" />
+                <Column Name="StoreLocation" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Description" AliasName="StoreLocations_Description" IsDuplicate="True" IsSelected="True" />
+                <Column Name="CreatedBy" AliasName="StoreLocations_CreatedBy" IsDuplicate="True" IsSelected="True" />
+                <Column Name="CreatedDate" AliasName="StoreLocations_CreatedDate" IsDuplicate="True" IsSelected="True" />
+                <Column Name="ModifiedBy" AliasName="StoreLocations_ModifiedBy" IsDuplicate="True" IsSelected="True" />
+                <Column Name="ModifiedDate" AliasName="StoreLocations_ModifiedDate" IsDuplicate="True" IsSelected="True" />
+                <Column Name="IsActive" AliasName="StoreLocations_IsActive" IsDuplicate="True" IsSelected="True" />
+              </Columns>
+              <SchemaLevels>
+                <SchemaInfo Name="dbo" SchemaType="Schema" />
+                <SchemaInfo Name="Tables" SchemaType="Category" />
+                <SchemaInfo Name="StoreLocations" SchemaType="Table" />
+              </SchemaLevels>
+            </Table>
+          </Tables>
+          <Joins>
+            <Join LeftTable="GRNDetails" RightTable="Products" JoinType="Inner">
+              <JoinFields>
+                <JoinField LeftField="ProductCode" RightField="ProductCode" OperatorType="=" />
+              </JoinFields>
+            </Join>
+            <Join LeftTable="GRNDetails" RightTable="Suppliers" JoinType="Left Outer">
+              <JoinFields>
+                <JoinField LeftField="SupplierID" RightField="SupplierID" OperatorType="=" />
+              </JoinFields>
+            </Join>
+            <Join LeftTable="GRNDetails" RightTable="Warehouses" JoinType="Right Outer">
+              <JoinFields>
+                <JoinField LeftField="WarehouseID" RightField="WareHouseID" OperatorType="=" />
+              </JoinFields>
+            </Join>
+            <Join LeftTable="GRNDetails" RightTable="StoreLocations" JoinType="Full Outer">
+              <JoinFields>
+                <JoinField LeftField="StoreLocationId" RightField="StoreLocationId" OperatorType="=" />
+              </JoinFields>
+            </Join>
+          </Joins>
+        </QueryDesignerState>
+      </Query>
+    </DataSet>
+  </DataSets>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:PageUnit>Px</rd:PageUnit>
+</Report>

@@ -1,0 +1,329 @@
+﻿@model Inventory.Models.POReturns
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Return", "POReturns", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Count" name="Count" value="1" />
+    <input type="hidden" id="SupplierID" name="SupplierID" />
+        <input type="hidden" id="ProductId" name="ProductId" /> 
+    <input type="hidden" id="BatchSetting" name="BatchSetting" value="@ViewBag.BatchNoSetting" />
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">RETURN BY SERIAL NO</h3>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+        <div class="box-body">            
+            <div class="row">
+                <div class="col-md-6">                   
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    Return No
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="POReturnNo" name="POReturnNo" disabled="disabled" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" />
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Return Date
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="ReturnDate" name="ReturnDate" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Purchase Order Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Select Product
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EJ().Autocomplete("Product").Width("73%").Datasource((IEnumerable<Inventory.Models.Products>)ViewBag.Productdatasource).ShowPopupButton(true).AutocompleteFields(field => field.Text("ProductName").Key("ProductCode")).ClientSideEvents(e => e.Select("getProductId").FocusOut("checkProduct"))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Status
+                            </div>
+                            <div class="col-md-7">
+                                <select name="Status" id="Status" class='Status form-control'>
+                                    <option value='Select'>Select</option>
+                                    <option value='Return'>Return</option>
+                                    <option value='Replace'>Replace</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>               
+            </div>        
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Scan Serial Number
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" id="SerialNumber" class="SerialNumber form-control" />
+                            </div>
+                            <div class="col-md-2">
+                                <input type="button" id="add" value="add" style="width:80px" class="btn btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Return/Replace/Reason
+                            </div>
+                            <div class="col-md-8">
+                                <textarea id="ReturnReason" name="ReturnReason" rows="2" cols="42"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+            @*<table class="table table-responsive" display block; overflow-x auto; white-space nowrap; style="width:1080px">
+                <tr style="background-color:#3c8dbc; color:white">
+                    <td>Scan Serial Number</td>
+                    <td>&nbsp;</td>
+                </tr>
+              
+
+
+                <tr class="mycontainer" id="mainrow">
+                    <td>
+                        <input type="text" id="SerialNumber" class="SerialNumber form-control" />
+                    </td>
+                    <td>
+                        <input type="button" id="add" value="add" style="width:80px" class="btn btn-success" />
+                    </td>
+                </tr>
+            </table>*@
+        </div>
+
+        <div id="orderItems" style="overflow-x:auto;">
+            <table class="table table-responsive" id="orderdetailsItems" display block; overflow-x auto; white-space nowrap; style="width:1470px"></table>
+        </div>
+
+        <div class="row" style="width:1580px">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <div style="padding:5px 10px; text-align:right">
+                            <input id="submit" type="button" value="Save Order" class="btn btn-warning" style="padding:5px 5px" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>}
+<script>
+    function Remove(Count) {
+        $("#R" + Count + "").remove();
+    }
+    function getProductId(PrdId) {
+        $('#ProductId').val(PrdId.key);
+    }
+    $(document).ready(function () {
+        $("#ReturnDate").ejDatePicker({ minDate: new Date(), locale: "en-IN", });
+        // $('#ReturnReason').tri
+        $("ReturnReason").text().trim();
+        getPORturnNo()
+    })
+    function getPORturnNo() {
+        $.ajax({
+            type: "GET",
+            url: '/POReturns/getPORturnNo',
+            success: function (result) {
+                $('#POReturnNo').val("R_" + result);
+            }
+        })
+    }
+    $(document).ready(function () {
+        $('#add').click(function () {
+            var temp = true;
+            if ($('#ReturnDate').val() == "") { toastr.warning('please select date'); temp = false; }
+            if ($('#Status').val() == "Select") { toastr.warning('please select status'); temp = false; }
+            if ($('#SerialNumber').val() == "") { toastr.warning('please scan serial no'); temp = false; }
+            if ($('#Product').val() == "") { toastr.warning('please select Product Name'); temp = false; }
+            if ($('#ReturnReason').val() == "") { toastr.warning('please enter Return Reason'); temp = false; }
+            if (temp == true) {
+                var isduplicate = "";
+                var cnt = 1;
+                $('#orderdetailsItems tbody tr').each(function (index, e) {
+                    if ($('#SerialNumber').val() == $("#SerialNoNew" + cnt + "").val() && $('#ProductId').val() == $("#ProductIdNew" + cnt + "").val()) {
+                        $('#SerialNumber').val('');
+                        toastr.error("Serial Number already added...");
+                        isduplicate = true;
+                    }
+                    cnt = parseInt(cnt) + 1;
+                })
+                if (isduplicate == false) {
+                    $.ajax({
+                        type: "GET",
+                        url: '/POReturns/getReturnData',
+                        data: { 'SerialNo': $('#SerialNumber').val(), 'ProductId': $('#ProductId').val() },
+                        success: function (result) {
+                            if (result.length != 0) {
+                                var isValid = false;
+                                if ($('#SerialNumber').val() == "") { toastr.error("Please Enter Serial Number"); $('#SerialNumber').css("border", "1px solid #e46f61"); isValid = false; } else { $('#SerialNumber').css("border", "1px solid #a5da6b"); isValid = true; }
+                                if (isValid == true && $('#ProductCode').val() != "" && $('#OrderQty').val() != "" && $('#Price').val() != "" && $('#Amount').val() != "") {
+                                    var Count = $('#Count').val();
+                                    var rowCount = $('#orderdetailsItems tr').length;
+                                    $('#SupplierID').val(result[0].SupplierID);
+                                    var BatchSetting = $("#BatchSetting").val();
+                                    if (rowCount == 0) {
+                                        $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' > <th>PO NO</th><th>GRN NO</th><th>PRODUCT</th><th>SERIAL NO</th>" + (BatchSetting=="BatchNo"?'<th>BATCH NO</th>':'') + " <th>WAREHOUSE</th><th>LOCATION</th><th>RETURN REASON</th>STATUS<th>RETURN REASON</th><th>GRN DATE</th><th></th> </tr> <tbody>").appendTo("#orderdetailsItems");
+                                    }
+                                    $("#orderdetailsItems").append(" <tbody> <tr id='R" + Count + "'><td><input type='text' readonly id='PONONew" + Count + "'    class='PONONew form-control'' /></td><td><input type='text' readonly id='GrnNoNew" + Count + "'    class='GrnNoNew form-control'' /></td><td><input type='text' id='ProductNew" + Count + "' readonly  style='width:150px' class='ProductNew form-control'' /></td><td><input type='text' id='SerialNoNew" + Count + "' readonly  style='width:130px' class='SerialNoNew form-control'' /></td>" + (BatchSetting=="BatchNo"?'<td><input type="text" id="BatchNoNew' + Count + '" readonly class="BatchNoNew form-control" /></td>':'') + "<td><input type='text'  id='WarehouseNew" + Count + "'  readonly class='WarehouseNew form-control'' /></td><td><input type='text' id='StoreLocationNew" + Count + "' readonly class='StoreLocationNew form-control'' /></td><td> <select name='StatusNew" + Count + "' style='width:100px' id='StatusNew" + Count + "' class='StatusNew form-control'> <option value='Select'>Select</option> <option value='Return'>Return</option> <option value='Replace'>Replace</option></select></td> <td><input type='text' id='ReturnReason" + Count + "'   style='width : 200px'  class='ReturnReason form-control'' /></td><td><input type='text' readonly id='GrnDateNew" + Count + "'    class='GrnDateNew form-control'' /></td><td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /> <input type='hidden'  id='ProductIdNew" + Count + "'    class='ProductIdNew form-control'' /><input type='hidden'  id='WarehouseId" + Count + "'  class='WarehouseId form-control'' /><input type='hidden'  id='StoreLocationId" + Count + "'   class='StoreLocationId form-control'' /><input type='hidden'  id='SerialNoIdNew" + Count + "'  class='SerialNoIdNew form-control'' /><input type='hidden'  id='PODetailsIdNew" + Count + "'  class='PODetailsIdNew form-control'' /></td></tr> <tbody>");
+                                    $("#SerialNoNew" + Count + "").val(result[0].SerialNo);
+                                    $("#StatusNew" + Count + "").val($('#Status').val());
+                                    
+                                    $("#ProductNew" + Count + "").val(result[0].ProductName);
+                                    $("#BatchNoNew" + Count + "").val(result[0].BatchNo);
+                                    $("#WarehouseNew" + Count + "").val(result[0].WareHouseName);
+                                    $("#StoreLocationNew" + Count + "").val(result[0].StoreLocation);
+                                    $("#GrnNoNew" + Count + "").val(result[0].GrnNo);
+                                    //  alert(result[0].GrnDate)
+
+                                    var date = new Date(parseInt(result[0].GrnDate.substr(6)));
+                                    var displayDate = $.datepicker.formatDate("mm/dd/yy", date);
+                                    $("#GrnDateNew" + Count + "").val(displayDate);
+                                    $("#PONONew" + Count + "").val(result[0].PONO);
+                                    // Hidden Fields
+                                    $("#ProductIdNew" + Count + "").val(result[0].ProductCode);
+                                    $("#WarehouseId" + Count + "").val(result[0].WarehouseId);
+                                    $("#StoreLocationId" + Count + "").val(result[0].StoreLocationId);
+                                    $("#SerialNoIdNew" + Count + "").val(result[0].SerialNoId);
+                                    $("#PODetailsIdNew" + Count + "").val(result[0].PODetailsId);
+                                    $("#ReturnReason" + Count + "").val($('#ReturnReason').val());
+                                    $("#SerialNumber").val('');
+                                    $("#SerialNumber").focus();
+                                }
+                                $('#Count').val(parseInt($('#Count').val()) + 1)
+                            } else {
+                                toastr.warning('serial number not found')
+                            }
+                        }
+                    })
+
+                }
+            }
+        });
+        $('#submit').click(function () {
+            var rowCount = $('#orderdetailsItems tr').length;
+            
+          
+            if (rowCount > 0) {
+                if ($('#ReturnDate').val() == "" || $('#POReturnNo').val() == "" || $('#Status').val() == "Select" || $('#ReturnReason').val() == "") {
+                    if ($('#ReturnDate').val() == "") { toastr.warning("please Select Return Date") }
+                    if ($('#POReturnNo').val() == "") { toastr.warning("PO Return No not found") }
+                    if ($('#Status').val() == "Select") { toastr.warning("please Select Status") }
+                    if ($('#ReturnReason').val() == "") { toastr.warning("please Enter Return Reason") }
+                } else {
+                    var isAllValid = true;
+                    $('#orderItemError').text('');
+                    var list = [];
+                    var errorItemCount = 0;
+                    var ReturnDate = $('#ReturnDate').val();
+                    var datearray = ReturnDate.split("/");
+                    var dt = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+                    $('#orderdetailsItems tbody tr').each(function (index, ele) {
+                        if ($('.PONONew', this).val() == "" || $('.PONONew', this).val() == undefined || $('.GrnNoNew', this).val() == "" || $('.PONONew', this).val() == undefined) {
+                            //  isAllValid = false;
+                            errorItemCount++;
+                            $(this).addClass('error');
+
+                        } else {
+                            var orderItem = {
+                                SerialNoId: $('.SerialNoIdNew', this).val(),
+                                PurchaseOrderDetailsID: $('.PODetailsIdNew', this).val(),
+                                StoreLocationId: $('.StoreLocationId', this).val(),
+                                WarehouseID: $('.WarehouseId', this).val(),
+                                ProductCode: $('.ProductIdNew', this).val(),
+                                SerialNo: $('.SerialNoNew', this).val(),
+                                BatchNo: $('.BatchNoNew', this).val(),
+                                GrnNo: $('.GrnNoNew', this).val(),
+                                ReturnReason: $('.ReturnReason', this).val(),
+                                SupplierID: $('#SupplierID').val(),
+                                ReturnDate: dt,
+                                POReturnNo: $('#POReturnNo').val(),
+                                Status: $('.StatusNew', this).val(),
+                                SupplierID: $('#SupplierID').val(),
+                                ReturnQty: 1
+                            }
+                            list.push(orderItem);
+                        }
+                    })
+                    
+                    if (isAllValid) {
+                        var data = {
+                            ReturnOrder: list
+                        }
+                        $(this).val('Please wait...');
+                        $.ajax({
+                            type: 'POST',
+                            url: '/POReturns/SaveReturnSerialNo',
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if (data.status) {
+                                    toastr.success("Successfully saved..");
+                                    window.location.href = "/POReturns/Index";
+                                }
+                                else {
+                                    toastr.error("something Wrong..");
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error);
+                                $('#submit').val('Save');
+                            }
+                        });
+                    }
+                }
+            } else {
+                toastr.warning("please add data to list.");
+            }
+        });
+    });
+
+</script>

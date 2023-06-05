@@ -1,0 +1,214 @@
+﻿@model Inventory.Models.SalesPersonMaster
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Create", "SalesPerson", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Sales Person</h3>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-6">
+                @*<div class="form-group">
+
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.MMEID, "MME", htmlAttributes: new { @class = "control-label " })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EJ().Autocomplete("MMEName").WatermarkText("Select MME").Datasource((IEnumerable<Inventory.Models.MMEMaster>)ViewBag.MMEDataSource).Width("100%").AutocompleteFields(field => field.Key("MMEID").Text("MMEName")).HighlightSearch(true).ShowPopupButton(true).ClientSideEvents(e => e.FocusOut("MMEName").Select("SetCategoryId"))
+
+                    </div>
+
+                </div>*@
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.SalesPersonName, "Sales Person", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.SalesPersonName, new { htmlAttributes = new { onchange = "DuplicteName();", @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Sales Person name is required and cannot be empty", maxlength = "100" } })
+                        @Html.ValidationMessageFor(model => model.SalesPersonName)
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.ContactNo, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.ContactNo, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "true", data_bv_notempty_message = "The Contact No. is required", data_bv_stringlength = "true", data_bv_stringlength_min = "10", required = "required", autocomplete = "off", data_bv_stringlength_max = "15", data_bv_stringlength_message = "The Phone No. must be 10 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-9]", data_bv_regexp_message = "The Contact can only consist digit" } })
+                        @Html.ValidationMessageFor(model => model.ContactNo)
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @*onchange = "DuplicteBillEmail();",*@ @class = "form-control", maxlength = "100", data_bv_regexp_message = "Input string is not valid Email Id.", @Pattern = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$", data_bv_notempty_message = "Email Id is required", data_bv_emailaddress_message = "The input is not a valid email address", data_bv_notempty = "false", Autocomplete = "off" } })
+                        @*@Html.ValidationMessageFor(model => model.Email)*@
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        <textarea rows="3" cols="20" id="Address" name="Address" class="form-control" maxlength="500" data-bv-notempty="false" @*required="required"*@ data-bv-notempty-message="Address is required and cannot be empty"></textarea>
+                        @*@Html.ValidationMessageFor(model => model.Address)*@
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "City is required and cannot be empty", maxlength = "50" } })
+                        @Html.ValidationMessageFor(model => model.City)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.Pincode, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.Pincode, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "false", data_bv_notempty_message = "The Pincode is required", data_bv_stringlength = "true", data_bv_stringlength_min = "6", @*required = "required",*@ autocomplete = "off", data_bv_stringlength_max = "6", data_bv_stringlength_message = "The Pincode must be 6 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-5]", data_bv_regexp_message = "The Pincode can only consist digit" } })
+                        @*@Html.ValidationMessageFor(model => model.Pincode)*@
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", data_bv_regexp_message = "Input string is not valid Email Id.", data_bv_notempty_message = "Password is required", data_bv_stringlength = "true", data_bv_stringlength_min = "6", data_bv_emailaddress_message = "The input is not a valid email address", data_bv_notempty = "true", Autocomplete = "off" } })
+                        @Html.ValidationMessageFor(model => model.Password)
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-8">
+                                    <input type="submit" value="Create" onclick="CheckDate(event);" class="btn btn-primary" />
+                                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary ml-2" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+        var Message = '@TempData["Msg"]';
+        if(Message!="")
+            toastr.error(Message);
+    })
+
+      function DuplicteName() {
+        var Name = $("#SalesPersonName").val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateName","SalesPerson")',
+            type:"GET",
+            dataType: "JSON",
+            data: { Name: Name , Mode:"Create", Id:0},
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#CustomerName').val("");
+                        $("#form0").bootstrapValidator('revalidateField', 'CustomerName');
+                        toastr.error("Sales Person Name already exist");
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+
+        });
+    }
+    function SetCategoryId(id) {
+    
+        $('#MMEID').val(id.key)
+    };
+
+    function ChkCategory(id) {
+
+        var Category = $('#MMEID').val();
+        if (Category != "") {
+            $.ajax({
+                url: '@Url.Action("ChkCategory", "SalesPerson")',
+                type: "GET",
+                dataType: "JSON",
+                data: { Cat: Category },
+                success: function (result) {
+                    if (result.length == 0) {
+                        toastr.error("MME not Exist");
+                        $("#MMEID").css("border", "1px solid #e46f61");
+                        $('#MMEID').val('');
+                        return false;
+                        event.preventDefault();
+                    } else {
+                        $("#MMEID").css("border", "1px solid #a5da6b");
+                    }
+                }
+            });
+        }
+        else {
+            toastr.error("please Enter MME");
+            $("#Category").css("border", "1px solid #e46f61");
+        }
+    }
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+
+
+</script>
+
+
+@*}*@

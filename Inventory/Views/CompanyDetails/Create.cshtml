@@ -1,0 +1,448 @@
+﻿@model Inventory.Models.CompanyDetail
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .iframe-container {
+        padding-bottom: 60%;
+        padding-top: 30px;
+        height: 0;
+        overflow: hidden;
+    }
+
+        .iframe-container iframe,
+        .iframe-container object,
+        .iframe-container embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+</style>
+<div class="box-body">
+    <div class="row" style="background-color:white">
+        <div class="col-lg-12 col-sm-4 col-xs-12">
+            @using (Html.BeginForm("Create", "CompanyDetails", FormMethod.Post, new
+            {
+                enctype = "multipart/form-data",
+                @class = "form-horizontal",
+                data_bv_message = "This value is not valid",
+                data_toggle = "validator",
+                data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+                data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+                data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+            }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    <h3>Company Details</h3>
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.EditorFor(model => model.CompanyName, new { htmlAttributes = new { @class = "form-control", @Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Company Name is required and cannot be empty", maxlength = "150",onchange= "CheckDuplicateName();" } })
+                                        @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-9">
+                                        <textarea id="Address" name="Address" class="input-validation-error form-control" cols="40" data-val="true" data-val-required="The Message field is required." rows="2" required data-bv-notempty-message="Address is required and cannot be empty" maxlength="500"></textarea>
+                                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.Country, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.EJ().Autocomplete("Country").Width("100%").ClientSideEvents(e => e.FocusOut("populateState")).EnablePersistence(false).ShowPopupButton(true).WatermarkText("Select Country")                                     
+                                        @Html.ValidationMessageFor(model => model.Country, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.State, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.EJ().Autocomplete("State").Width("100%").ClientSideEvents(e => e.FocusOut("CheckStates")).EnablePersistence(false).ShowPopupButton(true).WatermarkText("Select State")
+                                        @*@Html.EditorFor(model => model.State, new  {htmlAttributes = new {@class = "form-control", Autocomplete = "off",data_bv_notempty = "true",data_bv_notempty_message = "State is required and cannot be empty", maxlength = "50",placeholder = "State" } })*@
+                                        @Html.ValidationMessageFor(model => model.State, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "City is required and cannot be empty", maxlength = "50" } })
+                                        @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.Pincode, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.EditorFor(model => model.Pincode, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "true", data_bv_notempty_message = "The Pincode No. is required", data_bv_stringlength = "true", data_bv_stringlength_min = "6", required = "required", autocomplete = "off", data_bv_stringlength_max = "6", data_bv_stringlength_message = "The Pincode No. must be 6 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-9]", data_bv_regexp_message = "The Pincode Number can only consist digit"  } })
+                                        @Html.ValidationMessageFor(model => model.Pincode, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                       @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "true", data_bv_notempty_message = "The Phone No. is required", data_bv_stringlength = "true", data_bv_stringlength_min = "5", required = "required", Autocomplete = "off", data_bv_stringlength_max = "12", data_bv_stringlength_message = "The Phone No. must be 12 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-9]", data_bv_regexp_message = "The Phone Number can only consist digit" } })
+                                        @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.Fax, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.EditorFor(model => model.Fax, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Fax No is required and cannot be empty", maxlength = "50", @type = "number" } })
+                                        @Html.ValidationMessageFor(model => model.Fax, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">                                        
+                                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { onchange = "CheckDuplicateEmail();", @class = "form-control", maxlength = "100", data_bv_regexp_message = "Input string is not valid Email Id.", @Pattern = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$", data_bv_notempty_message = "Email Id is required", data_bv_emailaddress_message = "The input is not a valid email address", data_bv_notempty = "true", Autocomplete = "off" } })
+                                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.Website, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.EditorFor(model => model.Website, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Website is required and cannot be empty", maxlength = "200" } })
+                                        @Html.ValidationMessageFor(model => model.Website, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.PanNo, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.EditorFor(model => model.PanNo, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Pan No is required and cannot be empty", maxlength = "10",  @pattern = "^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$", @style = "text-transform:uppercase", data_bv_regexp = "true", data_bv_regexp_message = "Enter Valid Pan Number" } })
+                                        @Html.ValidationMessageFor(model => model.PanNo, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.TanNo, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.EditorFor(model => model.TanNo, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Tan No is required and cannot be empty", maxlength = "20",} })
+                                        @Html.ValidationMessageFor(model => model.TanNo, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.Industry, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.EditorFor(model => model.Industry, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Industry is required and cannot be empty", maxlength = "50"} })
+                                        @Html.ValidationMessageFor(model => model.Industry, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.FiscalYearFrom, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                      
+                                        @*@Html.DropDownListFor(model => model.FiscalYearFrom, (IEnumerable<SelectListItem>)ViewData["FinancialDataSource"], new { id = "Text", @class = "form-control",onchange= "CheckYear" })*@
+                                         @Html.DropDownListFor(model => model.FiscalYearFrom, new SelectList(ViewBag.FinancialDataSource, "Text", "Text"), "Select", new { @class = "form-control", required = "required", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Fiscal Year is required and cannot be empty", maxlength = "50" })
+                                        @Html.ValidationMessageFor(model => model.FiscalYearFrom, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.TimeZone, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.EditorFor(model => model.TimeZone, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Time Zone is required and cannot be empty", maxlength = "100" } })
+                                        @Html.ValidationMessageFor(model => model.TimeZone, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.GSTNo, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.EditorFor(model => model.GSTNo, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "GST No is required and cannot be empty", maxlength = "15", @style = "text-transform:uppercase",placeholder = "Like    22AAAAA0000A1Z1", @pattern = "^([0][1-9]|[1-2][0-9]|[3][0-5])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$", data_bv_regexp = "true", data_bv_regexp_message = "Enter Valid GST Number" } })
+                                        @Html.ValidationMessageFor(model => model.GSTNo, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.LogoPath, htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="file" id="UploadFilePath" name="UploadFilePath" class="btn" required data-bv-notempty-message="Must upload file" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Create" id="create" class="btn btn-primary" onclick="CheckDuplicateName()" />
+                            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/countries.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+        
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+    })
+    populateCountries("Country", "State");
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+    })
+    function populateState() {       
+        populateStates("Country", "State");
+        $("#State").val("");        
+    }
+
+    function CheckStates(){
+        CheckState("Country", "State");
+    }
+
+    function CheckYear()
+    {
+        var year = $("#FiscalYearFrom").val();
+        if (year == "April to March" || year == "January to December") {
+            $("#FiscalYearFrom").css("border", "1px solid #a5da6b");
+        } else {
+            $("#FiscalYearFrom").val('');
+            $("#FiscalYearFrom").css("border", "1px solid #e46f61");
+            toastr.error("Please Select Fiscal Year..");
+        }
+    }  
+  function CheckDuplicateName() {
+      var Name = $('#CompanyName').val();
+      $.ajax({          
+          url: "/CompanyDetails/CheckDuplicateName",
+          type: "GET",
+          dataType: "JSON",
+          data: { Name: Name, Mode: "Create", Code: "0" },
+          success: function (result) {
+
+              try {
+                  if (result == "1") {
+                      var Code = result[0].CompanyName;
+                      if (Code != "" || Code != null) {
+                          $('#CompanyName').val('');
+                          toastr.error("Company Name already exist");
+                          $("#form0").bootstrapValidator('revalidateField', 'CompanyName');
+                      }
+                  }
+                  else if (result == "0") {
+
+                  }
+                  else {
+                      toastr.error(result);
+                  }
+              }
+              catch (e) {
+              }
+          }
+      });
+  }
+  function CheckDuplicateEmail() {
+      
+      var Email = $('#Email').val();
+      $.ajax({
+          type: "GET",
+          url: "/CompanyDetails/CheckDuplicateEmail",
+          data: { Email: Email, Mode: "Create", Code: "0" },
+          success: function (result) {
+              try {
+                  if (result == "1") {
+                      var Code = result[0].Email;
+                      if (Code != "" || Code != null) {
+                          $('#Email').val('');
+                          toastr.error("Email already exist");
+                          $("#form0").bootstrapValidator('revalidateField', 'Email');
+                      }
+                  }
+                  else if (result == "0") {
+                  }
+                  else {
+                      toastr.error(result);
+                  }
+              }
+              catch (e) {
+              }
+          }
+      })  }   
+    $(document).ready(function () {
+        $('#UploadFilePath').on('change', function (evt) {
+            fs = this.files[0].size;
+            fs = fs / 1048576;
+            if (fs > 2) {
+                $("input[type='file']").replaceWith($("input[type='file']").clone(true));
+                $('#UploadFilePath').val('');
+                toastr.error("Please select file less than 2MB");
+                $("#form0").bootstrapValidator('revalidateField', 'UploadFilePath');
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#create').on('click', function (evt) {
+           
+            var Flag = true;
+            var country = $("#Country").val();
+            var state = $("#State").val();
+            var upload = $('#UploadFilePath').val();
+            if (upload == "")
+            {
+                toastr.error("Please Select File to upload");
+                $("#form0").bootstrapValidator('revalidateField', 'CompanyName');
+                Flag = false;
+            }    
+            if (country == null || country == "") {
+                toastr.error("Please Select Country");
+                Flag = false;
+            }
+            if (state == null || state == "") {
+                toastr.error("Please Select State");
+                Flag = false;
+            }
+
+            if (Flag == false) {
+                event.preventDefault();
+            }
+        });
+    });
+  
+
+    $('#UploadFilePath').change(function () {
+        var ext = $('#UploadFilePath').val().split(".").pop().toLowerCase();
+        if ($.inArray(ext, ['jpg', 'png', ]) == -1) {
+            $("input[type='file']").replaceWith($("input[type='file']").clone(true));
+            $('#UploadFilePath').val('');
+            toastr.error("Only jpg OR png file allowed");
+            $("#form0").bootstrapValidator('revalidateField', 'UploadFilePath');
+            $('#FilePar').hide();
+        } else {
+            // true
+        }
+    });         
+</script>

@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "Invoice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Invoice</h2>
+
+<style>
+    #reportviewer {
+        min-height: 500px;
+        min-width: 100%;
+    }
+</style>
+@(Html.EJ().ReportViewer("reportviewer")
+    .ProcessingMode(Syncfusion.JavaScript.ReportViewerEnums.ProcessingMode.Remote)
+    .ReportServiceUrl(VirtualPathUtility.ToAbsolute("~/api/ReportApi"))
+    .ReportPath("~/App_Data/rptInvoice.rdl").Parameters(param =>
+    {
+        param.Name("InvNo").Labels(new List<string>() { "InvNo" }).Values(new List<string>() { ViewBag.InvNo }).Add();
+    })
+)

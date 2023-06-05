@@ -1,0 +1,71 @@
+﻿@model Inventory.Models.Department
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm("Create", "Departments", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Department</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">New Customer</h3>
+                <div class="box-tools pull-right">
+                    @*<button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>*@
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">                              
+                            <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.DeptName, htmlAttributes: new { @class = "control-label" })
+                                        </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.DeptName, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Department Name  is required and cannot be empty", maxlength = "100" } })
+                                    @Html.ValidationMessageFor(model => model.DeptName)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="row">  
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-2">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="submit" value="Create" class="btn btn-primary" />&nbsp;&nbsp;
+                                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+              
+            </div>
+            </div>
+        </div>
+            }
+
+            

@@ -1,0 +1,322 @@
+﻿@model IEnumerable<Inventory.Models.POMain>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";}
+<h4><b>PURCHASE ORDER</b></h4>
+<style>
+    .e-grid .e-headercell, .e-grid .e-grouptopleftcell {
+       background-color: #3c8dbc;
+        border-top-color: #3c8dbc;
+        border-left-color: #3c8dbc;
+        border-bottom-color: #3c8dbc;
+        color: #fff;
+    }
+
+    .e-grid .e-gridheader .e-icon {
+        color: #fff;
+    }
+
+    .Expand {
+        background-position: -180px 3px;
+    }
+
+    .Collapse {
+        background-position: -205px 3px;
+    }
+
+    .refresh {
+        background-position: -76px 3px;
+    }
+
+    .e-toolbaricons {
+        background-image: url("../../Content/ej/web/common-images/icons-gray.png");
+    }
+
+    .Expand:hover, .Collapse:hover, .refresh:hover {
+        background-image: url("../../Content/ej/web/common-images/icons-white.png");
+    }
+</style>
+<div class="box-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                @(Html.EJ().Grid<Inventory.Models.POMain>
+                    ("POMain").Datasource((IEnumerable<object>
+                        )ViewBag.datasource)
+                        .AllowScrolling()
+                        .AllowFiltering()
+                        .AllowTextWrap()
+                        .FilterSettings(filter => { filter.ShowFilterBarStatus().StatusBarWidth(500).FilterBarMode(FilterBarMode.Immediate).MaxFilterChoices(1000).FilterType(FilterType.Menu); })   /*Filtering Enabled*/
+                        .AllowSorting()    /*Sorting Enabled*/
+                        .AllowMultiSorting()
+                        .AllowPaging()    /*Paging Enabled*/
+                        .SelectionType(SelectionType.Multiple)
+                        .AllowResizing()
+                        .IsResponsive()
+                        .MinWidth(1000)
+                        .AllowReordering()
+                        .AllowResizeToFit()
+                        .AllowResizing()
+                        .ScrollSettings(scroll => { scroll.Height(300); })
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar().ToolbarItems(items =>
+                            {
+                                items.AddTool(ToolBarItems.Search); items.AddTool(ToolBarItems.ExcelExport);
+                            });
+                        })
+                                .Mappers(map => map.ExportToExcelAction("/POMain/ExportToExcel"))
+                        .AllowSearching(true)
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar(true).CustomToolbarItems(new List<object>
+                                () { new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#Refresh" }, new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#AddNew" } });
+                        })
+                            .ClientSideEvents(eve => { eve.ToolbarClick("onToolBarClick").ActionBegin("GetData"); })
+                            .Columns(col =>
+                            {
+                                col.HeaderText("Edit").Template("<a href='/POMain/Edit/{{:PurchaseOrderID}}' id='E{{:PurchaseOrderID}}' ><input type='Button' id='B{{:PurchaseOrderID}}' class='btn btn-sm btn-primary' id='Button1' Value='Edit' /></a> ").AllowFiltering(false).Width(70).Add();
+                                col.HeaderText("").Template("<input type='Button' class='btn btn-sm btn-warning' id='{{:PurchaseOrderNo}}' Value='Print' onclick='CreateInvoice(this.id);' /></a> ").AllowFiltering(false).Width(70).Add();
+                                col.Field("PurchaseOrderDate").HeaderText("PO Date").IsPrimaryKey(true).Format("{0:dd/MM/yyyy}").TextAlign(TextAlign.Left).Width(70).Add();
+                                col.Field("SupplierID").HeaderText("Supplier Name").TextAlign(TextAlign.Left).Visible(true).Width(130).Add();
+                                col.Field("PurchaseOrderNo").HeaderText("PO No").TextAlign(TextAlign.Left).Visible(true).Width(70).Add();
+
+                                //col.Field("CustomerID").HeaderText("Customer").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(180).Add();
+                                col.Field("TotalAmount").HeaderText("Tot Amt").TextAlign(TextAlign.Left).Visible(true).Width(70).Add();
+                                //col.Field("POStatus").HeaderText("Status").TextAlign(TextAlign.Left).Visible(true).Width(100).Add();
+                                col.Field("freeze").HeaderText("Freeze").TextAlign(TextAlign.Left).Width(10).EditType(EditingType.String).Add();
+                            }).ClientSideEvents(evt => evt.RowSelected("onRowSelected")))
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="OfferLetterGeneration">
+        <div class="modal-dialog" style="width:80%; margin-top:100px;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#367fa9; color:white">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">PO Details</h4>
+                </div>
+               
+                <div class="modal-body">
+                    <form method="post" id="form1" class="form-horizontal" data-bv-message="This value is not valid" data-toggle="validator" data-bv-feedbackicons-valid="glyphicon glyphicon-ok" data-bv-feedbackicons-invalid="glyphicon glyphicon-remove" data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label class="control-label">Order No</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="PurchaseOrderNo" class="form-control" disabled="disabled" required="required" onchange="DuplicteName();" autocomplete="off" maxlength="100" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label">Supplier Name</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" id="SupplierID" disabled="disabled" />
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div id="orderItems">
+                    <table class="table table-responsive" id="orderdetailsItems" display block; overflow-x auto; white-space nowrap; style="width:1050px"></table>
+                    <span id="orderItemError" style="color:red"></span>
+                </div>
+                <div class="row" style="width:1220px">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                @*@Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-2">
+                                    Total Amount
+                                </div>
+                                <div class="col-md-4">
+                                    <div style="padding:6px 5px; text-align:left">                                       
+                                        <input type="text" id="TotAmt" class="form-control" style="width:120px" disabled="disabled" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                span.error {
+                    display: block;
+                    visibility: hidden;
+                    color: red;
+                    font-size: 60%;
+                }
+
+                tr.error {
+                    background-color: rgba(255,0,0,0.35);
+                }
+            </style>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script id="Refresh" type="text/x-jsrender">
+    <a href="#" class="e-toolbaricons refresh" />
+</script>
+<script id="AddNew" type="text/x-jsrender">
+    <button class="btn btn-primary btn-sm add">Add New</button>
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetData();
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+        var tanId = '@TempData["Temp"]';
+        if (tanId != "" && tanId != undefined && tanId != null) {
+            toastr.success(tanId);
+        }
+    });
+</script>
+<script type="text/javascript">
+    function onToolBarClick(sender) {
+        if (sender.itemName == "Expand")
+            this.expandAll();
+        else if (sender.itemName == "Collapse")
+            this.collapseAll();
+        else if (sender.itemName == "Refresh") {
+            var instance = $("#POMain").ejGrid("instance");
+            instance._filterCollection = [];
+            instance.clearFiltering();
+            instance.clearSearching();
+            this.refreshContent();
+        }
+        if (sender.itemName == "AddNew") {
+            window.location.href = "../POMain/Create";
+        }
+    }
+
+    @*function Approve(Id){   
+        $.ajax({
+            url:'@Url.Action("Approve", "POMain")',
+            type: "GET",
+            datatype: "JSON",
+            data: { Id: Id },
+            success: function (result) {
+            
+                if(result=="Success"){
+                    location.reload();
+                    toastr.success("Approved");
+                }
+                else{
+                    toastr.error(result);
+                }
+            },
+        });
+    }*@
+
+    function GetData(Id) {
+        $.ajax({
+            url: '@Url.Action("GetData", "POMain")',
+            type: "GET",
+            datatype: "JSON",
+            data: { },
+            success: function (result) {
+                $.each(result, function (i, result) {
+                    
+                    if (result.POStatus == "Approve" || result.POStatus == "Disapprove") {
+                        $("#B" + result.PurchaseOrderID + "").removeClass("btn-primary");
+                        $("#B" + result.PurchaseOrderID + "").addClass("btn-warning");
+                        $("#B" + result.PurchaseOrderID + "").val("View");
+                    }
+                });
+            },
+        });
+    }
+</script>
+<script>
+    function F1() {
+        $('#OfferLetterGeneration').modal({ backdrop: 'static', keyboard: false })
+        $("#OfferLetterGeneration").modal("show");
+        $("#orderdetailsItems tr").remove();
+    }
+    function onRowSelected(args) {
+        $('#TotAmt').val(0);
+        var result = this.getSelectedRecords();
+        var Id = result[0].SupplierID;
+        var Name = result[0].CustomerName;
+        $('#PurchaseOrderNo').val(result[0].PurchaseOrderNo);
+        $('#SupplierID').val(Id);
+        $('#DeliverTo').val(result[0].DeliverTo);
+        $("#pnlShipperFreeze").show();
+        $.ajax({
+            type: "GET",
+            url: '/POMain/GetAllPOD',
+            data: { 'POID': $('#PurchaseOrderNo').val() },
+            success: function (result) {
+                var ResultCount = result.length;
+                $("#orderdetailsItems tr").remove();
+                if (ResultCount != 0) {
+                    $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' > <th>Product</th><th>Order Qty</th><th>Price</th> <th>IGST</th><th> SGST </th><th>CGST</th><th>DISCOUNT</th><th>Tot AMOUNT</th> <th>Received Qty</th> <th>Return Qty</th> </tr> <tbody>").appendTo("#orderdetailsItems");
+                    var Count = 1;
+                    $.each(result, function (i, item) {
+                        $(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='product" + Count + "' readonly  style='width : 170px' class='product form-control'' /></td> <td><input type='text' id='orderQty" + Count + "' readonly class='orderQty form-control'' /></td><td><input type='text' id='Price" + Count + "'  style='width : 80px' readonly class='Price form-control'' /></td> <td><input type='text' id='IGST" + Count + "' readonly class='IGST form-control'' /></td><td><input type='text' id='CGST" + Count + "'  style='width : 80px' readonly  class='CGST  form-control'' /></td>  <td><input type='text'  id='SGST" + Count + "'  readonly class='SGST form-control'' /></td> <td><input type='text' id='Discount" + Count + "' readonly class='Discount form-control'' /></td><td><input type='text' readonly id='totalAmount" + Count + "'  style='width : 115px'  class='totalAmount form-control'' /></td> <td><input type='text' readonly id='DeliveredQty" + Count + "'  style='width : 80px'  class='DeliveredQty form-control'' /></td> <td><input type='text' readonly id='ReturnQty" + Count + "'  style='width : 80px'  class='ReturnQty form-control'' /></td>  </tr> <tbody>").appendTo("#orderdetailsItems");
+                        $("#product" + Count + "").val(result[i].ProductName);
+                        $("#orderQty" + Count + "").val(parseFloat(result[i].OrderQty).toFixed(2));
+                        $("#Price" + Count + "").val(parseFloat(result[i].Price).toFixed(2));
+                        $("#IGST" + Count + "").val(result[i].IGSTAmount);
+                        $("#SGST" + Count + "").val(result[i].SGSTAmount);
+                        $("#CGST" + Count + "").val(result[i].CGSTAmount);
+                        $("#Discount" + Count + "").val(result[i].Discount);
+                        $("#totalAmount" + Count + "").val(result[i].TotalAmount); 
+                        $("#ReturnQty" + Count + "").val(result[i].ReturnQty);
+                        $("#DeliveredQty" + Count + "").val(result[i].ReceivedQty);
+                        $('#TotAmt').val((parseFloat($('#TotAmt').val()) + parseFloat(result[i].TotalAmount)).toFixed(2));
+                        Count = Count + 1;
+                    });
+                } else {
+                    toastr.warning('NO data Found...');
+                    $('#orderdetailsItems').empty();
+                }
+            }
+        })
+    }
+    function CreateInvoice(ID) {
+
+    
+        debugger;
+        $.ajax({
+            url: '/POMain/InvoicePrint',
+            type: "POST",
+            dataType: "JSON",
+            data: { PONO:ID },
+            success: function (result) {
+                debugger
+                if (result.Message == "success") {
+                    try {
+                        var WinPrint = window.open('/POMain/GetReport', '_blank');
+                        //   WinPrint.focus(); WinPrint.print();
+                        if (result != null) {
+                            toastr.success("Created Successfully");
+                        }
+                        else {
+                            toastr.error(result.Message);
+                        }
+                    }
+                    catch (e) {
+                    }
+                } else {
+                    toastr.error(result.Message);
+                };
+            }
+        });
+
+    }
+    //function getWarehouseId(id) {
+    //    $('#WarehouseID').val(id.key);
+    //};
+</script>

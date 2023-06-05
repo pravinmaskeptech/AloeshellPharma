@@ -1,0 +1,511 @@
+﻿@model Inventory.Models.Damage
+@{
+    ViewBag.Title = "DamageByBatchNo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("DamageByBatchNo", "Damage", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="prdId" name="prdId" value="" />
+    <input type="hidden" id="warehouseId" name="warehouseId" value=""/>
+    <input type="hidden" id="storeLocationId" name="storeLocationId" value=""/>
+    <input type="hidden" id="Count" name="Count" value="1" />
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h2 class="box-title">Damage</h2>
+            <div class="box-tools pull-right">
+            </div>
+        </div>    
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.DamageNo, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.DamageNo, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", @disabled = "disabled", maxlength = "20" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>              
+            </div> 
+        </div>   
+        <table class="table table-responsive" display block; overflow-x auto; white-space nowrap; style="width:1080px">
+            <tr style="background-color:#3c8dbc; color:white">
+                <td>ITEM DETAILS</td>
+                <td>WAREHOUSE</td>               
+                <td>LOCATION</td>
+                <td>BATCH NO</td>
+                <td>AVAILABLE QTY</td>
+                <td>DAMAGE QTY</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="mycontainer" id="mainrow">
+                <td>                  
+                    @Html.EJ().Autocomplete("ProductCode").WatermarkText("Select Product").Datasource((IEnumerable<Inventory.Models.Products>)ViewBag.Productdatasource).Width("100%").AutocompleteFields(field => field.Key("ProductCode").Text("ProductName")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("getProductId"))
+                </td>
+                <td>                   
+                    @Html.EJ().Autocomplete("Warehouse").WatermarkText("Select Warehouse").Datasource((IEnumerable<Inventory.Models.Warehouse>)ViewBag.Warehousedatasource).Width("100%").AutocompleteFields(field => field.Key("WareHouseID").Text("WareHouseName")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("bindStoreLocation"))
+                </td>
+                <td>                   
+                    @Html.EJ().Autocomplete("Location").Width("100%").WatermarkText("Select Location").ShowPopupButton(true).AutocompleteFields(field => field.Text("").Key("")).ClientSideEvents(e => e.Select("getBatchNo"))                    
+                </td>
+                <td>                   
+                   @Html.EJ().Autocomplete("BatchNo").Width("100%").WatermarkText("Select Batch No").ShowPopupButton(true).AutocompleteFields(field => field.Text("").Key("")).ClientSideEvents(e => e.Select("getAvailableQty"))                    
+                </td>
+                <td>
+                    <input type="text" id="AvailableQty" class="AvailableQty form-control" disabled onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode != 47" />
+                </td>               
+                <td>
+                    <input type="text" id="DamageQty" class="DamageQty form-control" onclick="ShowPopup();" onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode != 47" />
+                </td>
+                <td>
+                    <input type="button" id="add" value="add" style="width:80px" class="btn btn-success" />
+                </td>
+            </tr>
+        </table>
+        <div id="orderItems" style="overflow-x:auto;">
+            <table class="table table-responsive" id="orderdetailsItems"  style="width:1080px ;display :block; overflow-x :auto; white-space :nowrap;"></table><br />
+            <span id="orderItemError" style="color:red"></span>              
+        </div>    
+        <div class="modal fade" id="OfferLetterGeneration">
+            <div class="modal-dialog" style="width:64%; margin-top:100px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#367fa9; color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Damage Quantity</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" id="form1" class="form-horizontal" data-bv-message="This value is not valid" data-toggle="validator" data-bv-feedbackicons-valid="glyphicon glyphicon-ok" data-bv-feedbackicons-invalid="glyphicon glyphicon-remove" data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label class="control-label">Product Name</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="ProductName" class="form-control" disabled="disabled" required="required" maxlength="100" />                                           
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label class="control-label">Tot Qty</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="TotQty" class="form-control" disabled="disabled" required="required" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="GRNItems">
+                                <table class="table table-responsive" id="GRNItemsDetails"  style="width:800px ; display:block;  white-space: nowrap;"></table>
+                                <span id="GRNItemsError" style="color:red"></span>
+                            </div>
+                        </form>
+                    </div>
+                    @*<div id="ReceivedItemsheaders">
+                        <table class="table table-responsive" id="ReceivedItemsheaders" display block; overflow-x auto; white-space nowrap; style="width:1000px"></table>
+                        <span id="SalesError" style="color:red"></span>
+                    </div>*@
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label"></label>
+                                </div>
+                                <div class="col-md-6">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label"></label>
+                                </div>
+                                <div class="col-md-6">
+                                    <br /> <input type="button" id="btnAdd" name="btnAdd" value="Add" class="btn btn-info" onclick="TempSaveDamageBatchNoData();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    span.error {
+                        display: block;
+                        visibility: hidden;
+                        color: red;
+                        font-size: 60%;
+                    }
+
+                    tr.error {
+                        background-color: rgba(255,0,0,0.35);
+                    }
+                </style>
+            </div>
+        </div>
+        <div class="row" style="width:1580px">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <div style="padding:6px 10px; text-align:right">
+                            <input id="submit" type="button" value="Save Order" class="btn btn-warning" style="padding:6px 6px" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {        
+        getDamageIdNo();
+    })
+    function getDamageIdNo()
+    {        
+        $.ajax({
+            type: "GET",
+            url: '/Damage/getDamageNo',
+            success: function (result) {
+                $('#DamageNo').val(result);
+            }
+        })
+    }
+    function getProductId(id) {       
+        $('#prdId').val(id.key);       
+        $('#Location').val('');
+        $('#BatchNo').val('');
+        $('#Warehouse').val('');
+    };
+    function bindStoreLocation(id) {
+        $('#warehouseId').val(id.key);
+        $('#BatchNo').val('');
+        $.ajax({
+            type: "GET",
+            url: '/Damage/bindStoreLocation',
+            data: { 'WarehouseId': id.key, 'ProductId': $('#prdId').val() },
+            success: function (result) {
+                var ViewBackData = result;
+                $('#Location').val('');
+                if (result.length == "0") {
+                    $('#Location').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: 200, });
+                } else {
+                    $('<option></option>').val(null).html('Select');
+                    $.each(result, function (i, result) {
+                        $('#Location').ejAutocomplete({ dataSource: ViewBackData, ShowPopupButton: true, WatermarkText: "Select Location", fields: { key: "StoreLocationId", text: "StoreLocation" }, EnablePersistence: false, width: "100%", });
+                    });
+                }
+            }
+           
+        })
+    };
+    function getBatchNo(id) {
+        $('#storeLocationId').val(id.key);
+        $.ajax({
+            type: "GET",
+            url: '/Damage/getBatchNo',
+            data: { 'WarehouseId': $('#warehouseId').val(), 'ProductId': $('#prdId').val(), 'LocationId': $('#storeLocationId').val() },
+            success: function (result) {
+                var ViewBackData = result;
+                $('#BatchNo').val('');
+                if (result.length == "0") {
+                    $('#BatchNo').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: 200, });
+                } else {
+                    $('<option></option>').val(null).html('Select');
+                    $.each(result, function (i, result) {
+                        $('#BatchNo').ejAutocomplete({ dataSource: ViewBackData, ShowPopupButton: true, WatermarkText: "Select Batch No", fields: { key: "BatchNo", text: "BatchNo" }, EnablePersistence: false, width: "100%", });
+                    });
+                }
+            }
+        })
+    };
+    function getAvailableQty()
+    {
+        $.ajax({
+            type: "GET",
+            url: '/Damage/getAvailableQty',
+            data: { 'WarehouseId': $('#warehouseId').val(), 'ProductId': $('#prdId').val(), 'LocationId': $('#storeLocationId').val(),'batchNo' : $('#BatchNo').val() },
+            success: function (result) {
+                $('#AvailableQty').val(result);
+            }
+        })
+    }
+    function ShowPopup()
+    {
+        $('#GRNItemsDetails').empty();
+        $('#OfferLetterGeneration').modal({ backdrop: 'static', keyboard: false })
+        $("#OfferLetterGeneration").modal("show");
+        $.ajax({
+            type: "GET",
+            url: "/Damage/getGrnData",
+            data: { 'WarehouseId': $('#warehouseId').val(), 'ProductId': $('#prdId').val(), 'LocationId': $('#storeLocationId').val(), 'batchNo': $('#BatchNo').val() },
+            success: function (result) {
+                var ResultCount = result.length;              
+                
+                if (ResultCount != 0) {
+                   
+                    var Count = 1;
+                    
+
+                    $.each(result, function (i, item) {
+                        
+                        var actualqty = (parseFloat(result[i].ReceivedQty) - parseFloat(result[i].ReturnQty) - parseFloat(result[i].DamageQty));
+                        alert(actualqty)
+                        if (actualqty > 0) {
+                            if (Count == 1)
+                            {
+                                $("<tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' > <th>ITEM NAME</th><th>WAREHOUSE</th><th>LOCATION</th><th>BATCH NO</th><th>RECEIVED QTY</th> <th>QTY</th> <th></th> </tr> <tbody>").appendTo("#GRNItemsDetails");
+                            }
+                            if (parseFloat(result[i].ReceivedQty) != parseFloat(result[i].DamageQty)) {
+                                $(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='productNew" + Count + "' readonly  style='width : 120px' class='productnew form-control'' /></td><td><input type='text' id='warehouseNew" + Count + "' style='width : 100px' class='warehouseNew form-control'' /></td>  <td><input type='text' id='storeLocationNew" + Count + "' style='width : 100px' class='storeLocationNew form-control'' /></td>  <td><input type='text' id='batchNoNew" + Count + "' style='width : 100px' class='batchNoNew form-control'' /></td>  <td><input type='text' id='receiveQtyNew" + Count + "' readonly style='width : 100px'  class='receiveQtyNew form-control'' /></td> <td><input type='text' id='DamageQtyNew" + Count + "'   style='width : 80px'  onkeypress = 'return event.charCode >= 46 && event.charCode <= 57 && event.charCode !=47' onchange='CheckQty(" + Count + ");' class='DamageQtyNew  form-control'' /></td><td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /> <input type='hidden' id='GrnIdNew" + Count + "' readonly  style='width : 100px'  class='GrnIdNew form-control'' /><input type='hidden' id='POidNew" + Count + "' readonly  style='width : 100px'  class='POidNew form-control'' /><input type='hidden' id='prdIdNew" + Count + "' readonly  style='width : 100px'  class='prdIdNew form-control'' /><input type='hidden' id='WHidNew" + Count + "' readonly  style='width : 100px'  class='WHidNew form-control'' /><input type='hidden' id='SLIdNew" + Count + "' readonly  style='width : 100px'  class='SLIdNew form-control'' /><input type='hidden'  id='SupplierIdNew" + Count + "' class='SupplierIdNew form-control'' /><input type='hidden'  id='DamageNoNew" + Count + "' class='DamageNoNew form-control'' />  </td></tr> <tbody>").appendTo("#GRNItemsDetails");
+                                $("#productNew" + Count + "").val($('#ProductCode').val());
+                                $("#prdIdNew" + Count + "").val($('#prdId').val());
+                                $("#GrnIdNew" + Count + "").val(result[i].GRNId);
+                                $("#warehouseNew" + Count + "").val($('#Warehouse').val());
+                                $("#storeLocationNew" + Count + "").val($('#Location').val());
+                                $("#POidNew" + Count + "").val(result[i].PurchaseOrderDetailsID);
+                                $("#receiveQtyNew" + Count + "").val(parseFloat(result[i].ReceivedQty) - parseFloat(result[i].SalesQty));
+                                $("#batchNoNew" + Count + "").val($('#BatchNo').val());
+                                $("#WHidNew" + Count + "").val($('#warehouseId').val());
+                                $("#SLIdNew" + Count + "").val($('#storeLocationId').val());
+                                $("#SupplierIdNew" + Count + "").val(result[i].SupplierID);
+                                $("#DamageNoNew" + Count + "").val($('#DamageNo').val());
+                                Count = Count + 1;
+                            }
+                        }
+                    });
+                } else {
+                    toastr.warning('NO data Found...');
+                    $('#GRNItemsDetails').empty();
+                }
+            }
+        })
+    }
+    function CheckQty(Count)
+    {
+        var receiveQtyNew = $("#receiveQtyNew" + Count + "").val();
+        var DamageQtyNew = $("#DamageQtyNew" + Count + "").val();
+        if(parseFloat(DamageQtyNew)>parseFloat(receiveQtyNew))
+        {
+            $("#DamageQtyNew" + Count + "").val('');
+            toastr.warning('damage qty must not greater than received Qty');
+        }
+    }
+    function CalculateQty()
+    {
+        $('#DamageQty').val();
+        $('#GRNItemsDetails tbody tr').each(function (index, ele) {
+            var DamageQtyNew = $('.DamageQtyNew', this).val();
+            if (DamageQtyNew == undefined || DamageQtyNew == "") {
+            } else {
+                $('#DamageQty').val(( parseFloat(DamageQtyNew)).toFixed(2));
+            }
+        })
+    }
+    function TempSaveDamageBatchNoData()
+    {
+        CalculateQty();
+       var rowCount = $('#GRNItemsDetails tr').length;
+       var isAllValid = true;
+       if (rowCount > 0) {
+           var list = [];
+           $('#GRNItemsDetails tbody tr').each(function (index, ele) {
+               
+               if (($('.DamageQtyNew', this).val() || 0) == "" ||
+                   $('.warehouseNew', this).val() == "" ||
+                    $('.storeLocationNew', this).val() == "" ||
+                    $('.batchNoNew', this).val() == "" ||
+                   isNaN($('.GrnIdNew', this).val())) {
+                   isAllValid = false;                   
+                     GRNItemsError++;
+                   $(this).addClass('error');
+               } else {
+                   
+                   isAllValid = true;
+                   var orderItem = {
+                       ProductCode: $('.prdIdNew', this).val(),
+                       WarehouseId: $('.WHidNew', this).val(),
+                       StoreLocationId: $('.SLIdNew', this).val(),
+                       DamageQty: $('.DamageQtyNew', this).val(),
+                       BatchNo: $('.batchNoNew', this).val(),
+                       GRNId: $('.GrnIdNew', this).val(),
+                       PODetailsId: $('.POidNew', this).val(),
+                       SupplierId: $('.SupplierIdNew', this).val(),
+                       DamageNo: $('.DamageNoNew', this).val(),
+                   }
+                   list.push(orderItem);
+                   
+               }
+           })
+
+            if (isAllValid) {
+                var data = {
+                    damage: list
+                }
+                $(this).val('Please wait...');
+                $.ajax({
+                    type: 'POST',
+                    url: '/Damage/SaveDamageTempData',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.status) {
+                            toastr.success("Successfully saved..");                          
+                            $('#GRNItemsDetails').empty();                           
+                            $("#OfferLetterGeneration").modal("hide");
+                        }
+                        else {
+                            toastr.error("something Wrong..");
+                        }
+                        
+                    },
+                    
+                });
+            }
+        }
+    }
+    $(document).ready(function () {          
+            $('#add').click(function () {
+                var isduplicate = "";
+                var cnt = 1;
+                $('#orderdetailsItems tbody tr').each(function (index, e) {
+                    if ($('#ProductCode').val() == $("#productNameNew" + cnt + "").val()) {
+                        $('#ProductCode').val('');
+                        toastr.error("product already added...");
+                        isduplicate = true;
+                    }
+                    cnt = parseInt(cnt) + 1;
+                })
+                
+                if (isduplicate == false) {
+                    var isValid = false;
+                    if ($('#ProductCode').val() == "") { toastr.warning("Please Select Product Name"); $('#ProductCode').css("border", "1px solid #e46f61"); isValid = false; } else { $('#ProductCode').css("border", "1px solid #a5da6b"); isValid = true; }
+                    if ($('#Warehouse').val() == "") { toastr.warning("Please Select Warehouse"); $('#Warehouse').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Warehouse').css("border", "1px solid #a5da6b"); isValid = true; }
+                    if ($('#Location').val() == "") { toastr.warning("Please Select Location"); $('#Location').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Location').css("border", "1px solid #a5da6b"); isValid = true; }
+                    if ($('#BatchNo').val() == "") { toastr.warning("Please Select Batch No"); $('#BatchNo').css("border", "1px solid #e46f61"); isValid = false; } else { $('#BatchNo').css("border", "1px solid #a5da6b"); isValid = true; }
+                    if ($('#AvailableQty').val() == "") { toastr.warning("Available Qty Not Found"); $('#AvailableQty').css("border", "1px solid #e46f61"); isValid = false; } else { $('#AvailableQty').css("border", "1px solid #a5da6b"); isValid = true; }
+                    if ($('#DamageQty').val() == "") { toastr.warning("Please Enter Damage Qty"); $('#DamageQty').css("border", "1px solid #e46f61"); isValid = false; } else { $('#DamageQty').css("border", "1px solid #a5da6b"); isValid = true; }
+                    if (isValid == true) {
+                        var Count = $('#Count').val();
+                        $("#orderdetailsItems").append(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='productNameNew" + Count + "' readonly style='width : 150px' class='productNameNew form-control'' /></td> <td align:'left'><input type='text' id='WarehouseNameNew" + Count + "' style='width : 150px' readonly class='WarehouseNameNew form-control'' /></td><td><input type='text' id='StoreLocationNameNew" + Count + "' readonly style='width : 150px' class='StoreLocationNameNew form-control'' /></td>   <td><input type='text' id='BatchNumberNew" + Count + "' readonly style='width : 150px'  class='BatchNumberNew form-control'' /></td> <td><input type='text' readonly  id='AvailableQuantityNew" + Count + "'  readonly style='width : 140px'   class='AvailableQuantityNew form-control'' /></td> <td><input type='text' readonly id='DamageQuantityNew" + Count + "'  readonly style='width : 140px'  class='DamageQuantityNew form-control'' /><input type='hidden'  id='ProductNameIdNew" + Count + "' class='ProductNameIdNew form-control'' /><input type='hidden'  id='WarehouseNameIdNew" + Count + "'  class='WarehouseNameIdNew form-control'' /><input type='hidden'  id='StoreLocationNameID" + Count + "'    class='StoreLocationNameID form-control'' /> </td> </tr> <tbody>");
+                        $("#productNameNew" + Count + "").val($('#ProductCode').val());
+                        $("#WarehouseNameNew" + Count + "").val($('#Warehouse').val());
+                        $("#StoreLocationNameNew" + Count + "").val($('#Location').val());
+                        $("#BatchNumberNew" + Count + "").val($('#BatchNo').val());
+                        $("#AvailableQuantityNew" + Count + "").val($('#AvailableQty').val());
+                        $("#DamageQuantityNew" + Count + "").val($('#DamageQty').val());
+                        $("#ProductNameIdNew" + Count + "").val($('#prdId').val());
+                        $("#WarehouseNameIdNew" + Count + "").val($('#warehouseId').val());
+                        $("#StoreLocationNameID" + Count + "").val($('#storeLocationId').val());
+                    }
+                    // Clear Data
+                    $('#ProductCode').val('');
+                    $('#Location').val('');
+                    $('#Warehouse').val('');
+                    $('#BatchNo').val('');
+                    $('#AvailableQty').val('');
+                    $('#DamageQty').val('');
+                    $('#warehouseId').val('')
+                    $('#storeLocationId').val('')
+                    $('#prdId').val('')
+
+                    $('#ProductCode').css("border", "1px solid #d2d6de");
+                    $('#Warehouse').css("border", "1px solid #d2d6de");
+                    $('#Location').css("border", "1px solid #d2d6de");
+                    $('#BatchNo').css("border", "1px solid #d2d6de");
+                    $('#AvailableQty').css("border", "1px solid #d2d6de");
+                    $('#DamageQty').css("border", "1px solid #d2d6de");
+                }
+                $('#Count').val(parseInt($('#Count').val()) + 1)
+
+            });
+        
+        $('#submit').click(function () {
+            if ($('#PurchaseOrderDate').val() == "" || $('#ExpectedDeliveryDate').val() == "") {
+                if ($('#PurchaseOrderDate').val() == "") { $('#PurchaseOrderDate').css("border", "1px solid #e46f61"); } else { $('#PurchaseOrderDate').css("border", "1px solid #a5da6b"); }
+                if ($('#ExpectedDeliveryDate').val() == "") { $('#ExpectedDeliveryDate').css("border", "1px solid #e46f61"); } else { $('#ExpectedDeliveryDate').css("border", "1px solid #a5da6b"); }
+            } else {
+                var rowCount = $('#orderdetailsItems tr').length;
+                if (rowCount > 0) {
+                    var isAllValid = true;
+                    $('#orderItemError').text('');
+                    var list = [];
+                    var errorItemCount = 0;
+                    $('#orderdetailsItems tbody tr').each(function (index, ele) {
+                        if (($('.ProductNameIdNew', this).val() || "") == "" ||
+                            $('.WarehouseNameIdNew', this).val() == "" ||
+                             $('.StoreLocationNameID', this).val() == "" ||
+                             $('.BatchNumberNew', this).val() == "" ||
+                             $('.DamageQuantityNew', this).val() == "" ||
+                            isNaN($('.AvailableQuantityNew', this).val())) {
+                            isAllValid = false;
+                            errorItemCount++;
+                            $(this).addClass('error');
+                        } else {
+                            var orderItem = {
+                                ProductCode: $('.ProductNameIdNew', this).val(),
+                                WarehouseId: $('.WarehouseNameIdNew', this).val(),
+                                StoreLocationId: $('.StoreLocationNameID', this).val(),
+                                BatchNo: $('.BatchNumberNew', this).val(),
+                                DamageQty: $('.DamageQuantityNew', this).val(),
+                            }
+                            list.push(orderItem);
+                            
+                        }
+                    })
+                    
+                    if (isAllValid) {
+                        var data = {
+                            damage: list
+                        }
+                        $(this).val('Please wait...');
+                        $.ajax({
+                            type: 'POST',
+                            url: '/Damage/save',
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if (data.status) {
+                                    toastr.success("Successfully saved..");
+                                    window.location.href = "/Damage/Index";
+                                }
+                                else {
+                                    toastr.error("something Wrong..");
+                                }
+                                //   $('#submit').val('Save');
+                            },
+                            error: function (error) {
+                                console.log(error);
+                                $('#submit').val('Save');
+                            }
+                        });
+                    }
+                } else {
+                    toastr.error("please add data to list.");
+                }
+            }
+        });
+    });
+</script>

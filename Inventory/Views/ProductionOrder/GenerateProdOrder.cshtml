@@ -1,0 +1,205 @@
+﻿@model Inventory.Models.ProductionOrder
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    textarea {
+        width: 230px;
+        height: 50px;
+    }
+
+    .iframe-container {
+        padding-bottom: 60%;
+        padding-top: 30px;
+        height: 0;
+        overflow: hidden;
+    }
+
+        .iframe-container iframe,
+        .iframe-container object,
+        .iframe-container embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+</style>
+<div class="box-body">
+    <div class="row" style="background-color:white">
+        <div class="col-lg-12 col-sm-12 col-xs-12">
+            @using (Html.BeginForm("Create", "", FormMethod.Post, new
+            {
+                enctype = "multipart/form-data",
+                @class = "form-horizontal",
+                data_bv_message = "This value is not valid",
+                data_toggle = "validator",
+                data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+                data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+                data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+            }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    <h4>Production Order</h4>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.Label("Order No", htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" id="OrderId" name="OrderId" value="@ViewBag.Id" disabled class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.Label("Date", htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" disabled id="dt" value="@ViewBag.dt" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.Label("Required Date", htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" id="RequiredDate" name="RequiredDate" required class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <table class='table table-bordered  table-responsive' id="tblProduct" style="width: 100%; overflow-x:auto; white-space:nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>Sr. No</th>
+                                    <th>Product</th>
+                                    <th>Order Qty</th>                                  
+                                    <th>Allocated Qty</th>                              
+                                    <th>Required Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>                
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="button" id="create" value="Submit" class="btn btn-primary" onclick="Save();" />&nbsp;&nbsp;
+                            @Html.ActionLink("Back to List", "GenerateProdOrderList", null, new { @class = "btn btn-primary" })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+        $("#RequiredDate").ejDatePicker({ locale: "en-IN" });
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+
+        $("#tblProduct").find("tr:gt(0)").remove();
+        $.ajax({
+            url: '@Url.Action("GetData", "ProductionOrder")',
+            type: "GET",
+            data: { OrderNo: $("#OrderId").val() },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.Message == "success") {
+
+                    var value = new Date(parseInt(result.Prod.Date.substr(6)));
+                    var month = ("0" + (value.getMonth() + 1)).slice(-2);
+                    var day = ("0" + value.getDate()).slice(-2);
+                    var ret = day + "/" + month + "/" + value.getFullYear();
+                    $("#dt").val(ret);
+
+                    try{
+                        var value = new Date(parseInt(result.Prod.RequiredDate.substr(6)));
+                        var month = ("0" + (value.getMonth() + 1)).slice(-2);
+                        var day = ("0" + value.getDate()).slice(-2);
+                        var ret = day + "/" + month + "/" + value.getFullYear();
+                        $("#RequiredDate").val(ret);
+                    }
+                    catch(e){}
+
+                    var SrNo = 0;
+                    $.each(result.stockStatus, function (i, result) {
+                        SrNo = SrNo + 1;
+                        //var AvailableQty = parseFloat(result.AvailableQty) - parseFloat(result.AllocatedQty);
+                        //$("#tblProduct").append('<tr><td>' + SrNo + '</td>' +
+                        //    '<td><input type="text"  value="' + result.Product + '"  class="form-control" disabled /></td>' +
+                        //    '<td><input type="text"  value="' + result.OrderQty + '"  class="form-control" disabled /></td>' +
+                        //    '<td><input type="text"  value="' + result.AvailableQty + '"  class="form-control" disabled /></td>' +
+                        //    '<td><input type="text"  value="' + result.AllocatedQty + '"  class="form-control" disabled /></td>' +
+                        //    '<td><input type="text"  value="' + AvailableQty + '"  class="form-control" disabled /></td>' +
+                        //    '<td><input type="text" value="' + result.Qty + '" class="form-control" disabled /></td></tr>');
+
+                        $("#tblProduct").append('<tr><td>' + SrNo + '</td>' +
+                            '<td><input type="text"  value="' + result.Product + '"  class="form-control" disabled /></td>' +
+                            '<td><input type="text"  value="' + result.OrderQty + '"  class="form-control" disabled /></td>' +                            
+                            '<td><input type="text"  value="' + result.AllocatedQty + '"  class="form-control" disabled /></td>' +                            
+                            '<td><input type="text" value="' + result.RequiredQty + '" class="form-control" disabled /></td></tr>');
+                    });
+
+                }
+                else {
+                    toastr.error(result.Message);
+                }
+            }
+        })
+    })   
+
+    function Save() {
+        var flag = true;       
+        if ($('#RequiredDate').val() == null || $('#RequiredDate').val() == "") {
+            flag = false;
+            toastr.error("Please Select Request Date");
+        }
+        if (flag == true) {
+            var RequiredDate = $('#RequiredDate').val();
+            var datearray = RequiredDate.split("/");
+            RequiredDate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+
+            $.ajax({
+                url: '@Url.Action("SaveProdOrder", "ProductionOrder")',
+                type: "GET",
+                data: { OrderNo: $("#OrderId").val(), RequiredDate: RequiredDate },
+                datatype: "JSON",
+                success: function (result) {
+                    debugger;
+                    if (result == "success") {
+                        window.location.href = "/ProductionOrder/GenerateProdOrderList";
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+            })
+        }
+    }
+
+</script>

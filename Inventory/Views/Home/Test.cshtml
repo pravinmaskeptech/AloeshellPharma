@@ -1,0 +1,94 @@
+﻿@{
+    ViewBag.Title = "";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <input type="button" id="btnDiscover" value="Discover" class="btn btn-primary" onclick="Discover()" />&nbsp;&nbsp;&nbsp;
+    <input type="button" id="btnAutorize" value="Authorize" class="btn btn-primary" onclick="Authorize()" />&nbsp;&nbsp;&nbsp;
+    <input type="button" id="btnToken" value="Get Token" class="btn btn-primary" onclick="GetToken()" />
+    <input type="text" id="txtTest" class="form-control" />
+</div>
+
+
+<script>
+    function Discover() {
+        var data = { "Redirect_URL": "https://billboxetc.com/mobileconnect", "MSISDN": "+919158844261" };
+        $.ajax({
+            type: 'POST',
+            url: 'https://india.discover.mobileconnect.io/gsma/v2/discovery',
+            data: JSON.stringify(data),            
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Basic " + btoa('f8647199-5779-4336-a106-70c5917d351e' + ':' + '04c0a4c8-6674-40ed-bf6a-ad63f3779635'));
+            },
+            contentType: 'application/json',
+            success: function (response) {
+                debugger;
+                localStorage.setItem("ClientID", response.response.client_id);
+                localStorage.setItem("ClientSecret", response.response.client_secret);
+                var test = "";
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });        
+    }
+
+    function Authorize() {        
+        var ClientID = localStorage.getItem("ClientID");
+        $.ajax({
+            type: 'GET',
+            url: 'http://mcext.zumigo.com/mobileconnect/v1/authorize?client_id=' + ClientID+'&scope=openid+mc_mnv_validate+mc_identity_phonenumber_hashed&response_type=code&redirect_uri=https://billboxetc.com/mobileconnect&acr_values=2&nonce=932140cd857a09&state=statez12343&login_hint=+919158844261',
+            //data: {
+            //    client_id: ClientID,
+            //    scope: "openid+mc_mnv_validate+mc_identity_phonenumber_hashed",
+            //    response_type: "code",
+            //    redirect_uri: "https://billboxetc.com/mobileconnect",
+            //    acr_values: 2,
+            //    nonce: "932140cd857a09",
+            //    state: "statez12343",
+            //    login_hint: "+919404042720"
+            //},
+            contentType: 'application/x-www-form-urlencoded',
+            success: function (response) {
+                debugger;
+                var test = "";
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function GetToken() {       
+        var Code = $("#txtTest").val();
+        Code = "219AE630-5F19-4229-8713-C4D9105B1774";
+        var ClientID = localStorage.getItem("ClientID");
+        var ClientSecret = localStorage.getItem("ClientSecret");
+        var loggerId = $("#loggerId").val();
+        debugger;
+        var data = {
+            "grant_type": "authorization_code",
+            "redirect_uri": "https://billboxetc.com/mobileconnect",
+            "code": "x-219AE630-5F19-4229-8713-C4D9105B1774",
+        };
+        $.ajax({
+            type: 'POST',
+            url: 'https://mc.zumigo.com/mobileconnect/v1/token',
+            //data: JSON.stringify(data),    
+            //data: { grant_type: "authorization_code", redirect_uri: "https://billboxetc.com/mobileconnect", code: "219AE630-5F19-4229-8713-C4D9105B1774"},
+            data: { grant_type: "authorization_code", redirect_uri: "https://billboxetc.com/mobileconnect", code: "219AE630-5F19-4229-8713-C4D9105B1774" },
+            contentType: 'application/x-www-form-urlencoded',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Basic " + btoa(ClientID + ':' + ClientSecret));
+            },
+            success: function (response) {
+                debugger;
+                var test = "";
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+</script>

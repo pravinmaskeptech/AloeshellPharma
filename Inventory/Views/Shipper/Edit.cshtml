@@ -1,0 +1,365 @@
+﻿@model Inventory.Models.Shipper
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Edit", "Shipper", FormMethod.Post, new
+                            {
+                                enctype = "multipart/form-data",
+                                @class = "form-horizontal",
+                                data_bv_message = "This value is not valid",
+                                data_toggle = "validator",
+                                data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+                                data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+                                data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+                            }))
+{
+    @Html.AntiForgeryToken()
+    <div class="box box-info">
+        <div class="box-header with-border" style="background-color:#3c8dbc; color:white">
+            <h3 class="box-title">Edit Shipper</h3>
+            <div class="box-tools pull-right">
+                @Html.HiddenFor(model => model.ShipperId)
+                @Html.HiddenFor(model => model.CreatedBy)
+                @Html.HiddenFor(model => model.CreatedDate)
+                @*<button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>*@
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-2">
+                                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { onchange = "DuplicteName();", @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Shipper name is required and cannot be empty", maxlength = "100" } })
+                                @Html.ValidationMessageFor(model => model.Name)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.ContactPerson, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.ContactPerson, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Contact Person is required and cannot be empty", maxlength = "100" } })
+                                @Html.ValidationMessageFor(model => model.ContactPerson)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EJ().AutocompleteFor(model => model.Customer).WatermarkText("Select Customer").Datasource((IEnumerable<Inventory.Models.Customer>)ViewBag.Customer).Width("100%").AutocompleteFields(field => field.Key("CustomerID").Text("CustomerName")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.FocusOut("GetValue"))
+                                @Html.ValidationMessageFor(model => model.CustomerId)
+                                @Html.HiddenFor(model => model.CustomerId)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                <textarea rows="3" cols="50" id="Address" name="Address" class="form-control" maxlength="500" data-bv-notempty="true" required="required" data-bv-notempty-message="Address is required and cannot be empty"></textarea>
+                                @Html.ValidationMessageFor(model => model.Address)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "City is required and cannot be empty", maxlength = "50" } })
+                                @Html.ValidationMessageFor(model => model.City)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Pincode, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.Pincode, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "true", data_bv_notempty_message = "The Pincode is required", data_bv_stringlength = "true", data_bv_stringlength_min = "6", required = "required", autocomplete = "off", data_bv_stringlength_max = "6", data_bv_stringlength_message = "The Pincode must be 6 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-9]", data_bv_regexp_message = "The Pincode can only consist digit" } })
+                                @Html.ValidationMessageFor(model => model.Pincode)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Country, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EJ().AutocompleteFor(model => model.Country).Width("100%").ClientSideEvents(e => e.FocusOut("populateState")).EnablePersistence(false).ShowPopupButton(true).WatermarkText("Select Country")@*.Datasource(Enumerable.Empty<SelectListItem>()).EnablePersistence(false).ClientSideEvents(e => e.FocusOut("chkLocationLocOffered")).ShowPopupButton(true).ClientSideEvents(e => e.Select("Disabledbtn")).WatermarkText("Select Country").ValidationRules(r => r.AddRule("required", true)).ValidationMessage(m => m.AddMessage("required", "City required "))*@
+                                @Html.ValidationMessageFor(model => model.Country)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.State, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EJ().AutocompleteFor(model => model.State).Width("100%").EnablePersistence(false).ShowPopupButton(true).WatermarkText("Select State").ClientSideEvents(e => e.FocusOut("CheckBState"))
+                                @Html.ValidationMessageFor(model => model.State)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { onchange = "DuplicteEmail();", @class = "form-control", maxlength = "50", data_bv_regexp_message = "Input string is not valid Email Id.", @Pattern = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$", data_bv_notempty_message = "Email Id is required", data_bv_emailaddress_message = "The input is not a valid email address", data_bv_notempty = "true", Autocomplete = "off" } })
+                                @Html.ValidationMessageFor(model => model.Email)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.PlaceOfSupply, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.PlaceOfSupply, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Place Of Supply is required and cannot be empty", maxlength = "50" } })
+                                @Html.ValidationMessageFor(model => model.PlaceOfSupply)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.ContactNo, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.ContactNo, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "true", data_bv_notempty_message = "The Phone No. is required", data_bv_stringlength = "true", data_bv_stringlength_min = "10", required = "required", autocomplete = "off", data_bv_stringlength_max = "15", data_bv_stringlength_message = "The Phone No. must be 10 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-9]", data_bv_regexp_message = "The Phone no. can only consist digit" } })
+                                @Html.ValidationMessageFor(model => model.ContactNo)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Freeze, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.DropDownListFor(model => model.Freeze, new SelectList(ViewBag.Freeze, "Value", "Text"), new { @class = "form-control", style = "width: 190px;" })
+                                @Html.ValidationMessageFor(model => model.Freeze)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-4">
+                                <input type="submit" value="Save" onclick="CheckDate(event);" class="btn btn-primary" />&nbsp;&nbsp;
+                                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+<script src="~/Scripts/countries.js"></script>
+<script language="javascript">
+    populateCountries("Country", "State"); // first parameter is id of country drop-down and second parameter is id of state drop-down
+    function CheckBState() {
+        CheckState("Country", "State");
+    }
+    function populateState() {
+        populateStates("Country", "State")
+        //populateStates("Country", "State");
+        $("#State").val("");
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+
+        populateStates("Country", "State")
+        $.ajax({
+            url: '@Url.Action("GetData", "Shipper")',
+            type: "GET",
+            datatype: "JSON",
+            data: { Id: $("#ShipperId").val() },
+            success: function (result) {
+                
+                $("#Customer").val(result.CustomerName);
+                $("#Address").val(result.Address);
+                if (result.Freeze==true)
+                    $("#Freeze").val("True");
+                else
+                    $("#Freeze").val("False");
+            },
+        });
+    });
+
+    function GetValue(args) {
+        
+        var Customer = $("#Customer").val();
+        $.ajax({
+            url: '@Url.Action("CheckEmployee", "Shipper")',
+            type: "GET",
+            datatype: "JSON",
+            data: { Customer: Customer },
+            success: function (result) {
+                
+                if (result == 0) {
+                    $("#Customer").val("");
+                    toastr.error("Employee does not exist");
+                }
+            },
+        });
+        $("#CustomerId").val(args.model.selectValueByKey);
+    }
+
+    function CheckDate(event) {
+        var Flag = true;
+        var Country = $("#Country").val();
+        var State = $("#State").val();
+
+        if (Country == null || Country == "") {
+            toastr.error("Please Select Country");
+            Flag = false;
+        }
+        if (State == null || State == "") {
+            toastr.error("Please Select State");
+            Flag = false;
+        }
+
+        if (Flag == false) {
+            event.preventDefault();
+        }
+    }
+
+    function DuplicteName() {
+        var Name = $("#Name").val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateName","Shipper")',
+            type: "GET",
+            dataType: "JSON",
+            data: { Name: Name, Mode: "Edit", Id: $("#ShipperId").val() },
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#Name').val("");
+                        $("#form0").bootstrapValidator('revalidateField', 'Name');
+                        toastr.error("Shipper Name already exist");
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+
+    function DuplicteEmail() {
+        var Email = $("#Email").val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateMail", "Shipper")',
+            type: "GET",
+            dataType: "JSON",
+            data: { Email: Email, Mode: "Edit", Id: $("#ShipperId").val() },
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#Email').val("");
+                        $("#form0").bootstrapValidator('revalidateField', 'Email');
+                        toastr.error("Email already exist");
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+</script>

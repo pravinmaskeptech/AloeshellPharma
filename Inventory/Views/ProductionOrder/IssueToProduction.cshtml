@@ -1,0 +1,232 @@
+﻿@model Inventory.Models.ProductionOrder
+
+@{
+    ViewBag.Title = "Issue To Production";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    textarea {
+        width: 230px;
+        height: 50px;
+    }
+
+    .iframe-container {
+        padding-bottom: 60%;
+        padding-top: 30px;
+        height: 0;
+        overflow: hidden;
+    }
+
+        .iframe-container iframe,
+        .iframe-container object,
+        .iframe-container embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+</style>
+<div class="box-body">
+    <div class="row" style="background-color:white">
+        <div class="col-lg-12 col-sm-12 col-xs-12">
+            @using (Html.BeginForm("Create", "ProductionOrder", FormMethod.Post, new
+            {
+                enctype = "multipart/form-data",
+                @class = "form-horizontal",
+                data_bv_message = "This value is not valid",
+                data_toggle = "validator",
+                data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+                data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+                data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+            }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    <h4>ISSUE TO PRODUCTION</h4>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.Label("Order No", htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="text" id="ProductionNo" name="ProductionNo" value="@ViewBag.IssueToProduction" disabled class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.Label("MRN NO", htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="text" id="MRNNO" name="MRNNO" value="@ViewBag.MRNNO" disabled class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        @Html.Label("SO No", htmlAttributes: new { @class = "control-label " })
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="text" id="SONO" name="SONO" value="@ViewBag.OrderNo" disabled class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <table class='table table-bordered  table-responsive' id="tblProduct" style="width: 100%; overflow-x:auto; white-space:nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>Sr. No</th>
+                                    <th>Product</th>
+                                    <th>Product Qty</th>
+                                    <th>Product Component</th>
+                                    <th>Component Qty</th>
+                                    <th>GRN Qty</th>
+                                    <th>Issued Qty</th>
+                                    <th>Issue To Production</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="button" id="create" value="IssueToProduction" class="btn btn-primary" onclick="SaveIssueToProductions();" />&nbsp;&nbsp;
+                            @Html.ActionLink("Back to List", "PendingIssueToProductionList", null, new { @class = "btn btn-primary" })
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+
+        $("#tblProduct").find("tr:gt(0)").remove();
+        $.ajax({
+            url: '@Url.Action("GetIssueToProduction", "ProductionOrder")',
+            type: "GET",
+            data: { MRNNO: $("#MRNNO").val() },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.Message == "success") {
+
+                    var SrNo = 0;
+                    $.each(result.Prod, function (i, result) {
+                        SrNo = SrNo + 1;
+                        var IssuedQty = result.IssueToProductionQty;
+
+                        if (IssuedQty == null || IssuedQty == "")
+                            IssuedQty = 0;
+
+                        var BalanceQty = result.ReceivedQty - IssuedQty;
+
+                        $("#tblProduct").append('<tr><td>' + SrNo + '</td>' +
+                            //'<td><input type="checkbox" id="' + result.ID + '" /></td>' +
+                            '<td><input type="text" id="Product' + SrNo + '" value="' + result.MAinProduct + '"  class="Product form-control" disabled /></td>' +
+                            '<td><input type="text" id="ProductQty' + SrNo + '" value="' + result.MainOrderQty + '" class="ProductQty form-control" disabled /></td>' +
+
+                            '<td><input type="text" id="ProductComponent' + SrNo + '" value="' + result.ProductName + '"  class="ProductComponent form-control" disabled /></td>' +
+                            '<td><input type="text" id="ComponentQty' + SrNo + '" value="' + result.OrderQty + '" class="ComponentQty form-control" disabled /></td>' +
+                                '<td><input type="text" id="GRNQty' + SrNo + '" value="' + result.ReceivedQty + '" class=" GRNQty form-control" disabled /></td>' +
+                               '<td><input type="text" id="IssuedQty' + SrNo + '" value="' + IssuedQty + '" class="IssuedQty form-control" disabled /></td>' +
+
+                            '<td><input type="text" id="IssueToProduction' + SrNo + '"  value="' + BalanceQty + '" class=" IssueToProduction form-control" onchange="CheckValidQuentity(' + SrNo + ')"  />                            <input type="hidden" id="ProdCode' + SrNo + '" value=' + result.ProductCode + '  class=" ProdCode form-control"/>                        <input type="hidden" id="MainProductCode' + SrNo + '" value=' + result.MainProductCode + ' class=" MainProductCode form-control"/>                        </td></tr>');
+
+                        
+                    });
+                }
+                else {
+                    toastr.error(result.Message);
+                }
+            }
+        })
+    })
+
+    function SaveIssueToProductions() {
+
+        var list = [];
+
+        $('#tblProduct tbody tr').each(function (index, ele) {
+            if (($('.IssueToProduction', this).val() || "") == "" ||
+                $('.IssueToProduction', this).val() == "0" ||
+                isNaN($('.IssueToProduction', this).val())) {
+                isAllValid = false;
+
+                $(this).addClass('error');
+            } else {
+                var orderItem = {
+                    Product: $('.Product', this).val(),
+                    ProductQty: $('.ProductQty', this).val(),
+                    ProductComponent: $('.ProductComponent', this).val(),
+                    ComponentQty: $('.ComponentQty', this).val(),
+                    GRNQty: $('.GRNQty', this).val(),
+                    IssuedQty: $('.IssuedQty', this).val(),
+                    IssueToProductionQty: $('.IssueToProduction', this).val(),
+                    ProdCode: $('.ProdCode', this).val(),
+                    MainProductCode: $('.MainProductCode', this).val(),
+                    IssueToProductionNo: $('#ProductionNo').val(),
+                    MRNNO: $('#MRNNO').val(),
+                    SalesOderNo: $('#SONO').val(),
+                }
+                list.push(orderItem);
+            }
+        })
+        
+       
+
+        var data = {
+            orderItem: list
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/ProductionOrder/SaveIssueToProductions',        
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.Message == "success") {
+                    toastr.success("Successfully Saved..");
+                    window.location.href = "/ProductionOrder/PendingIssueToProductionList";
+                }
+                else {
+                    toastr.error(result.Message);
+                }
+            }
+        })
+
+    }
+    function CheckValidQuentity(Count) {
+
+        var GRNQty = $('#GRNQty' + Count).val();
+        var IssuedQty = $('#IssuedQty' + Count).val();
+        var Tot = (parseInt(GRNQty) - parseInt(IssuedQty));
+        if (parseInt($('#IssueToProduction' + Count).val()) > parseInt(Tot)) {
+            $('#IssueToProduction' + Count).val('')
+            toastr.error('Issue to production Qty must not greater than GRN Qty');
+        }
+
+    }
+</script>
+

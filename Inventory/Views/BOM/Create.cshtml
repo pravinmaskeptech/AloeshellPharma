@@ -1,0 +1,921 @@
+﻿@model Inventory.Models.BOM
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("Create", "BOM", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <head>
+        <style>
+
+            .panel-group {
+                margin: 30px 0px;
+                width: 91%;
+                min-height: 700px;
+            }
+
+                .panel-group .panel {
+                    border-radius: 0;
+                    box-shadow: none;
+                    border-color: #EEEEEE;
+                }
+
+            .panel-default > .panel-heading {
+                padding: 0;
+                border-radius: 0;
+                color: #212121;
+                background-color: #FAFAFA;
+                border-color: #EEEEEE;
+            }
+
+            .panel-title {
+                font-size: 14px;
+            }
+
+                .panel-title > a {
+                    display: block;
+                    padding: 15px;
+                    text-decoration: none;
+                }
+
+            .more-less {
+                float: right;
+                color: #212121;
+            }
+
+            .panel-default > .panel-heading + .panel-collapse > .panel-body {
+                border-top-color: #EEEEEE;
+            }
+
+            .box_top_3 {
+                background: #EBF0FF;
+            }
+
+            .box_top_1 {
+                background: #EDF6EA;
+            }
+
+            .box_top_font {
+                font-size: 16px;
+            }
+
+            .feature-wrap1 i {
+                font-size: 50px;
+                height: 110px;
+                width: 110px;
+                margin: 3px;
+                border-radius: 100%;
+                line-height: 110px;
+                text-align: center;
+                background: #ffffff;
+                color: #4ea32a;
+                border: 3px solid #ffffff;
+                box-shadow: inset 0 0 0 5px #f2f2f2;
+                -webkit-box-shadow: inset 0 0 0 5px #f2f2f2;
+                -webkit-transition: 500ms;
+                -moz-transition: 500ms;
+                -o-transition: 500ms;
+                transition: 500ms;
+                /* float: left; */
+                margin-right: 25px;
+            }
+
+                .feature-wrap1 i:hover {
+                    /* background: #4ea32a; */
+                    color: #4ea32a;
+                    box-shadow: inset 0 0 0 5px #c52d2f;
+                    -webkit-box-shadow: inset 0 0 0 5px #4ea32a;
+                    border: 3px solid #4ea32a;
+                }
+
+            a {
+                color: #428bca;
+                text-decoration: none;
+            }
+
+            .box_top_font {
+                font-size: 16px;
+                margin-left: 20px;
+            }
+
+            .box_top_2_span {
+                color: #FF9933;
+            }
+
+            .box_top {
+                text-align: center;
+                padding: 10px;
+                display: block;
+                min-height: 90px;
+                box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+                border-radius: 2px;
+                margin-bottom: 15px;
+            }
+
+            .box_top_1 {
+                background: #EDF6EA;
+            }
+
+            .box_top_2 {
+                background: #FFF5EB;
+            }
+
+            .box_top_3 {
+                background: #EBF0FF;
+            }
+
+            .box_top_3_span {
+                color: #3366FF;
+            }
+
+            .box_top_4 {
+                background: #FFE6E6;
+            }
+
+            .box_top_2 {
+                background: #FFF5EB;
+            }
+
+            .feature-wrap2 i:hover {
+                /* background: #FF9933; */
+                color: #FF9933;
+                box-shadow: inset 0 0 0 5px #c52d2f;
+                -webkit-box-shadow: inset 0 0 0 5px #FF9933;
+                border: 3px solid #FF9933;
+            }
+
+            .feature-wrap2 i {
+                font-size: 50px;
+                height: 110px;
+                width: 110px;
+                margin: 3px;
+                border-radius: 100%;
+                line-height: 110px;
+                text-align: center;
+                background: #ffffff;
+                color: #FF9933;
+                border: 3px solid #ffffff;
+                box-shadow: inset 0 0 0 5px #f2f2f2;
+                -webkit-box-shadow: inset 0 0 0 5px #f2f2f2;
+                -webkit-transition: 500ms;
+                -moz-transition: 500ms;
+                -o-transition: 500ms;
+                transition: 500ms;
+                /* float: left; */
+                margin-right: 25px;
+            }
+
+
+            .charts {
+                text-align: center;
+                padding: 10px;
+                display: block;
+                min-height: 90px;
+                box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+                border-radius: 2px;
+                margin-bottom: 15px;
+                background: #fff;
+                margin-top: 45px;
+            }
+
+            .page-header {
+                padding-bottom: 9px;
+                margin: 10px 0 0px;
+                border-bottom: 1px solid #C7D1DD;
+            }
+
+            .top {
+                margin-top: 30px;
+            }
+
+            .circle-tile {
+                margin-bottom: 15px;
+                text-align: center;
+            }
+
+            .circle-tile-heading {
+                /* border: 3px solid rgba(255, 255, 255, 0.3); */
+                border-radius: 104%;
+                /* color: #FFFFFF; */
+                height: 46px;
+                margin: 0 auto -40px;
+                position: relative;
+                transition: all 0.3s ease-in-out 0s;
+                width: 80px;
+            }
+
+                .circle-tile-heading .fa {
+                    line-height: 80px;
+                }
+
+            .circle-tile-content {
+                padding-top: 50px;
+            }
+
+            .circle-tile-number {
+                font-size: 26px;
+                font-weight: 700;
+                line-height: 1;
+                padding: 5px 0 15px;
+            }
+
+            .circle-tile-description {
+                text-transform: uppercase;
+                font-size: 20px;
+                color: #f4f4f4;
+            }
+
+            .circle-tile-footer {
+                background-color: #115882;
+                color: #f4f4f4;
+                display: block;
+                padding: 5px;
+                transition: all 0.3s ease-in-out 0s;
+            }
+
+                .circle-tile-footer:hover {
+                    background-color: rgba(0, 0, 0, 0.2);
+                    color: rgba(255, 255, 255, 0.5);
+                    text-decoration: none;
+                }
+
+            .circle-tile-heading.dark-blue:hover {
+                background-color: #2E4154;
+            }
+
+            .circle-tile-heading.green:hover {
+                background-color: #138F77;
+            }
+
+            .circle-tile-heading.orange:hover {
+                background-color: #DA8C10;
+            }
+
+            .circle-tile-heading.blue:hover {
+                background-color: #2473A6;
+            }
+
+            .circle-tile-heading.red:hover {
+                background-color: #CF4435;
+            }
+
+            .circle-tile-heading.purple:hover {
+                background-color: #7F3D9B;
+            }
+
+            .tile-img {
+                text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.9);
+            }
+
+            .dark-blue {
+                /* background-color: #3c8dbc; */
+            }
+
+            .green {
+                background-color: #16A085;
+            }
+
+            .blue {
+                background-color: #2980B9;
+            }
+
+            .orange {
+                background-color: #F39C12;
+            }
+
+            .red {
+                background-color: #61a5cc;
+                border-radius: 13px;
+            }
+
+            .purple {
+                background-color: #8E44AD;
+            }
+
+            .dark-gray {
+                background-color:;
+            }
+
+            .gray {
+                background-color: #95A5A6;
+            }
+
+            .light-gray {
+                background-color: #BDC3C7;
+            }
+
+            .yellow {
+                background-color: #F1C40F;
+            }
+
+            .text-dark-blue {
+                color: #34495E;
+            }
+
+            .text-green {
+                color: #16A085;
+            }
+
+            .text-blue {
+                color: #2980B9;
+            }
+
+            .text-orange {
+                color: #F39C12;
+            }
+
+            .text-red {
+                color: #E74C3C;
+            }
+
+            .text-purple {
+                color: #8E44AD;
+            }
+
+            .text-faded {
+                color: #f4f4f4;
+                font-size: 15px;
+            }
+
+
+
+            /* ----- v CAN BE DELETED v ----- */
+
+
+
+            .orange-circle-button {
+                border: .5em solid #EDF6EA;
+                font-size: 1em;
+                line-height: 1.1em;
+                color: #4ea32a;
+                margin: auto;
+                border-radius: 50%;
+                height: 8em;
+                width: 7em;
+                position: relative;
+                background-color: #EDF6EA;
+                text-decoration: none;
+                border-color: #4ea32a;
+            }
+
+            .orange-circle-button1 {
+                border: .5em solid #FF9933;
+                font-size: 1em;
+                line-height: 1.1em;
+                color: #FF9933;
+                margin: auto;
+                border-radius: 50%;
+                height: 8em;
+                width: 7em;
+                position: relative;
+                background-color: #FFF5EB;
+                text-decoration: none;
+                border-color: #FF9933;
+            }
+
+            .orange-circle-button2 {
+                border: .5em solid #3366FF;
+                font-size: 1em;
+                line-height: 1.1em;
+                color: #3366FF;
+                margin: auto;
+                border-radius: 50%;
+                height: 8em;
+                width: 7em;
+                position: relative;
+                background-color: #EBF0FF;
+                text-decoration: none;
+                border-color: ##3366FF;
+            }
+
+            .orange-circle-button3 {
+                border: .5em solid #EDF6EA;
+                font-size: 1em;
+                line-height: 1.1em;
+                color: #EDF6EA;
+                margin: auto;
+                border-radius: 50%;
+                height: 8em;
+                width: 7em;
+                position: relative;
+                background-color: #EDF6EA;
+                text-decoration: none;
+                border-color: #EDF6EA;
+            }
+
+            .orange-circle-button4 {
+                border: .5em solid #FF0000;
+                font-size: 1em;
+                line-height: 1.1em;
+                color: #FF0000;
+                margin: auto;
+                border-radius: 50%;
+                height: 8em;
+                width: 7em;
+                position: relative;
+                background-color: #FFE6E6;
+                text-decoration: none;
+                border-color: #FF0000;
+            }
+
+            .orange-circle-button5 {
+                border: .5em solid #EDF6EA;
+                font-size: 1em;
+                line-height: 1.1em;
+                color: #EDF6EA;
+                margin: auto;
+                border-radius: 50%;
+                height: 8em;
+                width: 7em;
+                position: relative;
+                background-color: #EDF6EA;
+                text-decoration: none;
+                border-color: #4ea32a;
+            }
+
+            <!-- .orange-circle-button:visited {
+                color: #ffffff;
+                background-color: #e84d0e;
+                text-decoration: none;
+            }
+            -->
+            .orange-circle-link-greater-than {
+                font-size: 1em;
+            }
+
+
+            .panel-body .btn:not(.btn-block) {
+                width: 120px;
+                margin-bottom: 10px;
+            }
+
+            /***************/
+
+            .wrimagecard {
+                margin-top: 0;
+                margin-bottom: 1.5rem;
+                text-align: left;
+                position: relative;
+                background: #fff;
+                box-shadow: 12px 15px 20px 0px rgba(46,61,73,0.15);
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+
+                .wrimagecard .fa {
+                    position: relative;
+                    font-size: 70px;
+                }
+
+            .wrimagecard-topimage_header {
+                padding: 20px;
+            }
+
+            a.wrimagecard:hover, .wrimagecard-topimage:hover {
+                box-shadow: 2px 4px 8px 0px rgba(46,61,73,0.2);
+            }
+
+            .wrimagecard-topimage a {
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+
+            .wrimagecard-topimage_title {
+                padding: 20px 24px;
+                height: 80px;
+                padding-bottom: 0.75rem;
+                position: relative;
+            }
+
+            .wrimagecard-topimage a {
+                border-bottom: none;
+                text-decoration: none;
+                color: #525c65;
+                transition: color 0.3s ease;
+            }
+
+            /****************/
+
+            .small-box h3 {
+                font-size: 32px;
+                font-weight: bold;
+                margin: 0 0 10px 0;
+                white-space: nowrap;
+                padding: 0;
+            }
+
+
+            .myButton {
+                border-radius: 5px;
+                border: 1px solid #ffffff;
+                display: inline-block;
+                cursor: pointer;
+                font-family: Arial;
+                font-size: 16px;
+                padding: 5px 20px;
+                text-decoration: none;
+                border-color: #3c8dbc !important;
+                background-color: #3c8dbc !important;
+                color: #FFFFFF;
+            }
+
+                .myButton:hover {
+                    background-color: #eb675e;
+                    color: #000;
+                }
+
+                .myButton:active {
+                    position: relative;
+                    top: 1px;
+                }
+        </style>
+    </head>
+    <input type="hidden" id="Count" name="Count" value="1" />
+    <input type="hidden" id="ComponentId" name="ComponentId" value="" />
+    <input type="hidden" id="ProductId" name="ProductId" value="" />
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Create BOM</h3>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-1">
+                        @Html.Label("Product", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.EJ().Autocomplete("ProductName").Width("100%").Datasource((IEnumerable<Inventory.Models.Products>)ViewBag.Productdatasource).ShowPopupButton(true).AutocompleteFields(field => field.Text("ProductName").Key("ProductCode")).ClientSideEvents(e => e.Select("getProductId"))
+                    </div>
+                </div>
+            </div>
+            &nbsp;
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-8">
+                        <table class="table table-responsive">
+                            <tr><td>COMPONENT NAME</td><td>QUANTITY</td><td>IS BOM</td><td>&nbsp;</td></tr>
+                            <tr class="mycontainer" id="mainrow">
+                                <td>
+                                    @Html.EJ().Autocomplete("ProductComponent").Width("100%").Datasource((IEnumerable<Inventory.Models.Products>)ViewBag.Componentdatasource).ShowPopupButton(true).AutocompleteFields(field => field.Text("ProductName").Key("ProductCode")).ClientSideEvents(e => e.Select("getComponentId").FocusOut("checkComponent"))
+                                </td>
+
+                                <td>
+                                    <input type="text" id="Quantity" class="Quantity form-control" onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode!=47" />
+                                </td>
+                                <td>
+                                    <select name="IsBom" id="IsBom" class="IsBom form-control" disabled>
+                                        <option value="Select">Select</option>
+                                        <option value="false">false</option>
+                                        <option value="true">true</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="button" id="add" value="add" style="width:80px" class="btn btn-success" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-8">
+                        <table class="table table-responsive" id="orderdetailsItems"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*<div id="orderItems">
+            <table class="table table-responsive" id="orderdetailsItems" style="width: 100%; display:block; overflow-x :auto; white-space :nowrap;"></table>
+            <span id="orderItemError" style="color:red"></span>
+        </div>*@
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-4">
+                    <input id="submit" type="button" value="Save" class="btn btn-primary" />&nbsp;
+                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                    @*<input id="submit" type="button" value="Save" class="btn btn-warning" style="padding:4px 4px" />*@
+                </div>
+            </div>
+        </div>
+        &nbsp;
+
+
+        @*Modal Popup*@
+        <div class="modal fade" id="ModalHasComponent" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document" style="width:80%; max-width:800px ">
+                <div class="modal-content">
+                    <div class="modal-header" style="text-align:center;background-color:#8a6d3b">
+                        @*<button type="button" class="close" style="color:white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>*@
+                        <h4 class="modal-title" style="color:white;" id="exampleModalLongTitle"><span><b>Assembly already exist in below products, do you want to update for all ?</b></span></h4>
+                    </div>
+                    <div class="modal-body list-group tblHasComponent" style="text-align:left;background-color:#faebcc">
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-primary" onclick="SaveWithAssembly();" value="YES" />&nbsp;
+                        <input type="button" class="btn btn-danger" onclick="SaveWithoutAssembly();" value="NO" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+
+
+
+
+    function Remove(Count) {
+
+        $("#R" + Count + "").remove();
+    }
+    function GetProductName(Count, ProductCode) {
+        $.ajax({
+            type: "GET",
+            url: "/BOM/GetProductName",
+            data: { 'productCode': ProductCode },
+            success: function (result) {
+                $("#productNew" + Count + "").val(result.trim());
+            },
+            error: function (error) { console.log(error); }
+        })
+    }
+    function getProductId(PrdId) {
+        $('#ProductId').val(PrdId.key);
+        $('#orderdetailsItems').empty();
+        $('#ProductComponent').val('');
+        $('#Quantity').val('');
+        getBomDetails(PrdId.key);
+    }
+    function getBomDetails(prd) {
+        $.ajax({
+            type: "GET",
+            url: '/Bom/getBOMData',
+            data: { 'productId': prd },
+            success: function (result) {
+
+                if (result.Message == "success") {
+
+                    $('#ProductComponent').ejAutocomplete({ dataSource: result.Component, fields: { key: "ProductCode", text: "ProductName" }, EnablePersistence: false, ShowPopupButton: true });
+
+                    var cnt = parseInt(result.data.length);
+                    $('#Count').val(cnt);
+                    var Count = 1;
+                    $("#orderdetailsItems").append("<tbody>");
+                    $.each(result.data, function (i, item) {
+                        $("#orderdetailsItems").append("<tr id='R" + Count + "'> <td> <input type='text' id='ComponentNew" + Count + "' readonly  class='ComponentNew form-control'' /></td><td><input type='text' id='QuantityNew" + Count + "' readonly class='QuantityNew form-control'' /></td> <td> <select  id='BomApplicableNew" + Count + "' class='BomApplicableNew form-control' onchange='CheckBOM(" + Count + ")'> <option value='false'>false</option> <option value='true'>true</option> </select></td> <td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove'  class='btn btn-danger' /></td><td> <input type='hidden' id='ComponentIdNew" + Count + "' readonly class='ComponentIdNew form-control'' style='width:0px' /><input type='hidden' id='billNoNew" + Count + "' readonly class='billNoNew form-control'' style='width:0px' /></td></tr>");
+                        $("#ComponentNew" + Count + "").val(result.data[i].ComponentName);//BomApplicableNew disabled
+                        $("#ComponentIdNew" + Count + "").val(result.data[i].ComponentId);
+                        $("#QuantityNew" + Count + "").val(result.data[i].Quantity);
+                        $("#billNoNew" + Count + "").val(result.data[i].BomId);
+                        BomApplicable(Count, result.data[i].ComponentId);
+                        Count = Count + 1;
+                    });
+                    $("#orderdetailsItems").append("</tbody>");
+                }
+                else {
+                    toastr.error(result.Message);
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
+    }
+    function BomApplicable(Count, ComponentId) {
+        $.ajax({
+            type: "GET",
+            url: "/BOM/BomApplicable",
+            data: { 'ComponentId': ComponentId },
+            success: function (result) {
+                if (result == "0") {
+                    $("#BomApplicableNew" + Count + "").val("false");
+                } else {
+                    $("#BomApplicableNew" + Count + "").val("true");
+                    $("#BomApplicableNew" + Count + "").prop("disabled", true);
+                }
+            },
+            error: function (error) { console.log(error); }
+        })
+
+    }
+    function getComponentId(PrdId) {
+        $('#ComponentId').val(PrdId.key);
+        $.ajax({
+            type: "GET",
+            url: '/BOM/CheckDuplicateComponent',
+            data: { 'productId': $('#ProductId').val(), 'ComponentId': PrdId.key, },
+            success: function (result) {
+
+                if (result != "0") {
+                    $('#IsBom').val('true');
+                } else {
+                    $('#IsBom').val('false');
+                };
+            }
+        })
+    }
+    function checkProduct() {
+        $.ajax({
+            type: "GET",
+            url: "/BOM/checkProduct",
+            data: { 'product': $('#ProductComponent').val() },
+            success: function (result) {
+                if (result == "0") {
+                    $('#ProductName').val('');
+                    $('#ProductComponent').css("border", "1px solid #e46f61");
+                } else {
+                    $('#ProductComponent').css("border", "1px solid #d2d6de");
+                }
+            },
+            error: function (error) { console.log(error); }
+        })
+    }
+    $(document).ready(function () {
+        $('#add').click(function () {
+            var isduplicate = false;
+            $('#orderdetailsItems tbody tr').each(function (index, e) {
+                var PrdName = $(e).children().get(0);
+                if ($('#ProductComponent').val() == PrdName.firstElementChild.value) {
+                    isduplicate = true;
+                    $('#ProductComponent').val('');
+                    $('#Quantity').val('');
+                    toastr.warning("product already added...");
+                } else {
+                    isduplicate = false;
+                }
+            })
+            if (isduplicate == false) {
+                if ($('#ProductName').val() != "") {
+                    var isValid = false;
+                    var lenghtcnt = $('#orderdetailsItems tr').length;
+
+                    //$("#Count").val(parseInt(lenghtcnt) + 1);
+                    if ($('#ProductName').val() == "") { toastr.error("Please Select Product Name"); $('#ProductName').css("border", "1px solid #e46f61"); isValid = false; } else { $('#ProductName').css("border", "1px solid #a5da6b"); isValid = true; }
+                    if ($('#ProductComponent').val() == "") { toastr.error("Please Select Component"); $('#ProductComponent').css("border", "1px solid #e46f61"); isValid = false; } else { $('#ProductComponent').css("border", "1px solid #a5da6b"); isValid = true; }
+                    if ($('#Quantity').val() == "") { toastr.error("Please Enter Quantity"); $('#Quantity').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Quantity').css("border", "1px solid #a5da6b"); isValid = true; }
+
+                    if (isValid == true && $('#ProductComponent').val() != "" && $('#ProductName').val() != "" && $('#Quantity').val() != "") {
+                        var Count = parseInt($('#Count').val());
+                        Count = Count + 1;
+                        //$("#orderdetailsItems").append(" <tbody> <tr id='R" + Count + "'> <td> <input type='text' id='ComponentNew" + Count + "' readonly  class='ComponentNew form-control'' /></td><td><input type='text' id='QuantityNew" + Count + "' readonly class='QuantityNew form-control'' /></td> <td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /></td><td> <input type='hidden' id='ComponentIdNew" + Count + "' readonly class='ComponentIdNew form-control'' style='width:0px' /><input type='hidden' id='billNoNew" + Count + "' readonly class='billNoNew form-control'' style='width:0px' /></td></tr> <tbody>");
+                        $("#orderdetailsItems").append(" <tbody> <tr id='R" + Count + "'> <td> <input type='text' id='ComponentNew" + Count + "' readonly  class='ComponentNew form-control'' /></td><td><input type='text' id='QuantityNew" + Count + "' readonly class='QuantityNew form-control'' /></td> <td> <select id='BomApplicableNew" + Count + "' class='BomApplicableNew form-control' onchange='CheckBOM(" + Count + ")'> <option value='false'>false</option> <option value='true'>true</option> </select></td> <td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' class='btn btn-danger' /></td><td> <input type='hidden' id='ComponentIdNew" + Count + "' readonly class='ComponentIdNew form-control'' style='width:0px' /><input type='hidden' id='billNoNew" + Count + "' readonly class='billNoNew form-control'' style='width:0px' /></td></tr> <tbody>");
+                        $("#ComponentNew" + Count + "").val($('#ProductComponent').val());
+                        $("#ComponentIdNew" + Count + "").val($('#ComponentId').val());
+                        $("#QuantityNew" + Count + "").val($('#Quantity').val());
+                        if ($('#IsBom').val() == "true") {
+                            $("#BomApplicableNew" + Count + "").val($('#IsBom').val());
+                            $("#BomApplicableNew" + Count + "").prop("disabled", true);
+                        } else {
+                            $("#BomApplicableNew" + Count + "").val($('#IsBom').val());
+                        }
+
+                        $('#Count').val(Count);
+                        // Clear Data
+                        $('#ProductComponent').val('');
+                        // $('#ProductName').val('');
+                        $('#Quantity').val('');
+
+                        $('#ProductName').css("border", "1px solid #d2d6de");
+                        $('#ProductComponent').css("border", "1px solid #d2d6de");
+                        $('#Quantity').css("border", "1px solid #d2d6de");
+
+                    }
+                } else {
+                    toastr.error("Please Select Product");
+                }
+            }
+        });
+
+        $('#submit').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "/BOM/HasComponent",
+                data: { 'productCode': $('#ProductId').val().trim() },
+                success: function (result) {
+                    if (result.Message == "success") {
+                        if (result.Component.length == 0) {
+                            var Updateassembly = "NotApplicable";
+                            Save(Updateassembly);
+                        }
+                        else {
+                            $(".tblHasComponent").empty();
+                            $.each(result.Component, function (i, item) {
+                                $(".tblHasComponent").append("<a href='#' class='list-group-item fa fa-circle-o' style='font-weight:bold;width:100%'>&nbsp;&nbsp;" + item.ProductName + "</a>");
+                            });
+                            $('#ModalHasComponent').modal({ backdrop: 'static', keyboard: false })
+                            $("#ModalHasComponent").modal("show");
+                        }
+                    }
+                    else {
+                        toastr.error(result.Message);
+                    }
+                },
+                error: function (error) { console.log(error); }
+            })
+        });
+    })
+
+    function SaveWithAssembly() {
+        var Updateassembly = "YES";
+        Save(Updateassembly);
+    }
+
+    function SaveWithoutAssembly() {
+        var Updateassembly = "NO";
+        Save(Updateassembly);
+    }
+
+    function Save(UpdateAssembly) {
+        var isAllValid = true;
+        $('#orderItemError').text('');
+        var list = [];
+        var errorItemCount = 0;
+
+        $('#orderdetailsItems tbody tr').each(function (index, ele) {
+            if ((parseFloat($('.QuantityNew', this).val()) || 0) == 0 ||
+                $('.ComponentNew', this).val() == "" ||
+                isNaN($('.QuantityNew', this).val())) {
+                errorItemCount++;
+                $(this).addClass('error');
+            } else {
+                var orderItem = {
+                    ComponentId: $('.ComponentIdNew', this).val(),
+                    Quantity: $('.QuantityNew', this).val(),
+                    ProductId: $('#ProductId').val().trim(),
+                    BOMNo: $('.billNoNew', this).val(),
+                    hasSubComponent: $('.BomApplicableNew', this).val(),
+                }
+                list.push(orderItem);
+            }
+        })
+
+        debugger
+        if (isAllValid) {
+            var data = {
+                bomdata: list,
+                UpdateAssembly: UpdateAssembly
+            }
+            $(this).val('Please wait...');
+            $.ajax({
+                type: 'POST',
+                url: '/BOM/save',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data.status) {
+                        toastr.success("Successfully saved..");
+                        window.location.href = "/BOM/Index";
+                    }
+                    else {
+                        toastr.error("something Wrong..");
+                    }
+                    $('#submit').val('Save');
+                },
+                error: function (error) {
+                    console.log(error);
+                    $('#submit').val('Save');
+                }
+            });
+        }
+    }
+
+    function checkComponent() {
+        $('#orderdetailsItems tbody tr').each(function (index, e) {
+            var PrdName = $(e).children().get(0);
+            if ($('#ProductComponent').val() == PrdName.firstElementChild.value) {
+                isduplicate = false;
+                $('#ProductComponent').val('');
+                $('#Quantity').val('');
+                toastr.warning("product already added...");
+            } else {
+                isduplicate = true;
+            }
+        })
+    }
+    function CheckBOM(Count) {
+        if ($("option:selected", $("#BomApplicableNew" + Count)).text() == "true") {
+            toastr.warning('BOM is not define .....! please define first.....!');
+            $("#BomApplicableNew" + Count + "").val("false");
+        }
+    }
+</script>

@@ -1,0 +1,212 @@
+﻿@model Inventory.Models.BOM
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("Edit", "BOM", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Count" name="Count" value="1" />
+    <input type="hidden" id="ComponentId" name="ComponentId" value="" />
+    <input type="hidden" id="ProductId" name="ProductId" value="" />
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Edit Bill OF Materials</h3>
+            <div class="box-tools pull-right">
+            </div>
+        </div>        
+     
+        <div id="orderItems">
+            <table class="table table-responsive" id="orderdetailsItems" display block; overflow-x auto; white-space nowrap; style="width:1030px"></table>
+            <span id="orderItemError" style="color:red"></span>
+        </div>
+    </div>
+    <div class="row" style="width:1430px">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="col-md-4">
+                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="col-md-4">  
+                    <div style="padding:5px 10px; text-align:right">
+                        <input id="submit" type="button" value="Save Order" class="btn btn-warning" style="padding:4px 4px" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    function Remove(Count) {
+           $("#R" + Count + "").remove();
+    }
+    function GetProductName(Count, ProductCode) {
+        $.ajax({
+            type: "GET",
+            url: "/BOM/GetProductName",
+            data: { 'productCode': ProductCode },
+            success: function (result) {
+                $("#productNew" + Count + "").val(result.trim());
+            },
+            error: function (error) { console.log(error); }
+        })
+    }
+    function getProductId(PrdId) {
+        $('#ProductId').val(PrdId.key);
+        $('#orderdetailsItems').empty();
+        $('#ProductComponent').val('');
+        $('#Quantity').val('');
+        $.ajax({
+            type: "GET",
+            url: '/BOM/getAllData',
+            data: { 'productId': PrdId.key },
+            success: function (result) {
+                var Count = parseInt($("#Count").val());
+                alert()
+                $.each(result, function (i, item) {
+                    $(" <tbody> <tr id='R" + Count + "'><td><input type='text' id='ProductNameNew" + Count + "' readonly class='ProductNameNew form-control'' /></td><td><input type='text' id='ComponentNew" + Count + "' readonly class='ComponentNew form-control'' /></td> <td><input type='text' id='QuantityNew" + Count + "'  class='QuantityNew form-control'' /></td> <td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /></td><td> <input type='hidden' id='ComponentIdNew" + Count + "' readonly class='ComponentIdNew form-control'' style='width:0px' /><input type='hidden' id='billNoNew" + Count + "' readonly style='width:0px' class='billNoNew form-control'' /></td></tr> <tbody>").appendTo("#orderdetailsItems");
+                    $("#ComponentNew" + Count + "").val(result[i].ComponentName);
+                    $("#ProductNameNew" + Count + "").val("asjkdjhask");
+                    $("#ComponentIdNew" + Count + "").val(result[i].ComponentId);
+                    $("#QuantityNew" + Count + "").val(result[i].Quantity);
+                    $("#billNoNew" + Count + "").val(result[i].BomId);
+                    $("#ProductId").val(result[i].ProductId);               
+                    Count = Count + 1;
+                });
+                $('#Count').val(parseInt($('#Count').val()) + 1)
+
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
+    }
+    function getComponentId(PrdId) {
+        $('#ComponentId').val(PrdId.key);
+    }
+    function checkProduct() {
+        $.ajax({
+            type: "GET",
+            url: "/BOM/checkProduct",
+            data: { 'product': $('#ProductComponent').val() },
+            success: function (result) {
+                if (result == "0") {
+                    $('#ProductName').val('');
+                    $('#ProductComponent').css("border", "1px solid #e46f61");
+                } else {
+                    $('#ProductComponent').css("border", "1px solid #d2d6de");
+                }
+            },
+            error: function (error) { console.log(error); }
+        })
+    }
+    $(document).ready(function () {
+        $('#submit').click(function () {
+            var isAllValid = true;
+            $('#orderItemError').text('');
+            var list = [];
+            var errorItemCount = 0;
+
+            $('#orderdetailsItems tbody tr').each(function (index, ele) {
+                if ((parseFloat($('.QuantityNew', this).val()) || 0) == 0 ||
+                    $('.ComponentNew', this).val() == "" ||
+                    isNaN($('.QuantityNew', this).val())) {
+                    errorItemCount++;
+                    $(this).addClass('error');
+                } else {
+                    var orderItem = {
+                        ComponentId: $('.ComponentIdNew', this).val(),
+                        Quantity: $('.QuantityNew', this).val(),
+                        ProductId: $('#ProductId').val().trim(),
+                        BOMNo: $('.billNoNew', this).val(),
+                    }
+                    list.push(orderItem);
+                }
+            })
+
+            
+            if (isAllValid) {
+                var data = {
+                    bomdata: list
+                }
+                $(this).val('Please wait...');
+                $.ajax({
+                    type: 'POST',
+                    url: '/BOM/save',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.status) {
+                            toastr.success("Successfully saved..");
+                            window.location.href = "/BOM/Index";
+                        }
+                        else {
+                            toastr.error("something Wrong..");
+                        }
+                        $('#submit').val('Save');
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        $('#submit').val('Save');
+                    }
+                });
+            }
+        });
+    })
+    function checkComponent()
+    {
+        $('#orderdetailsItems tbody tr').each(function (index, e) {
+            var PrdName = $(e).children().get(0);
+            if ($('#ProductComponent').val() == PrdName.firstElementChild.value) {
+                isduplicate = false;
+                $('#ProductComponent').val('');
+                $('#Quantity').val('');
+                toastr.warning("product already added...");
+            } else {
+                isduplicate = true;
+            }
+        })
+    }
+    $(document).ready(function () {
+        var url = window.location.href
+        var array = url.split('/');
+        var lastsegment = array[array.length - 1];
+        $.ajax({
+            type: "GET",
+            url: '/BOM/getAllData',
+            data: { 'productId': lastsegment },
+            success: function (result) {
+                var Count = parseInt($("#Count").val());
+                $.each(result, function (i, item) {
+                    $(" <tbody> <tr id='R" + Count + "'><td><input type='text' id='ProductNameNew" + Count + "' readonly class='ProductNameNew form-control'' /></td><td><input type='text' id='ComponentNew" + Count + "' readonly class='ComponentNew form-control'' /></td> <td><input type='text' id='QuantityNew" + Count + "'  class='QuantityNew form-control'' /></td> <td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /></td><td> <input type='hidden' id='ComponentIdNew" + Count + "' readonly class='ComponentIdNew form-control'' style='width:0px' /><input type='hidden' id='billNoNew" + Count + "' readonly style='width:0px' class='billNoNew form-control'' /></td></tr> <tbody>").appendTo("#orderdetailsItems");
+                    $("#ComponentNew" + Count + "").val(result[i].ComponentName);
+                    $("#ProductNameNew" + Count + "").val(result[i].ProductName);
+                    $("#ComponentIdNew" + Count + "").val(result[i].ComponentId);
+                    $("#QuantityNew" + Count + "").val(result[i].Quantity);
+                    $("#billNoNew" + Count + "").val(result[i].BomId);
+                    $("#ProductId").val(result[i].ProductId);
+                    Count = Count + 1;
+                });
+                $('#Count').val(parseInt($('#Count').val()) + 1)
+
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
+    
+    });
+</script>

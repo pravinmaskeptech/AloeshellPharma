@@ -1,0 +1,1414 @@
+<?xml version="1.0"?>
+<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <Style>
+          <BackgroundColor>White</BackgroundColor>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+        <ReportItems>
+          <Textbox Name="TextBox1">
+            <Left>3.4375in</Left>
+            <Top>0.79167in</Top>
+            <Height>0.31860in</Height>
+            <Width>1.4688in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Debit Note</Value>
+                    <Style>
+                      <FontSize>18pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox7">
+            <Left>5.125in</Left>
+            <Top>1.40625in</Top>
+            <Height>0.13948in</Height>
+            <Width>1.99996in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="Document No : "+First(Fields!DocNo.Value,"DataSet1")</Value>
+                    <Style>
+                      <FontSize>0.13889in</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox8">
+            <Left>5.125in</Left>
+            <Top>1.54166in</Top>
+            <Height>0.12500in</Height>
+            <Width>2in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="Invoice No : "+First(Fields!InvoiceNo.Value,"DataSet1")</Value>
+                    <Style>
+                      <FontSize>0.13889in</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox9">
+            <Left>0.52083in</Left>
+            <Top>2.15625in</Top>
+            <Height>0.25615in</Height>
+            <Width>3.8854in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>kindly note that your account has been debited as under</Value>
+                    <Style>
+                      <FontWeight>Normal</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox10">
+            <Left>0.50000in</Left>
+            <Top>1.25in</Top>
+            <Height>0.25000in</Height>
+            <Width>0.37500in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>To,</Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox12">
+            <Left>0.52067in</Left>
+            <Top>1.64567in</Top>
+            <Height>0.16667in</Height>
+            <Width>3.1146in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Address.Value,"DataSet1")</Value>
+                    <Style>
+                      <FontSize>0.13889in</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox13">
+            <Left>0.49984in</Left>
+            <Top>1.84359in</Top>
+            <Height>0.16667in</Height>
+            <Width>3.125in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="City:"+First(Fields!City.Value,"DataSet1")+" - "+First(Fields!Pincode.Value,"DataSet1")</Value>
+                    <Style>
+                      <FontSize>0.13889in</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox15">
+            <Left>0.52067in</Left>
+            <Top>1.46257in</Top>
+            <Height>0.21445in</Height>
+            <Width>3.125in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Name.Value,"DataSet1")</Value>
+                    <Style>
+                      <FontSize>0.13889in</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox2">
+            <Left>3in</Left>
+            <Top>0.08333in</Top>
+            <Height>0.12500in</Height>
+            <Width>2.3021in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!CompanyName.Value,"DataSet1")</Value>
+                    <Style>
+                      <FontSize>0.19444in</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox3">
+            <Left>2.11442in</Left>
+            <Top>0.20833in</Top>
+            <Height>0.12500in</Height>
+            <Width>4.125in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!CompanyDetails_Address.Value,"DataSet1")</Value>
+                    <Style>
+                      <FontSize>0.13889in</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox4">
+            <Left>2.16667in</Left>
+            <Top>0.36458in</Top>
+            <Height>0.12500in</Height>
+            <Width>4in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!CompanyDetails_City.Value,"DataSet1")+": "+First(Fields!CompanyDetails_Pincode.Value,"DataSet1")</Value>
+                    <Style>
+                      <FontSize>0.13889in</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox5">
+            <Left>2.42708in</Left>
+            <Top>0.54167in</Top>
+            <Height>0.12500in</Height>
+            <Width>3.4584in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="Tel. : "+First(Fields!Phone.Value,"DataSet1")+" Email:"+First(Fields!CompanyDetails_Email.Value,"DataSet1")</Value>
+                    <Style>
+                      <FontSize>0.13889in</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox16">
+            <Left>5.125in</Left>
+            <Top>1.66052in</Top>
+            <Height>0.12500in</Height>
+            <Width>1.87493in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="Date : "+FormatDateTime(First(Fields!DocDate.Value,"DataSet1"), DateFormat.ShortDate)</Value>
+                    <Style>
+                      <FontSize>0.13889in</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox17">
+            <Left>4.97917in</Left>
+            <Top>3.38542in</Top>
+            <Height>0.37500in</Height>
+            <Width>2in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="For "+First(Fields!CompanyName.Value,"DataSet1")</Value>
+                    <Style>
+                      <FontSize>0.13889in</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Textbox Name="TextBox18">
+            <Left>4.97917in</Left>
+            <Top>3.875in</Top>
+            <Height>0.29780in</Height>
+            <Width>2in</Width>
+            <Style>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Authorised Signatory</Value>
+                    <Style>
+                      <FontWeight>Normal</FontWeight>
+                      <FontStyle>Normal</FontStyle>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Tablix Name="Tablix1">
+            <Left>0.44792in</Left>
+            <Top>2.45833in</Top>
+            <Height>0.75000in</Height>
+            <Width>7.33333in</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+            <DataSetName>DataSet1</DataSetName>
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>4.54167in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.79167in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.25000in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox11">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>0.25000in</Height>
+                          <Width>4.54167in</Width>
+                          <Style>
+                            <BackgroundColor>#a6d38b</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Description</Value>
+                                  <Style>
+                                    <FontSize>0.13889in</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox19">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>0.25000in</Height>
+                          <Width>2.79167in</Width>
+                          <Style>
+                            <BackgroundColor>#a6d38b</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Amount</Value>
+                                  <Style>
+                                    <FontSize>0.13889in</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#ffffff</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25000in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox20">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>0.25000in</Height>
+                          <Width>4.54167in</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Description.Value</Value>
+                                  <Style>
+                                    <FontSize>0.13889in</FontSize>
+                                    <Color>black</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox22">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>0.25000in</Height>
+                          <Width>2.79167in</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!TotalAmount.Value</Value>
+                                  <Style>
+                                    <FontSize>0.13889in</FontSize>
+                                    <Color>black</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25000in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox28">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>0.25000in</Height>
+                          <Width>4.54167in</Width>
+                          <Style>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Total</Value>
+                                  <Style>
+                                    <FontSize>0.13889in</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>black</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TextBox29">
+                          <Left>0in</Left>
+                          <Top>0in</Top>
+                          <Height>0.25000in</Height>
+                          <Width>2.79167in</Width>
+                          <Style>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Sum(Fields!TotalAmount.Value)</Value>
+                                  <Style>
+                                    <FontSize>0.13889in</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>black</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                        </Textbox>
+                        <ColSpan>1</ColSpan>
+                        <RowSpan>1</RowSpan>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <KeepWithGroup>After</KeepWithGroup>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="Details" />
+                </TablixMember>
+                <TablixMember>
+                  <KeepWithGroup>Before</KeepWithGroup>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+          </Tablix>
+        </ReportItems>
+        <Height>6.45833in</Height>
+      </Body>
+      <Width>8.0731in</Width>
+      <Page>
+        <PageHeight>5.83in</PageHeight>
+        <PageWidth>8.27in</PageWidth>
+        <LeftMargin>0in</LeftMargin>
+        <RightMargin>0in</RightMargin>
+        <TopMargin>0in</TopMargin>
+        <BottomMargin>0in</BottomMargin>
+        <Style>
+          <BackgroundColor>White</BackgroundColor>
+          <Border>
+            <Style>None</Style>
+          </Border>
+        </Style>
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DataSource1">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>Data Source=AYUSH-PC;Initial Catalog=InventoryPurchaseSales;</ConnectString>
+        <IntegratedSecurity>true</IntegratedSecurity>
+      </ConnectionProperties>
+      <rd:SecurityType>Integrated</rd:SecurityType>
+      <rd:ImpersonateUser>false</rd:ImpersonateUser>
+    </DataSource>
+    <DataSource Name="DataSource2">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>Data Source=AYUSH-PC;Initial Catalog=InventoryPurchaseSales;</ConnectString>
+        <IntegratedSecurity>true</IntegratedSecurity>
+      </ConnectionProperties>
+      <rd:SecurityType>Integrated</rd:SecurityType>
+      <rd:ImpersonateUser>false</rd:ImpersonateUser>
+    </DataSource>
+    <DataSource Name="DataSource3">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>Data Source=AYUSH-PC;Initial Catalog=InventoryPurchaseSales;</ConnectString>
+        <IntegratedSecurity>true</IntegratedSecurity>
+      </ConnectionProperties>
+      <rd:SecurityType>Integrated</rd:SecurityType>
+      <rd:ImpersonateUser>false</rd:ImpersonateUser>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet1">
+      <Fields>
+        <Field Name="DebitNoteId">
+          <DataField>DebitNoteId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="DocNo">
+          <DataField>DocNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="DocDate">
+          <DataField>DocDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="PONO">
+          <DataField>PONO</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PODate">
+          <DataField>PODate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="SupplierId">
+          <DataField>SupplierId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="SalesId">
+          <DataField>SalesId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="ProductCode">
+          <DataField>ProductCode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ShipperId">
+          <DataField>ShipperId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Products_ProductCode">
+          <DataField>Products_ProductCode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Description">
+          <DataField>Description</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Sales_SalesId">
+          <DataField>Sales_SalesId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="InvoiceNo">
+          <DataField>InvoiceNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="InvoiceDate">
+          <DataField>InvoiceDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="TotalAmount">
+          <DataField>TotalAmount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="Shipper_ShipperId">
+          <DataField>Shipper_ShipperId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Shipper_CustomerId">
+          <DataField>Shipper_CustomerId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Name">
+          <DataField>Name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ContactPerson">
+          <DataField>ContactPerson</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Address">
+          <DataField>Address</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="City">
+          <DataField>City</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Pincode">
+          <DataField>Pincode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="State">
+          <DataField>State</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Email">
+          <DataField>Email</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Country">
+          <DataField>Country</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PlaceOfSupply">
+          <DataField>PlaceOfSupply</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ContactNo">
+          <DataField>ContactNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Shipper_CreatedBy">
+          <DataField>Shipper_CreatedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Shipper_CreatedDate">
+          <DataField>Shipper_CreatedDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Shipper_UpdatedBy">
+          <DataField>Shipper_UpdatedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="UpdationDate">
+          <DataField>UpdationDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Freeze">
+          <DataField>Freeze</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_CompanyID">
+          <DataField>CompanyDetails_CompanyID</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CompanyName">
+          <DataField>CompanyName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_Address">
+          <DataField>CompanyDetails_Address</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_City">
+          <DataField>CompanyDetails_City</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_Pincode">
+          <DataField>CompanyDetails_Pincode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_State">
+          <DataField>CompanyDetails_State</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_Country">
+          <DataField>CompanyDetails_Country</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Phone">
+          <DataField>Phone</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Fax">
+          <DataField>Fax</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_Email">
+          <DataField>CompanyDetails_Email</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Website">
+          <DataField>Website</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Industry">
+          <DataField>Industry</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="FiscalYearFrom">
+          <DataField>FiscalYearFrom</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="TimeZone">
+          <DataField>TimeZone</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="GSTNo">
+          <DataField>GSTNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="LogoPath">
+          <DataField>LogoPath</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="TanNo">
+          <DataField>TanNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PanNo">
+          <DataField>PanNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_CreatedBy">
+          <DataField>CompanyDetails_CreatedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_CreatedDate">
+          <DataField>CompanyDetails_CreatedDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_UpdatedBy">
+          <DataField>CompanyDetails_UpdatedBy</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_UpdateDate">
+          <DataField>CompanyDetails_UpdateDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="CompanyDetails_IsActive">
+          <DataField>CompanyDetails_IsActive</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource2</DataSourceName>
+        <CommandType>Text</CommandType>
+        <CommandText>SELECT [dbo].[DebitNote].[DebitNoteId],
+[dbo].[DebitNote].[DocNo],
+[dbo].[DebitNote].[DocDate],
+[dbo].[DebitNote].[PONO],
+[dbo].[DebitNote].[PODate],
+[dbo].[DebitNote].[SupplierId],
+[dbo].[DebitNote].[SalesId],
+[dbo].[DebitNote].[ProductCode],
+[dbo].[DebitNote].[ShipperId],
+[dbo].[Products].[ProductCode] AS [Products_ProductCode],
+[dbo].[Products].[Description],
+[dbo].[Sales].[SalesId] AS [Sales_SalesId],
+[dbo].[Sales].[InvoiceNo],
+[dbo].[Sales].[InvoiceDate],
+[dbo].[Sales].[TotalAmount],
+[dbo].[Shipper].[ShipperId] AS [Shipper_ShipperId],
+[dbo].[Shipper].[CustomerId] AS [Shipper_CustomerId],
+[dbo].[Shipper].[Name],
+[dbo].[Shipper].[ContactPerson],
+[dbo].[Shipper].[Address],
+[dbo].[Shipper].[City],
+[dbo].[Shipper].[Pincode],
+[dbo].[Shipper].[State],
+[dbo].[Shipper].[Email],
+[dbo].[Shipper].[Country],
+[dbo].[Shipper].[PlaceOfSupply],
+[dbo].[Shipper].[ContactNo],
+[dbo].[Shipper].[CreatedBy] AS [Shipper_CreatedBy],
+[dbo].[Shipper].[CreatedDate] AS [Shipper_CreatedDate],
+[dbo].[Shipper].[UpdatedBy] AS [Shipper_UpdatedBy],
+[dbo].[Shipper].[UpdationDate],
+[dbo].[Shipper].[Freeze],
+[dbo].[CompanyDetails].[CompanyID] AS [CompanyDetails_CompanyID],
+[dbo].[CompanyDetails].[CompanyName],
+[dbo].[CompanyDetails].[Address] AS [CompanyDetails_Address],
+[dbo].[CompanyDetails].[City] AS [CompanyDetails_City],
+[dbo].[CompanyDetails].[Pincode] AS [CompanyDetails_Pincode],
+[dbo].[CompanyDetails].[State] AS [CompanyDetails_State],
+[dbo].[CompanyDetails].[Country] AS [CompanyDetails_Country],
+[dbo].[CompanyDetails].[Phone],
+[dbo].[CompanyDetails].[Fax],
+[dbo].[CompanyDetails].[Email] AS [CompanyDetails_Email],
+[dbo].[CompanyDetails].[Website],
+[dbo].[CompanyDetails].[Industry],
+[dbo].[CompanyDetails].[FiscalYearFrom],
+[dbo].[CompanyDetails].[TimeZone],
+[dbo].[CompanyDetails].[GSTNo],
+[dbo].[CompanyDetails].[LogoPath],
+[dbo].[CompanyDetails].[TanNo],
+[dbo].[CompanyDetails].[PanNo],
+[dbo].[CompanyDetails].[CreatedBy] AS [CompanyDetails_CreatedBy],
+[dbo].[CompanyDetails].[CreatedDate] AS [CompanyDetails_CreatedDate],
+[dbo].[CompanyDetails].[UpdatedBy] AS [CompanyDetails_UpdatedBy],
+[dbo].[CompanyDetails].[UpdateDate] AS [CompanyDetails_UpdateDate],
+[dbo].[CompanyDetails].[IsActive] AS [CompanyDetails_IsActive] FROM [dbo].[DebitNote] INNER JOIN [dbo].[Products] ON [dbo].[DebitNote].[ProductCode]=[dbo].[Products].[ProductCode] LEFT OUTER JOIN [dbo].[Sales] ON [dbo].[DebitNote].[SalesId]=[dbo].[Sales].[SalesId] RIGHT OUTER JOIN [dbo].[Shipper] ON [dbo].[DebitNote].[ShipperId]=[dbo].[Shipper].[ShipperId] FULL OUTER JOIN [dbo].[CompanyDetails] ON [dbo].[DebitNote].[CompanyID]=[dbo].[CompanyDetails].[CompanyID]</CommandText>
+        <QueryDesignerState xmlns="http://schemas.microsoft.com/ReportingServices/QueryDefinition/Relational">
+          <Tables>
+            <Table Name="DebitNote" Schema="dbo">
+              <Columns>
+                <Column Name="DebitNoteId" IsDuplicate="False" IsSelected="True" />
+                <Column Name="DocNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="DocDate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="PONO" IsDuplicate="False" IsSelected="True" />
+                <Column Name="PODate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ReturnItems" IsDuplicate="False" IsSelected="False" />
+                <Column Name="Value" IsDuplicate="False" IsSelected="False" />
+                <Column Name="SupplierId" IsDuplicate="False" IsSelected="True" />
+                <Column Name="IsActive" IsDuplicate="False" IsSelected="False" />
+                <Column Name="CreatedBy" IsDuplicate="False" IsSelected="False" />
+                <Column Name="CreatedDate" IsDuplicate="False" IsSelected="False" />
+                <Column Name="UpdatedBy" IsDuplicate="False" IsSelected="False" />
+                <Column Name="UpdatedDate" IsDuplicate="False" IsSelected="False" />
+                <Column Name="CompanyID" IsDuplicate="False" IsSelected="False" />
+                <Column Name="SalesId" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ProductCode" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ShipperId" IsDuplicate="False" IsSelected="True" />
+              </Columns>
+              <SchemaLevels>
+                <SchemaInfo Name="dbo" SchemaType="Schema" />
+                <SchemaInfo Name="Tables" SchemaType="Category" />
+                <SchemaInfo Name="DebitNote" SchemaType="Table" />
+              </SchemaLevels>
+            </Table>
+            <Table Name="Products" Schema="dbo">
+              <Columns>
+                <Column Name="ProductCode" AliasName="Products_ProductCode" IsDuplicate="True" IsSelected="True" />
+                <Column Name="ProductName" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ProductClass" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ModelName" IsDuplicate="False" IsSelected="False" />
+                <Column Name="Description" IsDuplicate="False" IsSelected="True" />
+                <Column Name="CategoryId" IsDuplicate="False" IsSelected="False" />
+                <Column Name="OpeningQuantity" IsDuplicate="False" IsSelected="False" />
+                <Column Name="InwardQuantity" IsDuplicate="False" IsSelected="False" />
+                <Column Name="OutwardQuantity" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ClosingQuantity" IsDuplicate="False" IsSelected="False" />
+                <Column Name="AllocatedQty" IsDuplicate="False" IsSelected="False" />
+                <Column Name="PurchasePrice" IsDuplicate="False" IsSelected="False" />
+                <Column Name="SellingPrice" IsDuplicate="False" IsSelected="False" />
+                <Column Name="DamageQty" IsDuplicate="False" IsSelected="False" />
+                <Column Name="Weight" IsDuplicate="False" IsSelected="False" />
+                <Column Name="Size" IsDuplicate="False" IsSelected="False" />
+                <Column Name="StandardWarranty" IsDuplicate="False" IsSelected="False" />
+                <Column Name="Discount" IsDuplicate="False" IsSelected="False" />
+                <Column Name="DiscountIn" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ReorderLevel" IsDuplicate="False" IsSelected="False" />
+                <Column Name="MaxLevel" IsDuplicate="False" IsSelected="False" />
+                <Column Name="HsnCode" IsDuplicate="False" IsSelected="False" />
+                <Column Name="Note" IsDuplicate="False" IsSelected="False" />
+                <Column Name="Image" IsDuplicate="False" IsSelected="False" />
+                <Column Name="SerialNoApplicable" IsDuplicate="False" IsSelected="False" />
+                <Column Name="LeadTimePurchase" IsDuplicate="False" IsSelected="False" />
+                <Column Name="LeadTimeSell" IsDuplicate="False" IsSelected="False" />
+                <Column Name="UOM" IsDuplicate="False" IsSelected="False" />
+                <Column Name="CreatedBy" AliasName="Products_CreatedBy" IsDuplicate="True" IsSelected="False" />
+                <Column Name="CreatedDate" AliasName="Products_CreatedDate" IsDuplicate="True" IsSelected="False" />
+                <Column Name="UpdatedBy" AliasName="Products_UpdatedBy" IsDuplicate="True" IsSelected="False" />
+                <Column Name="UpdateDate" IsDuplicate="False" IsSelected="False" />
+                <Column Name="IsActive" AliasName="Products_IsActive" IsDuplicate="True" IsSelected="False" />
+                <Column Name="ProductType" IsDuplicate="False" IsSelected="False" />
+                <Column Name="IssuedToProductionQty" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ManufactureGRNQty" IsDuplicate="False" IsSelected="False" />
+              </Columns>
+              <SchemaLevels>
+                <SchemaInfo Name="dbo" SchemaType="Schema" />
+                <SchemaInfo Name="Tables" SchemaType="Category" />
+                <SchemaInfo Name="Products" SchemaType="Table" />
+              </SchemaLevels>
+            </Table>
+            <Table Name="Sales" Schema="dbo">
+              <Columns>
+                <Column Name="SalesId" AliasName="Sales_SalesId" IsDuplicate="True" IsSelected="True" />
+                <Column Name="OrderDetailsID" IsDuplicate="False" IsSelected="False" />
+                <Column Name="InvoiceNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="InvoiceDate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="CustomerID" IsDuplicate="False" IsSelected="False" />
+                <Column Name="OrderNo" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ProductCode" AliasName="Sales_ProductCode" IsDuplicate="True" IsSelected="False" />
+                <Column Name="DeliveredQty" IsDuplicate="False" IsSelected="False" />
+                <Column Name="BatchNo" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ReturnQty" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ReturnReason" IsDuplicate="False" IsSelected="False" />
+                <Column Name="CreatedBy" AliasName="Sales_CreatedBy" IsDuplicate="True" IsSelected="False" />
+                <Column Name="CreatedDate" AliasName="Sales_CreatedDate" IsDuplicate="True" IsSelected="False" />
+                <Column Name="ModifiedBy" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ModifiedDate" IsDuplicate="False" IsSelected="False" />
+                <Column Name="SerialNoApplicable" AliasName="Sales_SerialNoApplicable" IsDuplicate="True" IsSelected="False" />
+                <Column Name="BasicRate" IsDuplicate="False" IsSelected="False" />
+                <Column Name="DiscountAs" IsDuplicate="False" IsSelected="False" />
+                <Column Name="Discount" AliasName="Sales_Discount" IsDuplicate="True" IsSelected="False" />
+                <Column Name="GSTPercentage" IsDuplicate="False" IsSelected="False" />
+                <Column Name="CGSTAmount" IsDuplicate="False" IsSelected="False" />
+                <Column Name="IGSTAmount" IsDuplicate="False" IsSelected="False" />
+                <Column Name="SGSTAmount" IsDuplicate="False" IsSelected="False" />
+                <Column Name="AmountPerUnit" IsDuplicate="False" IsSelected="False" />
+                <Column Name="TotalAmount" IsDuplicate="False" IsSelected="True" />
+                <Column Name="CreditDocNo" IsDuplicate="False" IsSelected="False" />
+                <Column Name="SODate" IsDuplicate="False" IsSelected="False" />
+                <Column Name="OrderDate" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ReplaceQty" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ReplaceReason" IsDuplicate="False" IsSelected="False" />
+                <Column Name="PayAmount" IsDuplicate="False" IsSelected="False" />
+                <Column Name="Status" IsDuplicate="False" IsSelected="False" />
+                <Column Name="CompanyID" AliasName="Sales_CompanyID" IsDuplicate="True" IsSelected="False" />
+              </Columns>
+              <SchemaLevels>
+                <SchemaInfo Name="dbo" SchemaType="Schema" />
+                <SchemaInfo Name="Tables" SchemaType="Category" />
+                <SchemaInfo Name="Sales" SchemaType="Table" />
+              </SchemaLevels>
+            </Table>
+            <Table Name="Shipper" Schema="dbo">
+              <Columns>
+                <Column Name="ShipperId" AliasName="Shipper_ShipperId" IsDuplicate="True" IsSelected="True" />
+                <Column Name="CustomerId" AliasName="Shipper_CustomerId" IsDuplicate="True" IsSelected="True" />
+                <Column Name="Name" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ContactPerson" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Address" IsDuplicate="False" IsSelected="True" />
+                <Column Name="City" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Pincode" IsDuplicate="False" IsSelected="True" />
+                <Column Name="State" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Email" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Country" IsDuplicate="False" IsSelected="True" />
+                <Column Name="PlaceOfSupply" IsDuplicate="False" IsSelected="True" />
+                <Column Name="ContactNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="CreatedBy" AliasName="Shipper_CreatedBy" IsDuplicate="True" IsSelected="True" />
+                <Column Name="CreatedDate" AliasName="Shipper_CreatedDate" IsDuplicate="True" IsSelected="True" />
+                <Column Name="UpdatedBy" AliasName="Shipper_UpdatedBy" IsDuplicate="True" IsSelected="True" />
+                <Column Name="UpdationDate" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Freeze" IsDuplicate="False" IsSelected="True" />
+              </Columns>
+              <SchemaLevels>
+                <SchemaInfo Name="dbo" SchemaType="Schema" />
+                <SchemaInfo Name="Tables" SchemaType="Category" />
+                <SchemaInfo Name="Shipper" SchemaType="Table" />
+              </SchemaLevels>
+            </Table>
+            <Table Name="CompanyDetails" Schema="dbo">
+              <Columns>
+                <Column Name="CompanyID" AliasName="CompanyDetails_CompanyID" IsDuplicate="True" IsSelected="True" />
+                <Column Name="CompanyName" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Address" AliasName="CompanyDetails_Address" IsDuplicate="True" IsSelected="True" />
+                <Column Name="City" AliasName="CompanyDetails_City" IsDuplicate="True" IsSelected="True" />
+                <Column Name="Pincode" AliasName="CompanyDetails_Pincode" IsDuplicate="True" IsSelected="True" />
+                <Column Name="State" AliasName="CompanyDetails_State" IsDuplicate="True" IsSelected="True" />
+                <Column Name="Country" AliasName="CompanyDetails_Country" IsDuplicate="True" IsSelected="True" />
+                <Column Name="Phone" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Fax" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Email" AliasName="CompanyDetails_Email" IsDuplicate="True" IsSelected="True" />
+                <Column Name="Website" IsDuplicate="False" IsSelected="True" />
+                <Column Name="Industry" IsDuplicate="False" IsSelected="True" />
+                <Column Name="FiscalYearFrom" IsDuplicate="False" IsSelected="True" />
+                <Column Name="TimeZone" IsDuplicate="False" IsSelected="True" />
+                <Column Name="GSTNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="LogoPath" IsDuplicate="False" IsSelected="True" />
+                <Column Name="TanNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="PanNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="CreatedBy" AliasName="CompanyDetails_CreatedBy" IsDuplicate="True" IsSelected="True" />
+                <Column Name="CreatedDate" AliasName="CompanyDetails_CreatedDate" IsDuplicate="True" IsSelected="True" />
+                <Column Name="UpdatedBy" AliasName="CompanyDetails_UpdatedBy" IsDuplicate="True" IsSelected="True" />
+                <Column Name="UpdateDate" AliasName="CompanyDetails_UpdateDate" IsDuplicate="True" IsSelected="True" />
+                <Column Name="IsActive" AliasName="CompanyDetails_IsActive" IsDuplicate="True" IsSelected="True" />
+              </Columns>
+              <SchemaLevels>
+                <SchemaInfo Name="dbo" SchemaType="Schema" />
+                <SchemaInfo Name="Tables" SchemaType="Category" />
+                <SchemaInfo Name="CompanyDetails" SchemaType="Table" />
+              </SchemaLevels>
+            </Table>
+          </Tables>
+          <Joins>
+            <Join LeftTable="DebitNote" RightTable="Products" JoinType="Inner">
+              <JoinFields>
+                <JoinField LeftField="ProductCode" RightField="ProductCode" OperatorType="=" />
+              </JoinFields>
+            </Join>
+            <Join LeftTable="DebitNote" RightTable="Sales" JoinType="Left Outer">
+              <JoinFields>
+                <JoinField LeftField="SalesId" RightField="SalesId" OperatorType="=" />
+              </JoinFields>
+            </Join>
+            <Join LeftTable="DebitNote" RightTable="Shipper" JoinType="Right Outer">
+              <JoinFields>
+                <JoinField LeftField="ShipperId" RightField="ShipperId" OperatorType="=" />
+              </JoinFields>
+            </Join>
+            <Join LeftTable="DebitNote" RightTable="CompanyDetails" JoinType="Full Outer">
+              <JoinFields>
+                <JoinField LeftField="CompanyID" RightField="CompanyID" OperatorType="=" />
+              </JoinFields>
+            </Join>
+          </Joins>
+        </QueryDesignerState>
+      </Query>
+    </DataSet>
+    <DataSet Name="DataSet2">
+      <Fields>
+        <Field Name="DebitNoteId">
+          <DataField>DebitNoteId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="DocNo">
+          <DataField>DocNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource3</DataSourceName>
+        <CommandType>Text</CommandType>
+        <CommandText>SELECT [dbo].[DebitNote].[DebitNoteId],
+[dbo].[DebitNote].[DocNo] FROM [dbo].[DebitNote]</CommandText>
+        <QueryDesignerState xmlns="http://schemas.microsoft.com/ReportingServices/QueryDefinition/Relational">
+          <Tables>
+            <Table Name="DebitNote" Schema="dbo">
+              <Columns>
+                <Column Name="DebitNoteId" IsDuplicate="False" IsSelected="True" />
+                <Column Name="DocNo" IsDuplicate="False" IsSelected="True" />
+                <Column Name="DocDate" IsDuplicate="False" IsSelected="False" />
+                <Column Name="PONO" IsDuplicate="False" IsSelected="False" />
+                <Column Name="PODate" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ReturnItems" IsDuplicate="False" IsSelected="False" />
+                <Column Name="Value" IsDuplicate="False" IsSelected="False" />
+                <Column Name="SupplierId" IsDuplicate="False" IsSelected="False" />
+                <Column Name="IsActive" IsDuplicate="False" IsSelected="False" />
+                <Column Name="CreatedBy" IsDuplicate="False" IsSelected="False" />
+                <Column Name="CreatedDate" IsDuplicate="False" IsSelected="False" />
+                <Column Name="UpdatedBy" IsDuplicate="False" IsSelected="False" />
+                <Column Name="UpdatedDate" IsDuplicate="False" IsSelected="False" />
+                <Column Name="CompanyID" IsDuplicate="False" IsSelected="False" />
+                <Column Name="SalesId" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ProductCode" IsDuplicate="False" IsSelected="False" />
+                <Column Name="ShipperId" IsDuplicate="False" IsSelected="False" />
+              </Columns>
+              <SchemaLevels>
+                <SchemaInfo Name="dbo" SchemaType="Schema" />
+                <SchemaInfo Name="Tables" SchemaType="Category" />
+                <SchemaInfo Name="DebitNote" SchemaType="Table" />
+              </SchemaLevels>
+            </Table>
+          </Tables>
+        </QueryDesignerState>
+      </Query>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="DocNo">
+      <DataType>String</DataType>
+      <Prompt>DocNo</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>DataSet1</DataSetName>
+          <ValueField>DocNo</ValueField>
+          <LabelField>DocNo</LabelField>
+        </DataSetReference>
+      </ValidValues>
+      <MultiValue>true</MultiValue>
+    </ReportParameter>
+  </ReportParameters>
+  <Code />
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+</Report>

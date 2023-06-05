@@ -1,0 +1,193 @@
+﻿@model Inventory.Models.MMEMaster
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("Edit", "MME", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+<div class="box box-info">
+    <div class="box-header with-border">
+        <h3 class="box-title">Edit Sales Person</h3>
+        <div class="box-tools pull-right">
+
+        </div>
+    </div>
+    @Html.HiddenFor(model => model.MMEID)
+    @Html.HiddenFor(model => model.CreatedDate)
+    @Html.HiddenFor(model => model.CreatedBy)
+    <!-- /.box-header -->
+<div class="box-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.MMEName, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.MMEName, new { htmlAttributes = new { onchange = "DuplicteName();", @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Sales Person name is required and cannot be empty", maxlength = "100" } })
+                    @Html.ValidationMessageFor(model => model.MMEName)
+                </div>
+            </div>
+            <div class="form-group">
+
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.ContactNo, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.ContactNo, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "true", data_bv_notempty_message = "The Contact No. is required", data_bv_stringlength = "true", data_bv_stringlength_min = "10", required = "required", autocomplete = "off", data_bv_stringlength_max = "15", data_bv_stringlength_message = "The Phone No. must be 10 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-9]", data_bv_regexp_message = "The Contact can only consist digit" } })
+                    @Html.ValidationMessageFor(model => model.ContactNo)
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { onchange = "DuplicteBillEmail();", @class = "form-control", maxlength = "100", data_bv_regexp_message = "Input string is not valid Email Id.", @Pattern = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$", data_bv_notempty_message = "Email Id is required", data_bv_emailaddress_message = "The input is not a valid email address", data_bv_notempty = "true", Autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.Email)
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-6">
+
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-md-8">
+                    <textarea rows="3" cols="50" id="Address" name="Address" class="form-control" maxlength="500" data-bv-notempty="true" required="required" data-bv-notempty-message="Address is required and cannot be empty"></textarea>
+                    @Html.ValidationMessageFor(model => model.Address)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "City is required and cannot be empty", maxlength = "50" } })
+                    @Html.ValidationMessageFor(model => model.City)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.Pincode, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.Pincode, new { htmlAttributes = new { @class = "form-control", @type = "number", data_bv_notempty = "true", data_bv_notempty_message = "The Pincode is required", data_bv_stringlength = "true", data_bv_stringlength_min = "6", required = "required", autocomplete = "off", data_bv_stringlength_max = "6", data_bv_stringlength_message = "The Pincode must be 6 digits long", data_bv_regexp = "true", data_bv_regexp_regexp = "[0-5]", data_bv_regexp_message = "The Pincode can only consist digit" } })
+                    @Html.ValidationMessageFor(model => model.Pincode)
+                </div>
+            </div>
+            <div class="form-group">
+
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", maxlength = "100", data_bv_notempty_message = "Password is required", data_bv_notempty = "true", Autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.Password)
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-8">
+                                <input type="submit" value="Update" onclick="CheckDate(event);" class="btn btn-primary" />
+                                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary ml-2" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</div>
+}
+
+@*@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")*@
+<script src="~/Scripts/countries.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+
+        var SupplierID = $("#SalesPersonID").val();
+
+        $.ajax({
+            url: '@Url.Action("GetSalesPerson", "SalesPerson")',
+            type: "GET",
+            dataType: "JSON",
+            data: { SalesPersonID: SalesPersonID },
+            success: function (result) {
+
+                try {
+                    if (result.error == "error") {
+                        toastr.error(result.msg);
+                    }
+                    else {
+                        $("#Address").val(result.Address);
+                        $("#City").val(result.City);
+                        $("#Pincode").val(result.Pincode);
+                        $("#ContactNo").val(result.ContactNo);
+                        $("#SalesPersonName").val(result.SalesPersonName);
+                        $("#Email").val(result.Email);                        
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    })
+    function CheckDate(event) {
+        var Address = $("#Address").val();
+        var City = $("#City").val();
+        var Pincode = $("#Pincode").val();
+        var ContactNo = $("#ShippingState").val();
+
+        if (Address == null || Address == "") {
+            toastr.error("Please Select Address");
+            Flag = false;
+        }
+        if (City == null || City == "") {
+            toastr.error("Please Select City");
+            Flag = false;
+        }
+        if (Pincode == null || Pincode == "") {
+            toastr.error("Please Select Pincode");
+            Flag = false;
+        }
+        if (ContactNo == null || ContactNo == "") {
+            toastr.error("Please Select ContactNo");
+            Flag = false;
+        }
+    }
+</script>
+@*}*@

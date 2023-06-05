@@ -1,0 +1,139 @@
+﻿@model Inventory.Models.Currency
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Create", "Currency", FormMethod.Post, new
+                            {
+                                enctype = "multipart/form-data",
+                                @class = "form-horizontal",
+                                data_bv_message = "This value is not valid",
+                                data_toggle = "validator",
+                                data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+                                data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+                                data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+                            }))
+{
+    @Html.AntiForgeryToken()
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">New Customer</h3>
+            <div class="box-tools pull-right">                
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.CurrencyName, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.CurrencyName, new { htmlAttributes = new { onchange = "DuplicteName();", @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Currency is required and cannot be empty", maxlength = "20" } })
+                                @Html.ValidationMessageFor(model => model.CurrencyName)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.CurrencySymbol, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.CurrencySymbol, new { htmlAttributes = new { onchange = "DuplicteSymbol();", @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "Currency Symbol is required and cannot be empty", maxlength = "2" } })
+                                @Html.ValidationMessageFor(model => model.CurrencySymbol)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-8">
+                                <input type="submit" value="Create" class="btn btn-primary" />&nbsp;&nbsp;
+                                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        $("#form0").bootstrapValidator();
+
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+    })
+
+    function DuplicteName() {
+        var Name = $("#CurrencyName").val();
+        $.ajax({
+            url: '@Url.Action("CheckDuplicateName","Currency")',
+            type: "GET",
+            dataType: "JSON",
+            data: { Name: Name, Mode: "Create", Id: 0 },
+            success: function (result) {
+                
+                try {
+                    if (result == "1") {
+                        $('#CurrencyName').val("");
+                        $("#form0").bootstrapValidator('revalidateField', 'CurrencyName');
+                        toastr.error("Currency already exist");
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+
+    function DuplicteSymbol() {
+        var Name = $("#CurrencySymbol").val();
+        $.ajax({
+            url: '@Url.Action("DuplicteSymbol", "Currency")',
+            type: "GET",
+            dataType: "JSON",
+            data: { Name: Name, Mode: "Create", Id: 0 },
+            success: function (result) {
+                try {
+                    if (result == "1") {
+                        $('#CurrencySymbol').val("");
+                        $("#form0").bootstrapValidator('revalidateField', 'CurrencySymbol');
+                        toastr.error("Currency Symbol already exist");
+                    }
+                    else if (result == "0") {
+
+                    }
+                    else {
+                        toastr.error(result);
+                    }
+                }
+                catch (e) {
+
+                }
+            }
+        });
+    }
+</script>

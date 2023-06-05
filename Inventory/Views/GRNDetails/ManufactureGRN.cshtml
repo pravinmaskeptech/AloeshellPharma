@@ -1,0 +1,751 @@
+﻿@{
+    ViewBag.Title = "ManufactureGRN";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+    .ScrollStyle {
+        max-height: 350px;
+        overflow-y: scroll;
+    }
+</style>
+
+@using (Html.BeginForm("ManufactureGRN", "GRNDetails", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()     
+    <input type="hidden" id="Count" name="Count" value="1" />
+    <input type="hidden" id="WarehouseId" name="WarehouseId" value="" />
+    <input type="hidden" id="StoreLocationId" name="StoreLocationId" value="" />
+    <input type="hidden" id="PrdCode" name="PrdCode" value="" />
+    <input type="hidden" id="hfBatchNo" value="@ViewBag.vBatchNo" />
+    <input type="hidden" id="hfManufactureDate" name="ManufactureDate" value="@ViewBag.vManufactureDate" />
+    <input type="hidden" id="hfExpiryDate" name="ExpiryDate" value="@ViewBag.ExpiryDate" />
+    <input type="hidden" id="hfSerialNo" name="hfSerialNo" value="@ViewBag.vSerialNo" />
+    <input type="hidden" id="SerialNo" name="SerialNo"  />
+
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h2 class="box-title">Manufacture GRN</h2>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            GRN No
+                        </div>
+                        <div class="col-md-6">
+                            @Html.Editor("BillNo", new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "The  Name is required and cannot be empty", maxlength = "20", disabled = "disabled" } })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            MRNNO
+                        </div>
+                        <div class="col-md-6">
+                            @*@Html.EJ().Autocomplete("MRNNO").WatermarkText("Select MRN NO").Datasource((IEnumerable<Inventory.Models.IssueToProductionDetails>)ViewBag.MRNNO).Width("100%").AutocompleteFields(field => field.Key("MRNNO").Text("MRNNO")).HighlightSearch(true).ShowPopupButton(true)*@
+                            @Html.EJ().Autocomplete("MRNNO").WatermarkText("Select  MRN NO").Datasource((IEnumerable<Inventory.Models.MRNMain>)ViewBag.MRNNO).Width("100%").AutocompleteFields(field => field.Key("MRNNo").Text("MRNNo")).HighlightSearch(true).ShowPopupButton(true).ClientSideEvents(e => e.Select("getProducts")) 
+                        </div>
+
+                    </div>
+                </div>
+                @*<div class="col-md-4">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            Sales Order NO
+                        </div>
+                        <div class="col-md-6">
+                            @Html.EJ().Autocomplete("SalesOrderNO").WatermarkText("Select Sales Order NO").Datasource((IEnumerable<Inventory.Models.Warehouse>)ViewBag.Warehousedatasource).Width("100%").AutocompleteFields(field => field.Key("WareHouseID").Text("WareHouseName")).HighlightSearch(true).ShowPopupButton(true).ClientSideEvents(e => e.Select("getWarehouseId"))
+                        </div>
+
+                    </div>
+                </div>*@
+
+
+                
+            </div>           
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            Warehouse Name
+                        </div>
+                        <div class="col-md-6">
+                            @Html.EJ().Autocomplete("Warehouse").WatermarkText("Select Warehouse").Datasource((IEnumerable<Inventory.Models.Warehouse>)ViewBag.Warehousedatasource).Width("100%").AutocompleteFields(field => field.Key("WareHouseID").Text("WareHouseName")).HighlightSearch(true).ShowPopupButton(true).ClientSideEvents(e => e.Select("getWarehouseId"))
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            GRN Date
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="BillDate" name="BillDate" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Purchase Order Date is required and cannot be empty" />
+                        </div>
+                    </div>
+                </div>
+             
+            </div>
+            <div id="orderItems" style="overflow-x: auto;">
+                <table class="table table-responsive" style="width: 100%; overflow-x:auto; white-space:nowrap;">
+                    <tr style="background-color:#3c8dbc; color:white">
+                        <td>ITEM DETAILS</td>                      
+                        <td id="SbatchNo2">BATCH NO</td>
+                        <td>STORE LOCATION</td>
+                        <td>QUANTITY</td>
+                        <td id="SmfgDate2">MFG DATE</td>
+                        <td id="SExpDate2">EXP DATE</td>                       
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr class="mycontainer" id="mainrow">
+                        <td>
+                            <div class="panel" >
+                                @Html.EJ().Autocomplete("ProductCode").Width("100%").ShowPopupButton(true).AutocompleteFields(field => field.Text("ProductName").Key("ProductCode")).ClientSideEvents(e => e.Select("getProductId"))
+                            </div>                            
+                        </td>
+                        <td id="SbatchNo1">
+                            <input type="text" id="BatchNo" class="BatchNo form-control"  />
+                        </td>
+                        <td>
+                            @Html.DropDownList("StoreLocation", new SelectList("", "StoreLocationId", "StoreLocation"), "Select Location", new { @class = "form-control", Autocomplete = "off", maxlength = "50", style = "width: 100%;" })                        
+                            
+                        </td>
+                        <td>
+                            <input type="number" id="OrderQty" class="OrderQty form-control" onkeypress="return event.charCode >= 46 && event.charCode <= 57 && event.charCode != 47" onchange="CheckAvailability();" />
+                        </td>
+                        <td id="SmfgDate1">
+                            <input type="text" id="MfgDate" class="MfgDate form-control" />
+                        </td>
+                        <td id="SExpDate1">
+                            <input type="text" id="ExpDate" class="ExpDate form-control"  />
+                        </td>   
+                        <td>
+                            <input type="button" id="add" value="add" style="width:80px" class="btn btn-success" onclick="AddData()"/>
+                        </td>
+                    </tr>
+                </table>
+                <div class="ScrollStyle">
+                    <table class="table table-responsive" id="orderdetailsItems" style="width: 100%; overflow-x:auto; white-space:nowrap;"></table>
+                </div>
+            </div>
+        </div>
+       
+        @*<div id="orderItems" style="overflow-x:auto;" class="ScrollStyle col-md-12">
+            <table class="table table-responsive" id="orderdetailsItems" style="width: 1470px; display:block; overflow-x:auto; white-space:nowrap;"></table><br />
+            <span id="orderItemError" style="color:red"></span>
+        </div>*@
+        <div class="modal fade" id="OfferLetterGeneration">
+            <div class="modal-dialog" style="width:55%; margin-top:100px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#367fa9; color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Serial Number</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" id="form1" class="form-horizontal" data-bv-message="This value is not valid" data-toggle="validator" data-bv-feedbackicons-valid="glyphicon glyphicon-ok" data-bv-feedbackicons-invalid="glyphicon glyphicon-remove" data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label class="control-label">Product Name</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="ProductName" class="form-control" disabled="disabled" required="required" maxlength="100" />
+                                            <input type="hidden" id="ProdCode" class="form-control" value="" />
+                                            <input type="hidden" id="batchNo" class="form-control" value="" />
+                                            <input type="hidden" id="PODTLid" class="form-control" value="" />
+                                            <input type="hidden" id="WarehouseNo" name="WarehouseID" value="" />
+                                            <input type="hidden" id="StoreLocationNo" name="StoreLocationId" value="" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label class="control-label">Tot Qty</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="TotQty" class="form-control" disabled="disabled" required="required" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label class="control-label">Enter Serial No</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="ProductSerialNum" class="form-control" maxlength="50" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-2">
+                                            <input type="button" id="btnSerialNo" value="Add Row" class="btn btn-primary" onclick="AddSerialNosRows()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row">
+                        @*<table class="table table-responsive" id="ReceivedItemsheaders" style="width: 40%; overflow-x: auto; white-space: nowrap;">
+                                <tr style="background-color:#3c8dbc; color:white">
+                                    <td>Serial No.</td>
+                                    <td>sdfs</td>
+                                </tr>
+                            </table>*@
+                        <table class="table table-responsive" id="ReceivedItems" border="0" style="width: 40%; overflow-x: auto; white-space: nowrap; margin-left: 80px;"></table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label"></label>
+                                </div>
+                                <div class="col-md-6">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <label class="control-label"></label>
+                                </div>
+                                <div class="col-md-4">
+                                    <br /> <input type="button" id="btnAdd" name="btnAdd" value="Save" class="btn btn-info" onclick="getQuantity()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    span.error {
+                        display: block;
+                        visibility: hidden;
+                        color: red;
+                        font-size: 60%;
+                    }
+
+                    tr.error {
+                        background-color: rgba(255,0,0,0.35);
+
+                    /* END EXTERNAL SOURCE */
+                    /*
+                </style>
+            </div>
+        </div>
+        <div class="modal fade" id="AvailableQuantity">
+            <div class="modal-dialog" style="width:35%; margin-top:100px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#367fa9; color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Available Quantity</h4>
+                    </div>
+                   
+                    <div class="row">                       
+                        <table class="table table-responsive" id="TableAvailableQuantity" border="0" style="width: 40%; overflow-x: auto; white-space: nowrap; margin-left: 80px;"></table>
+                    </div>                   
+                </div>               
+            </div>
+        </div>
+        <table id="tbl1" style="width:1250px;text-align:left;">
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <td style='width:400px'></td>
+                <td style='width:400px'></td>
+                <td style='width:400px'></td>
+                <td style='width:400px'></td>
+                <td style='width:110px'></td>
+                <td style='width:110px; background-color :white; text-align:center'>Total Amount</td>
+                <td style='width:400px'><input type="text" id="txtTotal" name="txtTotal" style='width:120px; background-color:white' readonly class="totalNew form-control"><br /></td>
+                <td style='width:115px'></td>
+            </tr>
+            <tr></tr>
+        </table>
+        <div class="row" style="width:1580px">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <div style="padding:6px 10px; text-align:right">
+                            <input id="submit" type="button" value="Save Order" class="btn btn-warning" style="padding:6px 6px" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+<script>
+    $(document).ready(function () {
+        $("#add").attr("disabled", true);
+        if($('#hfBatchNo').val() == "True") { $('#SbatchNo1').show(); $('#SbatchNo2').show(); 
+        } else {
+            $('#SbatchNo1').hide(); $('#SbatchNo2').hide();
+        }
+        if($('#hfManufactureDate').val() == "True") { 
+            $('#SmfgDate1').show(); $('#SmfgDate2').show(); 
+        } else { $('#SmfgDate1').hide(); $('#SmfgDate2').hide(); 
+        }
+        if($('#hfExpiryDate').val() == "True") {
+            $('#SExpDate1').show(); $('#SExpDate2').show();
+        } else
+        { $('#SExpDate2').hide(); $('#SExpDate1').hide();   
+        }
+        
+        $('#SbatchNo3').hide();
+        $("#BillDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+        $("#MfgDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+        $("#ExpDate").ejDatePicker({ minDate: new Date(), locale: "en-IN", });
+        getBillNo();
+       // getProducts();
+      //  GetMRNNO();
+    })
+
+
+    @*function GetMRNNO() 
+    {
+        $.ajax({
+            url: '@Url.Action("GetMRNNO", "GRNDetails")',
+            type: "GET",
+            dataType: "JSON",
+            data: { OutscanTo: OutscanTo },
+            success: function (Name) {              
+                $('#MRNNO').ejAutocomplete({ dataSource: Name, fields: { key: "MRNNO", text: "MRNNO" }, EnablePersistence: false, ShowPopupButton: true, width: "100%", });
+            }
+        });
+    }*@
+
+
+    function getProductId(Id)
+    {
+        $('#orderdetailsItems tbody tr').each(function (index, e) {
+            var PrdName = $(e).children().get(0);
+            if ($('#ProductCode').val() == PrdName.firstElementChild.value) {              
+                toastr.warning('product already added...');
+                $('#ProductCode').val('');
+            }           
+        })
+        $.ajax({
+            type: "GET",
+            url: '/GRNDetails/getSerialNo',
+            data: { 'ProductName': $('#ProductCode').val() },
+            success: function (result) {              
+                $('#SerialNo').val(result.SerialNoApplicable);
+                $('#PrdCode').val(result.ProductCode);               
+            }
+        })
+    }  
+    function getWarehouseId(id) {
+        $('#WarehouseId').val(id.key);
+        getStoreLocation();
+    };
+    function getBillNo() {
+        $('#tbl1').hide();
+        $.ajax({
+            type: "GET",
+            url: '/GRNDetails/getManufactureBillNo',
+            success: function (result) {
+                $('#BillNo').val(result);
+            }
+        })
+    }
+
+    function getProducts(id)
+    {
+        $.ajax({
+            type: "GET",
+            data: { MRNNO: id.key },
+            url: '/GRNDetails/getProducts',
+            success: function (data) {
+                var ViewBackData = data;
+
+                if (data.length == "0") {
+                    $('#ProductCode').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: 200, });
+                } else {
+                    $('<option></option>').val(null).html('Select');
+                    $.each(data, function (i, data) {
+                        $('#ProductCode').ejAutocomplete({ dataSource: ViewBackData, fields: { key: "MainProductCode", text: "Product" }, EnablePersistence: false, ShowPopupButton: true, width: "100%", });
+                    });
+                }
+            }
+        })
+    }
+    function getStoreLocation() {
+
+        //var selectedText = Warehouse.options[Warehouse.selectedIndex].innerHTML;
+        //var Warehouseid = Warehouse.value;
+        $("#StoreLocation").empty();
+        $.ajax({
+            type: "GET",
+            url: '/GRNDetails/getStoreLocation',
+            data: { 'WarehouseID': $('#WarehouseId').val() },
+            success: function (result) {
+                var ViewBackData = result;
+                if (result.length == "0") {                  
+                } else {
+                    $('#StoreLocation').empty().append('<option selected="selected" value="0">Select</option>');                   
+                    $.each(result, function (i, result) {
+                        $("#StoreLocation").append($("<option>Select</option>").val(result.StoreLocationId).html(result.StoreLocation));
+                    });
+                }
+            }
+        })
+    };
+    function AddData()
+    {     
+            var isduplicate = "";
+            var cnt = 1;
+            $('#orderdetailsItems tbody tr').each(function (index, e) {               
+                    var PrdName = $(e).children().get(0);
+                    if ($('#ProductCode').val() == PrdName.firstElementChild.value) {                        
+                        isduplicate = true;
+                        toastr.warning('product already added...');
+                        $('#ProductCode').val('');
+                    } else {
+                        isduplicate = false;
+                    }                
+                cnt = parseInt(cnt) + 1;
+            })
+
+            if (isduplicate == false) {
+                var isValid = true;
+                if ($('#hfBatchNo').val() == "True") {
+                    if ($('#BatchNo').val() == "") { toastr.error("Please Enter Batch Numer"); $('#Warehouse').css("border", "1px solid #e46f61"); isValid = false; } else { $('#BatchNo').css("border", "1px solid #a5da6b"); }
+                }
+                if ($('#hfManufactureDate').val() == "True") {
+                    if ($('#MfgDate').val() == "") { toastr.error("Please Enter MFG Date"); $('#MfgDate').css("border", "1px solid #e46f61"); isValid = false; } else { $('#MfgDate').css("border", "1px solid #a5da6b"); }                    
+                }
+                if ($('#hfExpiryDate').val() == "True") {
+                    if ($('#ExpDate').val() == "") { toastr.error("Please Enter EXP Date"); $('#ExpDate').css("border", "1px solid #e46f61"); isValid = false; } else { $('#ExpDate').css("border", "1px solid #a5da6b"); }
+                }
+
+                if ($('#ProductCode').val() == "") { toastr.error("Please Select Product Name"); $('#ProductCode').css("border", "1px solid #e46f61"); isValid = false; } else { $('#ProductCode').css("border", "1px solid #a5da6b");  }
+                if ($('#OrderQty').val() == "") { toastr.error("Please Enter Quantity"); $('#OrderQty').css("border", "1px solid #e46f61"); isValid = false; } else { $('#OrderQty').css("border", "1px solid #a5da6b"); }               
+                if ($('#BillDate').val() == "") { toastr.error("Please Select GRN Date"); $('#BillDate').css("border", "1px solid #e46f61"); isValid = false; } else { $('#BillDate').css("border", "1px solid #a5da6b");}
+                if ($('#Warehouse').val() == "") { toastr.error("Please Select Warehouse"); $('#Warehouse').css("border", "1px solid #e46f61"); isValid = false; } else { $('#Warehouse').css("border", "1px solid #a5da6b"); }
+                if ($("#StoreLocation option:selected").text() == "Select") { toastr.error("Please Select Location"); $('#StoreLocation').css("border", "1px solid #e46f61"); isValid = false; } else { $('#StoreLocation').css("border", "1px solid #a5da6b"); }
+                
+                if (isValid == true) {
+                    var Count = $('#Count').val();
+                    $("#orderdetailsItems").append(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='productNew" + Count + "' readonly class='productnew form-control'' /></td> <td id='SbatchNo3'><input type='text' id='BatchNew" + Count + "' readonly class='BatchNew form-control'' /></td>  <td><input type='text'  id='StoreNew" + Count + "'  readonly class='StoreNew form-control'' /></td><td align:'left'><input type='text' id='quentityNew" + Count + "' readonly class='quentityNew form-control'' /></td> <td><input type='text' id='MFGNew" + Count + "' readonly class='MFGNew form-control'' /></td><td><input type='text' readonly id='ExpDate" + Count + "'    class='ExpDate form-control'' /></td><td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /> <input type='hidden'  id='ProductIdNew" + Count + "'    class='ProductIdNew form-control'' /><input type='hidden'  id='WearhouseIdNew" + Count + "'    class='WearhouseIdNew form-control'' /><input type='hidden'  id='StoreIdNew" + Count + "'    class='StoreIdNew form-control'' /><input type='hidden'  id='SerialNoApplicable" + Count + "'    class='SerialNoApplicable form-control'' /><input type='hidden'  id='StoreIDNew" + Count + "'  readonly class='StoreIDNew form-control'' /></td> </tr> <tbody>");
+                    $("#productNew" + Count + "").val($('#ProductCode').val());
+                    $("#quentityNew" + Count + "").val($('#OrderQty').val());
+                    if ($('#hfBatchNo').val() == "True") {  $("#BatchNew" + Count + "").show();$("#BatchNew" + Count + "").val($('#BatchNo').val());  } else {  $("#BatchNew" + Count + "").hide(); }
+                    if ($('#hfExpiryDate').val() == "True") { $("#ExpDate" + Count + "").show();  $("#ExpDate" + Count + "").val($('#ExpDate').val());} else{ $("#ExpDate" + Count + "").hide();}
+                    if ($('#hfManufactureDate').val() == "True") { $("#MFGNew" + Count + "").show(); $("#MFGNew" + Count + "").val($('#MfgDate').val()); } else { $("#MFGNew" + Count + "").hide(); }                   
+                    $("#StoreNew" + Count + "").val($("#StoreLocation option:selected").text());
+                    $("#StoreIDNew" + Count + "").val($('#StoreLocation').val());                 
+                    $("#ProductIdNew" + Count + "").val($('#PrdCode').val());
+                    $("#WearhouseNew" + Count + "").val($('#WarehouseId').val());
+                    $("#SerialNoApplicable" + Count + "").val($('#SerialNo').val());
+                    $('#Count').val(parseInt($('#Count').val()) + 1);
+
+                    $('#ProductCode').val('');
+                    $('#OrderQty').val('');
+                    $('#BatchNo').val('');
+                    $('#MfgDate').val('');
+                    $('#ExpDate').val('');
+
+                }
+            }       
+    }
+    $(document).ready(function () {
+      
+        $('#submit').click(function () {
+            var temp=true;
+            if ($('#BillDate').val() == "")
+            {
+                temp = false;
+                toastr.error("Please select GRN Date")
+            }
+
+            if ($('#MRNNO').val() == "") {
+                temp = false;
+                toastr.error("Please select MRN NO")
+            }
+
+            if ($('#Warehouse').val() == "") {
+                temp = false;
+                toastr.error("Please select Warehouse")
+            }
+
+            if(temp==true)
+            {
+            var rowCount = $('#orderdetailsItems tr').length;
+            if (rowCount > 0) {
+                var isAllValid = true;
+                $('#orderItemError').text('');
+                var list = [];
+                var errorItemCount = 0;
+                var Purchasedate = $('#BillDate').val();
+                var datearray = Purchasedate.split("/");
+                var BillDate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+
+                $('#orderdetailsItems tbody tr').each(function (index, ele) {
+                    if ((parseFloat($('.quentityNew', this).val()) || 0) == 0 ||
+                        $('.productNew', this).val() == "" ||
+                         $('.StoreNew', this).val() == "" ||
+                        isNaN($('.quentityNew', this).val())) {
+                        errorItemCount++;
+                        $(this).addClass('error');
+                    } else {
+
+                        var MFGNew = $('.MFGNew', this).val();
+                        var datearray1 = MFGNew.split("/");
+                        var dt = datearray1[1] + '/' + datearray1[0] + '/' + datearray1[2];
+
+                        var ExpDate = $('.ExpDate', this).val();
+                        var datearray2 = ExpDate.split("/");
+                        var dt1 = datearray2[1] + '/' + datearray2[0] + '/' + datearray2[2];
+                        
+                        var orderItem = {
+                            ProductCode: $('.ProductIdNew', this).val(),
+                            ReceivedQty: $('.quentityNew', this).val(),
+                            WarehouseID: $('#WarehouseId').val(),
+                            StoreLocationId: $('.StoreIDNew', this).val(),
+                            ManufacturingDate: dt,
+                            ExpiryDate: dt1,
+                            BatchNo: $('.BatchNew', this).val(),
+                            GRNNo: $('#BillNo').val(),
+                            PONO: $('#PONO').val(),
+                            GRNDate: BillDate,                         
+                            SerialNoApplicable: $('.SerialNoApplicable', this).val(),
+                            MRNNO: $('#MRNNO').val(),
+                        }
+                        list.push(orderItem);
+                    }
+                })
+
+                
+                if (isAllValid) {
+                    var data = {
+                        OrderDetails: list
+                    }
+                    $(this).val('Please wait...');
+                    $.ajax({
+                        type: 'POST',
+                        url: '/GRNDetails/SaveManufactureData',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        success: function (result) {  
+                          
+                            if (result.Message == "success") {
+
+                                $(this).val('Save Order...');
+                                toastr.success("Successfully Saved..")
+                                list = [];
+                                $('#orderdetailsItems').empty();
+                                $('#Count').val(1);
+                                getBillNo();
+                            }
+                            else {
+                                toastr.error(result.Message);
+                            }                          
+                        },
+                        //error: function (error) {
+                        //    console.log(error);
+                        //    $('#submit').val('Save');
+                        //}
+                    });
+                }
+            }else
+            {
+                toastr.warning('please add data....');
+            }
+        }
+        });
+    })  
+    function ShowQtyPopup() {
+        if ($('#hfSerialNo').val() == "True") {
+            $('#OfferLetterGeneration').modal({ backdrop: 'static', keyboard: false })
+            $("#OfferLetterGeneration").modal("show");
+            $('#TotQty').val($('#OrderQty').val());  
+        } 
+    }
+    function AddSerialNosRows() {
+        var isduplicate = false;
+        $('#ReceivedItems tbody tr').each(function (index, e) {
+            var inputEl = $(e).children().get(0);
+            if ($('#ProductSerialNum').val() == inputEl.firstElementChild.value) {
+                toastr.error("Serial no. already added...");
+                isduplicate = true;
+            }
+        })
+        if (isduplicate == false) {
+            $.ajax({
+                type: "GET",
+                url: '/GRNDetails/checkValidSerialNo',
+                data: { 'SerialNo': $('#ProductSerialNum').val(), 'ProdCode': $('#ProdCode').val() },
+                success: function (result) {
+                    if (result == "0") {
+                        var rowCount = $('#ReceivedItems tr').length;
+                        if (rowCount > 0) {
+                            $('#SerialNoCount').val(parseInt(rowCount) + 1);
+                        }
+                        var cnt = $('#SerialNoCount').val();
+
+                        if (rowCount < parseInt($('#TotQty').val())) {
+                            if (rowCount == 0) {
+                                $('#SerialNoCount').val(1);
+                            }
+                            if ($('#ProductSerialNum').val() == "") {
+                                toastr.error("please Enter Serial Number");
+                            } else {                                
+                                $(" <tbody> <tr id='R" + cnt + "'><td><input type='text' id='SerialNo" + cnt + "' readonly  style='width : 500px' class='SerialNo form-control'' /><input type='hidden' id='TempId" + cnt + "' class='TempId form-control' /></td><td><input type='Button' id='btnRemove" + cnt + "' value='Remove' class='btn btn-danger' onclick='RemoveSerialNo(" + cnt + ");'/></td></tr> <tbody>").appendTo("#ReceivedItems");
+                                $('#SerialNo' + cnt).val($('#ProductSerialNum').val());
+                                $('#TempId' + cnt).val(0);
+                                $('#SerialNoCount').val(parseInt($('#SerialNoCount').val()) + 1);
+                                $('#ProductSerialNum').val('');
+                            }
+                        } else {
+                            toastr.warning('you must not add greater than total Qty')
+                        }
+                        $('#ProductSerialNum').focus();
+                    } else {
+                        toastr.warning('Serial No already exist');
+                    }
+                }
+            })
+
+        }
+    }
+    function getQuantity() {
+        
+        $('#SerialNoCount').val(1)
+        var rowCount = $('#ReceivedItems tr').length;
+      
+     
+     //   Calculate(count);
+        var list = [];
+        var isAllValid = true;
+        var BillDate = $('#BillDate').val();
+        var datearray = BillDate.split("/");
+        var dt = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+        $('#ReceivedItems tbody tr').each(function (index, ele) {
+            if (($('.SerialNo', this).val() || "") == 0) {
+                $(this).addClass('error');
+            } else {
+                
+                var GrnItem = {
+                    SerialNoId: $('.TempId', this).val(),
+                    SerialNo: $('.SerialNo', this).val(),
+                    GRNId: $('#PODTLid').val(),
+                    WarehouseID: $('#WarehouseId').val(),
+                    StoreLocationId: $('#StoreLocation').val(),
+                    BatchNo: $('#BatchNo').val(),
+                    PONO: '',
+                    GrnNo: $('#BillNo').val(),
+                    ProductCode: $('#PrdCode').val(),
+                    PODetailsId: $('#PODTLid').val(),
+                    GrnDate: dt
+                }
+                list.push(GrnItem);
+            }
+        }
+        );
+
+        if (isAllValid == true) {
+            var data = {
+                Data: list
+            }
+            $("#OfferLetterGeneration").modal("hide");
+            $(this).val('Please wait...');
+            $.ajax({
+                type: 'POST',
+                url: '/GRNDetails/SaveManufactureSerialNo',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data.status==true) {
+                        location.reload();
+                        toastr.success("successfully saved..");
+                        window.location.reload(true);
+                       
+                    }
+                    else {
+                        toastr.error("something Wrong..");
+                    }
+                },
+            });
+        } else {
+            toastr.error("error..");
+        }
+    }   
+    function RemoveSerialNo(Count) {
+        $('table#ReceivedItems tr#R' + Count + '').remove();
+    }
+    function CheckAvailability() {
+        $('#TableAvailableQuantity').empty();
+        $.ajax({
+            type: "GET",
+            url: '/GRNDetails/CheckAvailability',
+            data: { 'ProductCode': $('#PrdCode').val(), 'Qty': $('#OrderQty').val() },
+            success: function (result) {
+                var count = result.length;
+                var cnt = 1;
+                if (count > 0) {
+                    $('#AvailableQuantity').modal({ backdrop: 'static', keyboard: false })
+                    $("#AvailableQuantity").modal("show");
+                    $.each(result, function (i, item) {
+                        $("#TableAvailableQuantity").append(" <tbody> <tr id='R" + cnt + "'> <td><input type='text' id='Name" + cnt + "' readonly  style='width : 200px' class='Name form-control'' /></td> <td><input type='text' id='Qty" + cnt + "' readonly  style='width : 100px' class='Qty form-control'' /></td> </tr> <tbody>");
+                        $("#Name" + cnt + "").val(result[i].Text);
+                        $("#Qty" + cnt + "").val(result[i].Value);
+                        cnt = cnt + 1;
+                    });
+                    $("#add").attr("disabled", true);
+
+                } else {
+                    
+                  
+                    if (result == false) {
+                        $('#OrderQty').val('');
+                        toastr.warning('quantity not in stock');
+                    } else {
+                        ShowQtyPopup();
+                        $("#add").attr("disabled", false);
+                    }
+                }
+            }
+        })
+    }
+</script>

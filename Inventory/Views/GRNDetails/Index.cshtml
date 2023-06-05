@@ -1,0 +1,497 @@
+﻿@model IEnumerable<Inventory.Models.GRNDetails>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";}
+<h4><b>GRN DETAILS</b></h4>
+<style>
+    .e-grid .e-headercell, .e-grid .e-grouptopleftcell {
+        background-color: #3c8dbc;
+        border-top-color: #3c8dbc;
+        border-left-color: #3c8dbc;
+        border-bottom-color: #3c8dbc;
+        color: #fff;
+    }
+
+    .e-grid .e-gridheader .e-icon {
+        color: #fff;
+    }
+
+    .Expand {
+        background-position: -180px 3px;
+    }
+
+    .Collapse {
+        background-position: -205px 3px;
+    }
+
+    .refresh {
+        background-position: -76px 3px;
+    }
+
+    .e-toolbaricons {
+        background-image: url("../../Content/ej/web/common-images/icons-gray.png");
+    }
+
+    .Expand:hover, .Collapse:hover, .refresh:hover {
+        background-image: url("../../Content/ej/web/common-images/icons-white.png");
+    }
+</style>
+<div class="box-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                @(Html.EJ().Grid<Inventory.Models.GRNDetails>
+                    ("GRNDetails").Datasource((IEnumerable<object>
+                        )ViewBag.datasource)
+                        .AllowScrolling()
+                        .AllowFiltering()
+                        .AllowTextWrap()
+                        .FilterSettings(filter => { filter.ShowFilterBarStatus().StatusBarWidth(500).FilterBarMode(FilterBarMode.Immediate).MaxFilterChoices(1000).FilterType(FilterType.Menu); })   /*Filtering Enabled*/
+                        .AllowSorting()    /*Sorting Enabled*/
+                        .AllowMultiSorting()
+                        .AllowPaging()    /*Paging Enabled*/
+                        .SelectionType(SelectionType.Multiple)
+                        .AllowResizing()
+                        .IsResponsive()
+                        .MinWidth(1000)
+                        .AllowReordering()
+                        .AllowResizeToFit()
+                        .AllowResizing()
+                        .ScrollSettings(scroll => { scroll.Height(300); })
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar().ToolbarItems(items =>
+                            {
+                                items.AddTool(ToolBarItems.Search); items.AddTool(ToolBarItems.ExcelExport);
+                            });
+                        })
+                                .Mappers(map => map.ExportToExcelAction("/GRNDetails/ExportToExcel"))
+                        .AllowSearching(true)
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar(true).CustomToolbarItems(new List<object>
+                                () { new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#Refresh" }, new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#AddNew" } });
+                        })
+                            .ClientSideEvents(eve => { eve.ToolbarClick("onToolBarClick"); })
+                            .Columns(col =>
+                            {
+                                col.HeaderText("").Template("<input type='Button' class='btn btn-sm btn-warning' id='LetterGeneration' Value='View Details' onclick='F1();' /></a> ").AllowFiltering(false).Width(100).Add();
+                              //  col.HeaderText("").Template("<input type='Button' class='btn btn-sm btn-warning' id='InvoicePrint' Value='Create Invoice' onclick='InvoicePrint();' /></a> ").AllowFiltering(false).Width(100).Add();
+                                col.HeaderText("").Template("<input type='Button' class='btn btn-sm btn-warning' id='{{:GRNNo}}' Value='Print' onclick='CreateInvoice(this.id);' /></a> ").AllowFiltering(false).Width(100).Add();
+                                col.Field("GRNNo").HeaderText("GRN No").TextAlign(TextAlign.Left).Visible(true).Width(90).Add();
+                                col.Field("PONo").HeaderText("PO No").TextAlign(TextAlign.Left).Visible(true).Width(90).Add();
+                                col.Field("SupplierName").HeaderText("SupplierName").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(150).Add();
+                                col.Field("ReceivedQty").HeaderText("ReceivedQty").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(100).Add();
+                                //col.Field("SalesQty").HeaderText("SalesQty").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(150).Add();
+                                col.Field("GRNDate").HeaderText("GRN Date").TextAlign(TextAlign.Left).Visible(true).Width(110).Format("{0:dd/MM/yyyy}").Add();
+
+                            }).ClientSideEvents(evt => evt.RowSelected("onRowSelected")))
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="OfferLetterGeneration">
+        <div class="modal-dialog" style="width:70%; margin-top:100px;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#367fa9; color:white">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">GRN Details</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="BatchSetting" name="BatchSetting" value="@ViewBag.BatchNoSetting" />
+                    <input type="hidden" id="ManufactureDate" name="ManufactureDate" value="@ViewBag.ManufactureDate" />
+                    <input type="hidden" id="ExpiryDate" name="ExpiryDate" value="@ViewBag.ExpiryDate" />
+                    <form method="post" id="form1" class="form-horizontal" data-bv-message="This value is not valid" data-toggle="validator" data-bv-feedbackicons-valid="glyphicon glyphicon-ok" data-bv-feedbackicons-invalid="glyphicon glyphicon-remove" data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="col-md-1">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="control-label">GRN No</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="text" id="GRNNo" class="form-control" disabled="disabled" required="required" autocomplete="off" maxlength="100" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="control-label">Supplier Name</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="text" id="SupplierName" class="form-control" required="required" disabled="disabled" autocomplete="off" maxlength="100" />
+                                        </div>
+                                        <div class="col-md-2">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="col-md-2">
+                                            <label class="control-label">Invoice Date</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" id="invoiceDate" class="form-control" autocomplete="off" maxlength="100" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="control-label">Invoice No</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" id="invoiceNo" class="form-control" autocomplete="off" maxlength="100" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="control-label">Basic Amt</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" id="basicAmt" class="form-control" autocomplete="off" maxlength="100" />
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+
+                                        <div class="col-md-2">
+                                            <label class="control-label">Discount Amt</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" id="disc" class="form-control" autocomplete="off" maxlength="100" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="control-label">Transportation Amt</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" id="trnsprtAmt" class="form-control" autocomplete="off" maxlength="100" />
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="control-label">Tax Amount</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" id="taxAmt" class="form-control" autocomplete="off" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="col-md-2">
+                                            <label class="control-label">Invoice Amt</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" id="invoiceAmt" class="form-control" autocomplete="off" @*onchange="CheckAmount()"*@ maxlength="100" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div style="padding:0px 50px 0px 50px; text-align:center">
+                                                <input id="btnsave" type="button" value=" Save Details" onclick="SaveInvoiceDetails()" class="btn btn-warning" style="padding:6px 6px" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="orderItems" style="overflow-x:auto;">
+                    <table class="table table-responsive" id="orderdetailsItems" style="width: 100%;display:block;  white-space:nowrap; margin-left:10px"></table>
+                    <span id="orderItemError" style="color:red"></span>
+                </div>
+
+            </div>
+
+            <style>
+                span.error {
+                    display: block;
+                    visibility: hidden;
+                    color: red;
+                    font-size: 60%;
+                }
+
+                tr.error {
+                    background-color: rgba(255,0,0,0.35);
+                }
+            </style>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script id="Refresh" type="text/x-jsrender">
+    <a href="#" class="e-toolbaricons refresh" />
+</script>
+<script id="AddNew" type="text/x-jsrender">
+    <button class="btn btn-primary btn-sm add">Add New</button>
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#invoiceDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+        var d = new Date();
+        var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+        $("#invoiceDate").val(strDate);
+
+        //$('#trnsprtAmt').val(0);
+        //$('#basicAmt').val(0);
+        //$('#disc').val(0);
+        //$('#taxAmt').val(0);
+
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+        var tanId = '@TempData["Temp"]';
+        if (tanId != "" && tanId != undefined && tanId != null) {
+            toastr.success(tanId);
+        }
+    });
+</script>
+<script type="text/javascript">
+    function onToolBarClick(sender) {
+        if (sender.itemName == "Expand")
+            this.expandAll();
+        else if (sender.itemName == "Collapse")
+            this.collapseAll();
+        else if (sender.itemName == "Refresh") {
+            var instance = $("#GRNDetails").ejGrid("instance");
+            instance._filterCollection = [];
+            instance.clearFiltering();
+            instance.clearSearching();
+            this.refreshContent();
+        }
+        if (sender.itemName == "AddNew") {
+            window.location.href = "../GRNDetails/Create";
+        }
+    }
+</script>
+<script>
+
+    function SaveInvoiceDetails() {
+        debugger
+        CheckAmount();
+        if ($('#invoiceAmt').val() == "" ) {
+            if ($('#invoiceAmt').val() == "") { $('#invoiceAmt').css("border", "1px solid #e46f61"); } else { $('#invoiceAmt').css("border", "1px solid #a5da6b"); }
+            toastr.warning("Enter Invoice Amount");
+        }
+        else {
+
+
+            var DocumentDate = $('#invoiceDate').val();
+            var datearray1 = DocumentDate.split("/");
+            var docdate = datearray1[1] + '/' + datearray1[0] + '/' + datearray1[2];
+            // var list = [];
+            var orderItem = {
+                GRNNo: $('#GRNNo').val(),
+                InvoiceDate: docdate,
+                TransportAmount: $('#trnsprtAmt').val(),
+                InvoiceNo: $('#invoiceNo').val(),
+                BasicAmount: $('#basicAmt').val(),
+                DiscAmount: $('#disc').val(),
+                TAmount: $('#invoiceAmt').val(),
+                TaxAmount: $('#taxAmt').val(),
+
+            }
+            //list.push(orderItem);
+            //var data = {
+            //    OrderDetails: list,
+            //}
+            $.ajax({
+                type: "POST",
+                url: '/GRNDetails/SaveInvoiceDetails',
+                data: JSON.stringify(orderItem),
+                contentType: 'application/json',
+                success: function (data) {
+                    debugger
+
+                    if (data.status == true) {
+                        toastr.success("POInvoice Successfully updated..");
+                        window.location.href = "/POInvoice/Index";
+                    }
+                    else {
+                        toastr.error(data.message);
+                    }
+
+                }
+            })
+        }
+    }
+
+
+    function F1() {
+        $('#OfferLetterGeneration').modal({ backdrop: 'static', keyboard: false })
+        $("#OfferLetterGeneration").modal("show");
+        $("#orderdetailsItems tr").empty();
+    }
+
+    function CheckAmount() {
+        debugger
+        var transportAmt = parseFloat($('#trnsprtAmt').val());
+       
+        var basicAmt = parseFloat($('#basicAmt').val());
+        
+        var taxAmt = parseFloat($('#taxAmt').val());
+        
+        var disc = parseFloat($('#disc').val());
+       
+        var calculatedAmount = transportAmt + basicAmt + taxAmt - disc;
+
+        if (parseFloat($('#invoiceAmt').val()) != parseFloat(calculatedAmount)) {
+                    $('#invoiceAmt').val('');
+            toastr.warning('Invoice amount is not correct.....  From entered other amount,  Invoice amount should be ' + calculatedAmount + '');
+                }
+       
+    }
+    function onRowSelected(args) {
+            $('#TotAmt').val(0);
+            var result = this.getSelectedRecords();
+            $('#GRNNo').val(result[0].GRNNo);
+            $('#SupplierName').val(result[0].SupplierName);
+
+            $("#pnlShipperFreeze").show();
+            $.ajax({
+                type: "GET",
+                url: '/GRNDetails/GetAllGRNDetails',
+                data: { 'GRNNO': $('#GRNNo').val() },
+                success: function (result) {
+
+                    debugger
+                    ShowPOInvoiceData();
+                    var ResultCount = result.length;
+
+                    if (ResultCount != 0) {
+                        var BatchSetting = $("#BatchSetting").val();
+                        var ManufactureDate = $("#ManufactureDate").val();
+                        var ExpiryDate = $("#ExpiryDate").val();
+                        //alert(ExpiryDate)
+                        $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' > <th>ITEM NAME</th>    <th>WAREHOUSE</th> <th>LOCATION</th> " + (BatchSetting == "BatchNo" ? '<th>Batch No</th>' : '') + "<th> BASIC RATE</th><th> TAX</th><th> DISCOUNT</th><th> RECEIVE QTY</th>" + (ManufactureDate == "ManufactureDate" ? '<th>MFG DATE</th>' : '') + "" + (ExpiryDate == "ExpiryDate" ? '<th>EXP DATE</th>' : '') + "<th>RETURN QTY</th> <th>REPLACE QTY</th> <th>SerialFrom </th> <th>SerialTo </th> </tr> <tbody>").appendTo("#orderdetailsItems");
+                        var Count = 1;
+                        $.each(result, function (i, item) {
+                            //$(" <tbody> <tr id='R" + Count + "'>  <td><input type='text' id='product" + Count + "' readonly  style='width : 140px' class='product form-control'' /></td><td><input type='text'  id='WarehouseID" + Count + "' style='width : 110px' readonly class='WarehouseID form-control'' /></td><td><input type='text' id='StoreLocationId" + Count + "' readonly style='width : 110px' class='StoreLocationId form-control'' /></td>" + (BatchSetting == "BatchNo" ? '<td><input type="text" id="BatchNo' + Count + '" style="width : 110px" readonly class="BatchNo form-control" /></td>' : '') + " <td><input type='text' id='ReceivedQty" + Count + "'  style='width : 80px' readonly  class='ReceivedQty  form-control'' /></td>" + (ManufactureDate == "ManufactureDate" ? '<td><input type="text"  id="ManufacturingDate' + Count + '"   style="width : 110px" readonly class="ManufacturingDate form-control" /></td>' : '') + "" + (ExpiryDate == "ExpiryDate" ? '<td><input type="text" id="ExpiryDateNew' + Count + '" style="width : 110px" readonly class="ExpiryDateNew form-control" /></td>' : '') + "<td><input type='text' readonly id='ReturnQty" + Count + "'  style='width : 80px'  class='ReturnQty form-control'' /></td> <td><input type='text' readonly id='ReplaceQty" + Count + "'  style='width : 80px'  class='ReplaceQty form-control'' /></td> <td><input type='text' readonly id='DamageQty" + Count + "'  style='width : 80px'  class='DamageQty form-control'' /></td> </tr> <tbody>").appendTo("#orderdetailsItems");
+                            $(" <tbody> <tr id='R" + Count + "'>  <td><input type='text' id='product" + Count + "' readonly  style='width : 140px' class='product form-control'' /></td><td><input type='text'  id='WarehouseID" + Count + "' style='width : 110px' readonly class='WarehouseID form-control'' /></td><td><input type='text' id='StoreLocationId" + Count + "' readonly style='width : 110px' class='StoreLocationId form-control'' /></td>" + (BatchSetting == "BatchNo" ? '<td><input type="text" id="BatchNo' + Count + '" style="width : 110px" readonly class="BatchNo form-control" /></td>' : '') + " <td><input type='text' id='BasicRate" + Count + "'  style='width : 80px' readonly  class='BasicRate  form-control'' /></td><td><input type='text' id='Tax" + Count + "'  style='width : 80px' readonly  class='Tax  form-control'' /></td><td><input type='text' id='Discount" + Count + "'  style='width : 80px' readonly  class='Discount  form-control'' /></td><td><input type='text' id='ReceivedQty" + Count + "'  style='width : 80px' readonly  class='ReceivedQty  form-control'' /></td>" + (ManufactureDate == "ManufactureDate" ? '<td><input type="text"  id="ManufacturingDate' + Count + '"   style="width : 110px" readonly class="ManufacturingDate form-control" /></td>' : '') + "" + (ExpiryDate == "ExpiryDate" ? '<td><input type="text" id="ExpiredDate' + Count + '" style="width : 110px" readonly class="ExpiredDate form-control" /></td>' : '') + "<td><input type='text' readonly id='ReturnQty" + Count + "'  style='width : 80px'  class='ReturnQty form-control'' /></td> <td><input type='text' readonly id='ReplaceQty" + Count + "'  style='width : 80px'  class='ReplaceQty form-control'' /></td> <td><input type='text' readonly id='SerialFrom" + Count + "'  style='width : 80px'  class='SerialFrom form-control'' /></td> <td><input type='text' readonly id='SerialTo" + Count + "'  style='width : 80px'  class='SerialTo form-control'' /></td>     </tr> <tbody>").appendTo("#orderdetailsItems");
+                            $("#product" + Count + "").val(result[i].ProductCode);
+                            $("#WarehouseID" + Count + "").val(result[i].WarehouseID);
+                            $("#StoreLocationId" + Count + "").val(result[i].StoreLocationId);
+                            $("#BatchNo" + Count + "").val(result[i].BatchNo);
+                            $("#ReceivedQty" + Count + "").val(result[i].ReceivedQty);
+                            $("#BasicRate" + Count + "").val(result[i].BasicRate);
+                            $("#Tax" + Count + "").val(result[i].Tax);
+                            $("#Discount" + Count + "").val(result[i].Discount);
+                            debugger
+                           
+
+                            try {
+                                var dateValue = new Date(parseInt(result[i].ManufacturingDate.substr(6)));
+                                var formattedDate = ("0" + dateValue.getDate()).slice(-2) + "/" + ("0" + (dateValue.getMonth() + 1)).slice(-2) + "/" + dateValue.getFullYear();
+                                $("#ManufacturingDate" + Count).val(formattedDate);
+
+
+                                var dateValue = new Date(parseInt(result[i].ExpiryDate.substr(6)));
+                                var formattedDate = ("0" + dateValue.getDate()).slice(-2) + "/" + ("0" + (dateValue.getMonth() + 1)).slice(-2) + "/" + dateValue.getFullYear();
+                                $("#ExpiredDate" + Count).val(formattedDate);
+
+                            } catch (ex) {
+
+                            }
+
+
+
+                            $("#ReturnQty" + Count + "").val(result[i].ReturnQty);
+                            $("#ReplaceQty" + Count + "").val(result[i].ReplaceQty);
+                            /*  $("#DamageQty" + Count + "").val(result[i].DamageQty);*/
+                            $("#SerialFrom" + Count + "").val(result[i].SerialFrom);
+                            $("#SerialTo" + Count + "").val(result[i].SerialTo);
+
+                            Count = Count + 1;
+                        });
+                    } else {
+                        toastr.warning('NO data Found...');
+                        $('#orderdetailsItems').empty();
+                    }
+
+                }
+            })
+        }
+    function CreateInvoice(ID) {
+
+                $.ajax({
+                    url: '/GRNDetails/InvoicePrint',
+                    type: "GET",
+                    dataType: "JSON",
+                    data: { GRNNo: ID },
+                    success: function (result) {
+                        if (result.Message == "success") {
+                            try {
+                                var WinPrint = window.open('/GRNDetails/GetReport', '_blank');
+                                //WinPrint.focus(); WinPrint.print();
+                                if (result != null) {
+                                    toastr.success("Created Successfully");
+                                }
+                                else {
+                                    toastr.error(result.Message);
+                                }
+                            }
+                            catch (e) {
+                            }
+                        } else {
+                            toastr.error(result.Message);
+                        };
+                    }
+                });
+            }
+
+    function ShowPOInvoiceData() {
+                debugger
+                $.ajax({
+                    url: '/GRNDetails/ShowPOInvoiceData',
+                    type: "GET",
+                    data: { 'GRNNo': $('#GRNNo').val() },
+                    success: function (result) {
+                        debugger
+
+                      
+                        if (result.TransportAmount == null) {
+                            $('#trnsprtAmt').val(0);
+                        }
+                        else {
+                            $('#trnsprtAmt').val(result.TransportAmount);
+                        }
+                        if (result.BasicAmount == null) {
+                            $('#basicAmt').val(0);
+                        }
+                        else {
+                            $('#basicAmt').val(result.BasicAmount);
+                        }
+                        if (result.TaxAmount == null) {
+                            $('#taxAmt').val(0);
+                        }
+                        else {
+                            $('#taxAmt').val(result.TaxAmount);
+                        }
+                        if (result.DiscAmount == null) {
+                            $('#disc').val(0);
+                        }
+                        else {
+                            $('#disc').val(result.DiscAmount);
+                        }
+                        
+                        $('#invoiceNo').val(result.InvoiceNo);  
+                        $('#invoiceAmt').val(result.TAmount);
+
+                        $("#invoiceDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+                        var date = new Date(parseInt(result.InvoiceDate.substr(6)));
+                        $("#invoiceDate").val($.datepicker.formatDate("dd/mm/yy", date));
+
+
+                    }
+                });
+            }
+</script>

@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewBag.Title = "Debit Note";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Debit Note</h2>
+<style>
+    #reportviewer {
+        min-height: 500px;
+        min-width: 100%;
+    }
+</style>
+@(Html.EJ().ReportViewer("reportviewer")
+    .ProcessingMode(Syncfusion.JavaScript.ReportViewerEnums.ProcessingMode.Remote)
+    .ReportServiceUrl(VirtualPathUtility.ToAbsolute("~/api/ReportApi"))
+    .ReportPath("~/App_Data/rptDebitNote.rdl"))

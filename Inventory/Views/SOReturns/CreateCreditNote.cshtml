@@ -1,0 +1,175 @@
+﻿
+@{
+    ViewBag.Title = "CreateCreditNote";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("CreateCreditNote", "SOReturns", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="box box-info">
+        
+        <input type="hidden" id="Total" name="Total" value="@ViewBag.Total" />
+        <div class="box-header with-border">
+            <h3 class="box-title">Credit Note</h3>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-2">
+                        Doc No
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" id="DocNo" class="form-control" disabled />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                @*<div class="form-group">
+                    <div class="col-md-2">
+                        Doc Date
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" id="DocDate" value="@DateTime.Today" class="form-control" disabled />
+                    </div>
+                </div>*@
+            </div>
+            <div class="col-md-6">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-2">
+                        Customer
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" id="CustName" value="@ViewBag.Custnam" class="form-control" disabled />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-2">
+                        Invoice No
+                    </div>
+                    <div class="col-md-6">     
+                        <input type="text" id="InvNo" value="@ViewBag.InvNo" class="form-control" disabled />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-2">
+                        
+                    </div>
+                    <div class="col-md-6">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-6">
+                        <input id="submit" type="button" value="Create Credit Note" class="btn btn-warning" onclick="DebitNote();" style="padding:6px 6px" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+            </div>
+        </div>
+        <div id="orderItems" style="overflow-x: auto; margin-left: 60px; ">
+            <table class="table table-responsive" id="tblDebit" style="width: 1470px; display: block; overflow-x: auto; white-space: nowrap;"></table><br />
+        </div>
+        <div class="row" style="width:1580px">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <div>
+                            @Html.ActionLink("Back to List", "CreditReturns", null, new { @class = "btn btn-primary" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        $("#CreditNoteDate").ejDatePicker({ minDate: new Date(), locale: "en-IN", });
+        getSOReturnNo();
+    })
+    function getSOReturnNo() {
+        $.ajax({
+            type: "GET",
+            url: '/SoReturns/getCreditNoteNo',
+            success: function (result) {
+                $('#DocNo').val("CRNT_" + result);
+            }
+        })
+    }
+
+
+    $(document).ready(function () {
+        $("#DocDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+        
+        var total = 0;
+        $.ajax({
+            url: '@Url.Action("GetCreditNoteData", "SOReturns")',
+           type: "GET",
+           datatype: "JSON",
+           data: { InvNo: $("#InvNo").val() },
+           success: function (result) {
+               
+               $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' ><th>PRODUCT CODE</th><th>PRODUCT</th><th>ITEM QTY</th><th>DISCOUNT</th><th>TAX %</th> <th>TAX AMOUNT</th><th>AMOUNT</th></tr> <tbody>").appendTo("#tblDebit");
+               $.each(result, function (i, item) {
+                   
+                   $(" <tbody><tr><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + result[i].ProductCode + " /></td><td><input type='text' readonly  style='width : 180px' class='form-control' value='" + result[i].ProductName + "' /> </td><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + result[i].ReturnQty + " /></td><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + result[i].Discount + " /></td><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + result[i].TaxPer + " /></td><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + result[i].TaxAmount + " /></td><td><input type='text' readonly  style='width : 180px' class='form-control' value=" + result[i].TotalAmount + " /></td></tr> <tbody>").appendTo("#tblDebit");
+                   total += parseFloat(result[i].TotalAmount);
+               });
+               $("<tbody><tr><td></td><td></td><td></td><td></td><td></td><td>Total</td><td><input type='text' readonly  style='width : 180px' class='form-control' value='" + total + "' /></td></tr> <tbody>").appendTo("#tblDebit");
+               $("#Total").val(total);
+           },
+       });
+    });
+     function DebitNote() {
+        var DocNo = $("#DocNo").val();
+        var DocDate = $("#DocDate").val();
+        var Customer = $("#CustName").val();
+        var InvoiceNo = $("#InvNo").val();
+        var Amount = $("#Total").val();
+         $.ajax({
+           url: '@Url.Action("SaveCreditNote", "SOReturns")',
+           type: "GET",
+           datatype: "JSON",
+           data: { DocNo: DocNo, DocDate: DocDate, Customer:Customer, InvoiceNo: InvoiceNo, Amount: Amount },
+           success: function (result) {
+               
+               if (result == true) {
+                   window.location.href = "/SOReturns/CreditReturns";
+                   //window.open('../../Reports/rptSupplierWiseStock/' + DocNo, "_blank");
+                   return false;
+               }
+           },
+       });       
+    }
+</script>
