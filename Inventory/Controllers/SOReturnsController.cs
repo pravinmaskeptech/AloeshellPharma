@@ -61,11 +61,12 @@ namespace Inventory.Controllers
                            join Custss in db.orderMain on p.OrderNo equals Custss.OrderNo into customerss
                            from aa in customerss.DefaultIfEmpty()
 
-                           select new { CustomerName = aa.CustomerName, InvoiceNo = p.InvoiceNo, InvoiceDate = p.InvoiceDate, ReturnItems = p.ReturnQty, Amount = (p.AmountPerUnit*p.ReturnQty), InvoiceID = p.SalesId };
+                           select new {  CustomerName = aa.CustomerName != null ? aa.CustomerName : aa.DeliverTo, InvoiceNo = p.InvoiceNo, InvoiceDate = p.InvoiceDate, ReturnItems = p.ReturnQty, Amount = (p.AmountPerUnit*p.ReturnQty), InvoiceID = p.SalesId };
 
 
             var results = from p in results1
                           group p by p.InvoiceNo into g
+                          orderby g.Key descending
                           select new { CustomerName = g.Select(x => x.CustomerName).FirstOrDefault(), InvoiceNo = g.Select(x => x.InvoiceNo).FirstOrDefault(), InvoiceDate = g.Select(x => x.InvoiceDate).FirstOrDefault(), ReturnItems = g.Sum(x => x.ReturnItems), Amount = g.Sum(x => x.Amount), InvoiceID = g.Max(a => a.InvoiceID) };
             ViewBag.datasource = results;
 
@@ -82,7 +83,7 @@ namespace Inventory.Controllers
                            where p.InvoiceNo == invno && p.ReturnQty > 0 && p.CreditDocNo == null
                            join c in db.orderMain on p.OrderNo equals c.OrderNo into cust
                            from cs in cust.DefaultIfEmpty()
-                           select new { CustomerNm = cs.CustomerName, TotalAmount = p.TotalAmount };
+                           select new {  CustomerNm = cs.CustomerName != null ? cs.CustomerName : cs.DeliverTo, TotalAmount = p.TotalAmount };
                 var cnm = Cust.FirstOrDefault();
 
                 //ViewBag.Custnam = cnm.CustomerNm.ToString();
@@ -97,7 +98,7 @@ namespace Inventory.Controllers
         public ActionResult GetCreditNoteData(string InvNo)
         {
             var results = from p in db.Sales
-                          where p.InvoiceNo == InvNo && p.ReturnQty > 0 && p.ReturnQty > 0 && p.CreditDocNo == null
+                          where p.InvoiceNo == InvNo && p.ReturnQty > 0 && p.ReturnQty > 0 /*&& p.CreditDocNo == null*/
                           join Product in db.Products on p.ProductCode equals Product.ProductCode into products
                           from prd in products.DefaultIfEmpty()   //prd.ProductName
                           select new { ProductCode = p.ProductCode, ProductName = prd.ProductName, ReturnQty = p.ReturnQty, Discount = (p.Discount * p.ReturnQty), TaxPer = p.GSTPercentage, TaxAmount = ((p.CGSTAmount + p.SGSTAmount + p.IGSTAmount) * p.ReturnQty), TotalAmount = (p.AmountPerUnit * p.ReturnQty) };
@@ -854,7 +855,7 @@ namespace Inventory.Controllers
 
                 Paragraph pr285 = new Paragraph();
                 pr285.Add(new Phrase(" For Siddhivinayak Distributor \n\n\n\n", FontFactory.GetFont("Arial", 8, Font.BOLD)));
-                pr285.Add(new Phrase("                                      Authorised Signatory", FontFactory.GetFont("Arial", 7, Font.BOLD)));
+                pr285.Add(new Phrase(" Authorised Signatory", FontFactory.GetFont("Arial", 7, Font.BOLD)));
                 PdfPCell pc285 = new PdfPCell(pr285);
                 pc285.HorizontalAlignment = 1;
                 // pc285.Border = Rectangle.LEFT_BORDER;

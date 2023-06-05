@@ -47,12 +47,13 @@ namespace Inventory.Controllers
         [HttpPost]
         public string GetData(string sEcho, int iDisplayLength, int iDisplayStart, string sSearch)
         {
+
             var xx = db.GRNDetail
                         .GroupBy(l => l.ProductCode)
                         .Select(cl => new
                         {
                             ProductCode = cl.FirstOrDefault().ProductCode,
-                            ReceivedQty = cl.Sum(c => c.ReceivedQty),
+                            ReceivedQty = cl.Sum(c => c.ReceivedQty)- cl.Sum(c => c.ReturnQty),
                             SalesQty = cl.Sum(c => c.SalesQty),
                             AvailableQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(a => a.SalesQty),
                         }).ToList();
@@ -109,7 +110,7 @@ namespace Inventory.Controllers
                             .Select(cl => new
                             {
                                 ProductCode = cl.FirstOrDefault().ProductCode,
-                                ReceivedQty = cl.Sum(c => c.ReceivedQty),
+                                ReceivedQty = cl.Sum(c => c.ReceivedQty)- cl.Sum(c => c.ReturnQty),
                                 SalesQty = cl.Sum(c => c.SalesQty),
                                 AvailableQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(a => a.SalesQty),
                             }).ToList();

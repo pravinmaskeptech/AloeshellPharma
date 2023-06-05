@@ -238,6 +238,7 @@ namespace Inventory.Controllers
                                 main.CompanyID = Convert.ToInt32(Session["CompanyID"]);
                                 main.OrderDate = DateTime.Now;
                                 main.DeliverTo = x.DeliverTo;
+                                main.CustomerName = x.DeliverTo;
                                 main.NetAmount = Convert.ToDecimal(x.NetAmount);
                                 main.IGST = Convert.ToDecimal(x.IGST);
                                 main.SGST = Convert.ToDecimal(x.SGST);

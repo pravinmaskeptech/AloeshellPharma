@@ -115,7 +115,7 @@
                                 Select Customer
                             </div>
                             <div class="col-md-8">
-                                @Html.EJ().Autocomplete("CustomerName").WatermarkText("Select Customer").Datasource((IEnumerable<Inventory.Models.Customer>)ViewBag.Custdatasource).Width("100%").AutocompleteFields(field => field.Key("CustomerID").Text("CustomerName")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("Select Customer\r\n").FocusOut("CheckValidCustomer"))
+                                @Html.EJ().Autocomplete("CustomerName").WatermarkText("Select Customer").Datasource((IEnumerable<Inventory.Models.Customer>)ViewBag.Custdatasource).Width("100%").AutocompleteFields(field => field.Key("CustomerID").Text("CustomerName")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("ShowInvoiceDetails").FocusOut("CheckValidCustomer"))
                             </div>
                         </div>
                     </div>
@@ -212,9 +212,17 @@
         }
     }    
      $(document).ready(function () {
-         $("#DocumentDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
-         $("#RefDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
-         //    $("#PoDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+         $("#DocumentDate").ejDatePicker({locale: "en-IN", });
+         $("#RefDate").ejDatePicker({ locale: "en-IN", });
+         //$("#DocumentDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+         //$("#RefDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN", });
+         var d = new Date();
+         var strDate1 = ("0" + d.getDate()).slice(-2) + "/" + ("0" + (d.getMonth() + 1)).slice(-2) + "/" + d.getFullYear();
+         $("#DocumentDate").val(strDate1);
+
+         var d = new Date();
+         var strDate = ("0" + d.getDate()).slice(-2) + "/" + ("0" + (d.getMonth() + 1)).slice(-2) + "/" + d.getFullYear();
+         $("#RefDate").val(strDate);
          $('#AdvanceAmount').val(0);
         getPaymentNo();
      })
@@ -227,7 +235,8 @@
             }
         })
     }
-     function ShowInvoiceDetails(ID) {         
+    function ShowInvoiceDetails(ID) {       
+         debugger
          $('#TotAmount').val('');
          $("#TotAmount").prop('disabled', false);
          $('#orderdetailsItems tr').empty();
@@ -351,7 +360,9 @@
                      url: '/SalesOrderPayment/AddAdvanceAmount',
                      data: { 'CustomerId': $('#CustomerId').val(), 'DocNo': $('#DocumentNo').val(), 'Amount': $('#TotAmount').val(), 'DocDate': Docdt, 'PaymentMode': $('#PaymentMode').val(), 'ReferenceNo': $('#RefNo').val(), 'PaymentType': $('#PaymentType').val(), 'Date': Refdt, },
                      success: function (result) {
+                         toastr.success("Advance Amount Added Successfully");
                          ShowAdvanceAmt();
+
                      }
                  })
              } else {

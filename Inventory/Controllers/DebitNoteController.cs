@@ -411,7 +411,7 @@ namespace Inventory.Controllers
 
                 Paragraph p4 = new Paragraph();
 
-                p4.Add(new Phrase("Siddhivinayak Distributors", FontFactory.GetFont("Arial", 12, Font.BOLD)));
+                p4.Add(new Phrase("Siddhivinayak Distributor", FontFactory.GetFont("Arial", 12, Font.BOLD)));
                 p4.Add(new Phrase("\n", FontFactory.GetFont("Arial", 5, Font.BOLD)));
                 p4.Add(new Phrase("\nShop no 10, Suyog Navkar Building A, \nNear 7 Loves Chowk, Market Yard Road, Pune 411 037.\nGSTIN: 27ABVPK5495R2Z9\nDL.No: MH-PZ3517351,MH-PZ3517352,", FontFactory.GetFont("Arial", 9, Font.BOLD)));
                 PdfPCell c1114 = new PdfPCell(p4);

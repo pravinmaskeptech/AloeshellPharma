@@ -1080,7 +1080,7 @@ namespace Inventory.Controllers
                 table4.AddCell(c11144);
 
                 Paragraph p4 = new Paragraph();
-                p4.Add(new Phrase(" Siddhivinayak Distributors", FontFactory.GetFont("Arial", 14, Font.BOLD)));
+                p4.Add(new Phrase(" Siddhivinayak Distributor", FontFactory.GetFont("Arial", 14, Font.BOLD)));
                 p4.Add(new Phrase(" "));
                 p4.Add(new Phrase("\n Shop no 10, Suyog Navkar Building A, \n Near 7 Loves Chowk, Market Yard Road, Pune 411 037.\n GSTIN: 27ABVPK5495R2Z9\n", FontFactory.GetFont("Arial", 9, Font.BOLD)));
                 PdfPCell c1114 = new PdfPCell(p4);

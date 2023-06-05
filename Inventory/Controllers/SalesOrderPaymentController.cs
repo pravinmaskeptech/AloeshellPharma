@@ -42,9 +42,9 @@ namespace Inventory.Controllers
             // var result = db.Sales.Where(a =>  TotalAmount != a.PayAmount && a.CustomerID == CustomerId && a.Status != "Complite").ToList();
             try
             {
-                var result = (from c in db.Sales.Where(a => a.TotalAmount != a.PayAmount && a.CustomerID == CustomerId && a.Status != "Complite").ToList()
+                var result = (from c in db.Sales.Where(a => a.TotalAmount != a.PayAmount && a.CustomerID == CustomerId &&( a.Status != "Complite" || a.Status == null)).ToList()
                               join sply in db.orderMain on c.OrderNo equals sply.OrderNo into main
-                              from aa in main.Where(a => a.TotalAmount != a.PayAmount && a.CustomerID == CustomerId && a.Status != "Complite").DefaultIfEmpty()
+                              from aa in main.Where(a => a.TotalAmount != a.PayAmount && a.CustomerID == CustomerId && (a.Status != "Complite" || a.Status == null)).DefaultIfEmpty()
                               group c by new
                               {
                                   c.InvoiceDate,

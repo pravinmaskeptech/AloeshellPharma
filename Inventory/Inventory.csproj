@@ -324,6 +324,7 @@
     <Compile Include="Controllers\POReplacementController.cs" />
     <Compile Include="Controllers\POReturnsController.cs" />
     <Compile Include="Controllers\PRNMainsController.cs" />
+    <Compile Include="Controllers\ProductExpiryReportController.cs" />
     <Compile Include="Controllers\ProductionOrderController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\PurchaseOrderPaymentController.cs" />
@@ -600,6 +601,7 @@
     <Content Include="Views\POInvoice\Edit.cshtml" />
     <Content Include="Views\PurchaseReport\Index.cshtml" />
     <Content Include="Views\SalesReport\Index.cshtml" />
+    <Content Include="Views\ProductExpiryReport\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Antlr3.Runtime.dll" />

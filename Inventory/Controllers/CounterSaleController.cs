@@ -1569,8 +1569,19 @@ namespace Inventory.Controllers
                 Para3.Add(new Phrase("Party Name: " + data[0].CustomerName + "\n", FontFactory.GetFont("Arial", 9, Font.BOLD)));
                 Para3.Add(new Phrase("Address : ", FontFactory.GetFont("Arial", 9, Font.BOLD)));
                 Para3.Add(new Phrase("" + address + "\n", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                Para3.Add(new Phrase("Mobile No :" + data[0].Mobile + "\n", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                Para3.Add(new Phrase("GST NO :" + data[0].GSTNO + "\n", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+                //Para3.Add(new Phrase("Mobile No :" + data[0].Mobile + "\n", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+                //Para3.Add(new Phrase("GST NO :" + data[0].GSTNO + "\n", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+                if (data[0].Mobile != null)
+                {
+                    Para3.Add(new Phrase("Mobile No: " + data[0].Mobile + "\n", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+                }
+
+                if (data[0].GSTNO != null)
+                {
+                    Para3.Add(new Phrase("GST NO: " + data[0].GSTNO + "\n", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+                }
+
+
 
                 PdfPCell Cell3 = new PdfPCell(Para3);
                 Cell3.HorizontalAlignment = 0;
@@ -2677,7 +2688,7 @@ namespace Inventory.Controllers
 
 
                     Paragraph Para545dsd3 = new Paragraph();
-                    Para545dsd3.Add(new Phrase("FOR Siddhivinayak Distributors\n\n\n\n\n\n\n\n\n", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+                    Para545dsd3.Add(new Phrase("FOR Siddhivinayak Distributor\n\n\n\n\n\n\n\n\n", FontFactory.GetFont("Arial", 9, Font.BOLD)));
                     Para545dsd3.Add(new Phrase("Authorised Signatory", FontFactory.GetFont("Arial", 9, Font.BOLD)));
 
                     PdfPCell Cellsa13sss121 = new PdfPCell(Para545dsd3);

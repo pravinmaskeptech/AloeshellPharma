@@ -1351,7 +1351,7 @@
                 $('#ProductName').val($('#ProductCode').val());
                   $('#ProdCode').val($('#ProductId').val());
               //  $('#OrderDTLid').val($('#OrderDetailsID' + Count).val());
-             //   $('#COUNTNO').val(Count);
+                $('#COUNTNO').val(Count);
               //  $('#DeliveredQtyNew' + Count).val('')
             $('#ProductQuantity').val($('#OrderQty').val());
                 $.ajax({
@@ -1613,6 +1613,8 @@
             } else {
                // toastr.error("error..");
             }
+            CalculateAmount()
+            Calculate()
         }
     }
 
