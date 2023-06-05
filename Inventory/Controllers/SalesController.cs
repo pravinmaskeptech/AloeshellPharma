@@ -590,7 +590,7 @@ namespace Inventory.Controllers
                 var NetAmount = 0;
                 decimal Discount = 0;
                 var orderno = InvoiceNo;
-             //   InvoiceNo = db.Sales.Where(a => a.OrderNo == InvoiceNo).Select(a => a.InvoiceNo).FirstOrDefault();
+                //   InvoiceNo = db.Sales.Where(a => a.OrderNo == InvoiceNo).Select(a => a.InvoiceNo).FirstOrDefault();
                 DateTime dt = DateTime.Now;
 
                 var aa = dt.ToString("HH");
@@ -668,7 +668,7 @@ namespace Inventory.Controllers
 
                 ;
                 var data =
-                (from c in data11.Where(a => a.CustomerName != null)
+                (from c in data11//.Where(a => a.CustomerName != null)
                  group c by new
                  {
                      c.OrderNo,
@@ -705,11 +705,11 @@ namespace Inventory.Controllers
 
                      gcs.Key.OrderNo,
                      gcs.Key.OrderDate,
-                     gcs.Key.InvoiceDate,
+                     //gcs.Key.InvoiceDate,
                      gcs.Key.DeliveredQty,
                      gcs.Key.Address,
                      ExpiryDate = gcs.Max(a => a.ExpiryDate),
-
+                     InvoiceDate = gcs.Max(a => a.InvoiceDate),
                      gcs.Key.City,
                      gcs.Key.Country,
                      gcs.Key.State,
@@ -792,8 +792,8 @@ namespace Inventory.Controllers
                     PdfPCell Cell102 = new PdfPCell(para2);
                     Cell102.HorizontalAlignment = 0;
                     table0.AddCell(Cell102);
-
-                    var XYZ = data[0].InvoiceDate.Value.ToString("dd-MM-yyyy");
+                    var XYZ = data[0].InvoiceDate.HasValue ? data[0].InvoiceDate.Value.ToString("dd-MM-yyyy") : "";
+                    //var XYZ = data[0]?.InvoiceDate?.Value.ToString("dd-MM-yyyy") ?? "";
 
 
                     Paragraph para3 = new Paragraph();
