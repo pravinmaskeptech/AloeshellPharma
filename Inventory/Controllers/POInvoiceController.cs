@@ -33,6 +33,7 @@ namespace Inventory.Controllers
                                   BasicAmount = invoice.BasicAmount,
                                   DiscAmount = invoice.DiscAmount,
                                   TransportAmount = invoice.TransportAmount,
+                                  TaxAmount = invoice.TaxAmount,
                                   TotalAmount = invoice.TotalAmount,
                                   SupplierName = supplier.SupplierName,
                               }).ToList();
@@ -218,10 +219,6 @@ namespace Inventory.Controllers
             }
 
 
-            //DateTime? d = Convert.ToDateTime(pOInvoice.PaymentDate, CultureInfo.InvariantCulture);
-            //DateTime? e = Convert.ToDateTime(pOInvoice.DocumentDate, CultureInfo.InvariantCulture);
-            //DateTime? f = Convert.ToDateTime(pOInvoice.PoDate, CultureInfo.InvariantCulture);
-            //DateTime? g = Convert.ToDateTime(pOInvoice.InvoiceDate, CultureInfo.InvariantCulture);
 
             try
             {
@@ -234,7 +231,7 @@ namespace Inventory.Controllers
                 inv.PoDate = pOInvoice.PoDate;
                 inv.BasicAmount = po.BasicAmount;
                 inv.DiscAmount = po.DiscAmount;
-                inv.TaxAmount = po.Tax;
+                inv.TaxAmount = po.TaxAmount;
                 inv.TransportAmount = po.TransportAmount;
                 inv.TotalAmount = pOInvoice.TotalAmount;
                 inv.SupplierId = pOInvoice.SupplierId;

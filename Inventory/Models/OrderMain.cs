@@ -166,5 +166,11 @@ namespace Inventory.Models
 
         [NotMapped]
         public Int64? tempSRNO { get; set; }
+        public string Transport { get; set; }
+
+        public DateTime? DispatchDate { get; set; }
+        public string Delivery { get; set; }
+        public string VehicleNo { get; set; }
+
     }
 }

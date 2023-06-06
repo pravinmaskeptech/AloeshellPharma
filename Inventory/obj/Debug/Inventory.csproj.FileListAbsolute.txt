@@ -252,3 +252,11 @@ D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\In
 D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.csproj.CopyComplete
 D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.dll
 D:\MYCraft Projects\Inventory Purchase and Sales\Inventory Purchase and Sales\Inventory\obj\Debug\Inventory.pdb
+E:\git repository\AloeshellPharma\Inventory\bin\Inventory.dll.config
+E:\git repository\AloeshellPharma\Inventory\bin\Inventory.dll
+E:\git repository\AloeshellPharma\Inventory\bin\Inventory.pdb
+E:\git repository\AloeshellPharma\Inventory\obj\Debug\Inventory.csproj.AssemblyReference.cache
+E:\git repository\AloeshellPharma\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+E:\git repository\AloeshellPharma\Inventory\obj\Debug\Inventory.csproj.CopyComplete
+E:\git repository\AloeshellPharma\Inventory\obj\Debug\Inventory.dll
+E:\git repository\AloeshellPharma\Inventory\obj\Debug\Inventory.pdb

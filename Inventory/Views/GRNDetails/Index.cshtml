@@ -178,7 +178,7 @@
                                             <label class="control-label">Tax Amount</label>
                                         </div>
                                         <div class="col-md-2">
-                                            <input type="text" id="taxAmt" class="form-control" autocomplete="off" maxlength="100" />
+                                            <input type="text" id="taxAmt" class="form-control" autocomplete="off" maxlength="100" onchange="CalculateInvoiceAmount()"/>
                                         </div>
                                     </div>
                                 </div>
@@ -324,7 +324,18 @@
             })
         }
     }
+    function CalculateInvoiceAmount() {
+        var transportAmt = parseFloat($('#trnsprtAmt').val());
 
+        var basicAmt = parseFloat($('#basicAmt').val());
+
+        var taxAmt = parseFloat($('#taxAmt').val());
+
+        var disc = parseFloat($('#disc').val());
+
+        var calculatedAmount = (transportAmt + basicAmt + taxAmt - disc).toFixed(2);
+        $("#invoiceAmt").val(calculatedAmount);
+    }
 
     function F1() {
         $('#OfferLetterGeneration').modal({ backdrop: 'static', keyboard: false })
@@ -335,19 +346,19 @@
     function CheckAmount() {
         debugger
         var transportAmt = parseFloat($('#trnsprtAmt').val());
-       
+
         var basicAmt = parseFloat($('#basicAmt').val());
-        
+
         var taxAmt = parseFloat($('#taxAmt').val());
-        
+
         var disc = parseFloat($('#disc').val());
-       
-        var calculatedAmount = transportAmt + basicAmt + taxAmt - disc;
+
+        var calculatedAmount = (transportAmt + basicAmt + taxAmt - disc).toFixed(2);
 
         if (parseFloat($('#invoiceAmt').val()) != parseFloat(calculatedAmount)) {
-                    $('#invoiceAmt').val('');
+            $('#invoiceAmt').val('');
             toastr.warning('Invoice amount is not correct.....  From entered other amount,  Invoice amount should be ' + calculatedAmount + '');
-                }
+        }
        
     }
     function onRowSelected(args) {

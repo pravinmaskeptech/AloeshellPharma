@@ -350,7 +350,10 @@ namespace Inventory.Controllers
                                     main.CompanyID = Convert.ToInt32(Session["CompanyID"]);
                                     main.OrderDate = x.OrderDate;
                                     main.DeliverTo = x.CustomerName;
-
+                                    main.VehicleNo = x.VehicleNo;
+                                    main.DispatchDate = x.DispatchDate;
+                                    main.Transport = x.Transport;
+                                    main.Delivery = x.Delivery;
                                     main.NetAmount = Convert.ToDecimal(x.NetAmount);
                                     main.IGST = Convert.ToDecimal(x.IGST);
                                     main.SGST = Convert.ToDecimal(x.SGST);
@@ -401,10 +404,6 @@ namespace Inventory.Controllers
 
                                     //db.ProductSerialNo.AddOrUpdate(dataa);
 
-
-
-
-
                                     if (Customerdata != null)
                                     {
                                         dataa.EndCustomerID = Customerdata.CustomerID;
@@ -414,12 +413,6 @@ namespace Inventory.Controllers
                                     batchNo = grn.BatchNo;
                                     GRNID = grn.GRNId;
                                     grn.SalesQty = grn.SalesQty + 1;
-
-
-
-
-
-
                                 }
                             }
                             else
@@ -436,8 +429,6 @@ namespace Inventory.Controllers
 
                             }
 
-
-
                             Product.ClosingQuantity = (Convert.ToDecimal(Product.ClosingQuantity) - Convert.ToDecimal(x.OrderQty));
                             Product.OutwardQuantity = (Convert.ToDecimal(Product.OutwardQuantity) + Convert.ToDecimal(x.OrderQty));
 
@@ -452,9 +443,6 @@ namespace Inventory.Controllers
                             {
                                 details.BomApplicable = false;
                             }
-
-
-
 
                             details.OrderNo = OrderNo;
                             details.OrderID = code;
@@ -519,9 +507,6 @@ namespace Inventory.Controllers
                             S.IGSTAmount = Convert.ToDecimal(x.IGSTAmount);
                             S.TotalAmount = Convert.ToDecimal(x.TotAmount);
 
-
-
-
                             decimal singalPrice = Convert.ToDecimal(x.Price);
                             string discountAs = x.discIn;
                             decimal Tax = Convert.ToDecimal(Product.GSTPer);
@@ -533,11 +518,6 @@ namespace Inventory.Controllers
                             S.AmountPerUnit = tAmount + tax;
                             //   S.TotalAmount = Convert.ToDecimal(x.TotAmount);
                             db.Sales.Add(S);
-
-
-
-
-
 
                             if (doctordtl != null)
                             {
@@ -1056,6 +1036,10 @@ namespace Inventory.Controllers
                                   InvoiceDate = c.InvoiceDate,
                                   DeliveredQty = c.DeliveredQty,
                                   Address = om.CustomerAddress,
+                                  Transport = om.Transport ?? string.Empty,
+                                  DispatchDate = om.DispatchDate ,
+                                  Delivery = om.Delivery ?? string.Empty,
+                                  VehicleNo = om.VehicleNo ?? string.Empty,
                                   ManufacturingDate = grn.ManufacturingDate,
                                   ExpiryDate = grn.ExpiryDate,
                                   City = om.CustomerCity,
@@ -1095,6 +1079,10 @@ namespace Inventory.Controllers
                      c.DeliveredQty,
                      c.Address,
                      c.ManufacturingDate,
+                     c.Delivery,
+                     c.DispatchDate,
+                     c.Transport,
+                     c.VehicleNo,
                      //  c.ExpiryDate,
                      c.City,
                      c.Country,
@@ -1128,8 +1116,11 @@ namespace Inventory.Controllers
                      gcs.Key.InvoiceDate,
                      gcs.Key.DeliveredQty,
                      gcs.Key.Address,
+                     gcs.Key.Transport,
+                     gcs.Key.VehicleNo,
+                     gcs.Key.Delivery,
                      ExpiryDate = gcs.Max(a => a.ExpiryDate),
-
+                     DispatchDate = gcs.Max(a => a.DispatchDate),
                      gcs.Key.City,
                      gcs.Key.Country,
                      gcs.Key.State,
@@ -1214,7 +1205,7 @@ namespace Inventory.Controllers
 
 
                     Paragraph para5 = new Paragraph();
-                    para5.Add(new Phrase("", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+                    para5.Add(new Phrase("" + data[0].Transport, FontFactory.GetFont("Arial", 9, Font.BOLD)));
                     PdfPCell Cell105 = new PdfPCell(para5);
                     Cell105.HorizontalAlignment = Element.ALIGN_LEFT;
                     Cell105.VerticalAlignment = Element.ALIGN_MIDDLE;  // Center the content vertically
@@ -1237,7 +1228,8 @@ namespace Inventory.Controllers
                     //Cell102.SetLeading(10f, 1.0f);
                     table0.AddCell(Cell102);
 
-                    var XYZ = data[0].InvoiceDate.Value.ToString("dd-MM-yyyy");
+                    var XYZ = data[0].InvoiceDate.HasValue ? data[0].InvoiceDate.Value.ToString("dd-MM-yyyy") : string.Empty;
+
 
 
                     Paragraph para3 = new Paragraph();
@@ -1248,6 +1240,8 @@ namespace Inventory.Controllers
                     Cell103.PaddingTop = 10f;  // Increase the top padding
                     Cell103.PaddingBottom = 10f;
                     table0.AddCell(Cell103);
+
+                    var XYZ1 = data[0].DispatchDate.HasValue ? data[0].DispatchDate.Value.ToString("dd-MM-yyyy") : string.Empty;
 
 
                     Paragraph para4 = new Paragraph();
@@ -1261,7 +1255,7 @@ namespace Inventory.Controllers
 
 
                     Paragraph para5 = new Paragraph();
-                    para5.Add(new Phrase("", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+                    para5.Add(new Phrase("" + XYZ1, FontFactory.GetFont("Arial", 9, Font.BOLD)));
                     PdfPCell Cell105 = new PdfPCell(para5);
                     Cell105.HorizontalAlignment = Element.ALIGN_LEFT;
                     Cell105.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1306,7 +1300,7 @@ namespace Inventory.Controllers
 
 
                     Paragraph para5 = new Paragraph();
-                    para5.Add(new Phrase("", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+                    para5.Add(new Phrase("" + data[0].Delivery, FontFactory.GetFont("Arial", 9, Font.BOLD)));
                     PdfPCell Cell105 = new PdfPCell(para5);
                     Cell105.HorizontalAlignment = Element.ALIGN_LEFT;
                     Cell105.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1361,7 +1355,7 @@ namespace Inventory.Controllers
 
 
                     Paragraph para5 = new Paragraph();
-                    para5.Add(new Phrase("", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+                    para5.Add(new Phrase("" + data[0].VehicleNo, FontFactory.GetFont("Arial", 9, Font.BOLD)));
                     PdfPCell Cell105 = new PdfPCell(para5);
                     Cell105.VerticalAlignment = Element.ALIGN_MIDDLE;
                     Cell105.PaddingTop = 10f;  // Increase the top padding
@@ -1872,6 +1866,7 @@ namespace Inventory.Controllers
                  } into gcs
                  select new
                  {
+                     TaxableAmount = gcs.Sum(a=>a.Price) * gcs.Sum(a => a.DeliveredQty),
                      SGSTAmount = gcs.Sum(a => a.SGSTAmount),
                      CGSTAmount = gcs.Sum(a => a.CGSTAmount),
                      TotalTAxAmount = gcs.Sum(a => a.CGSTAmount + a.SGSTAmount),
@@ -1882,13 +1877,13 @@ namespace Inventory.Controllers
 
                 try
                 {
-                    PdfPCell Cellsa13121 = new PdfPCell(new Phrase(new Phrase("Class", FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.WHITE))));
+                    PdfPCell Cellsa13121 = new PdfPCell(new Phrase(new Phrase("CLASS", FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.WHITE))));
                     Cellsa13121.HorizontalAlignment = 1;
                     Cellsa13121.BackgroundColor = BaseColor.BLACK;
                     table3.AddCell(Cellsa13121);
 
 
-                    PdfPCell Cellsa13122 = new PdfPCell(new Phrase(new Phrase("TOTAL", FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.WHITE))));
+                    PdfPCell Cellsa13122 = new PdfPCell(new Phrase(new Phrase("TAXABLE", FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.WHITE))));
                     Cellsa13122.HorizontalAlignment = 1;
                     Cellsa13122.BackgroundColor = BaseColor.BLACK;
                     table3.AddCell(Cellsa13122);
@@ -1945,7 +1940,7 @@ namespace Inventory.Controllers
                         table3.AddCell(Cellsa13121);
 
 
-                        PdfPCell Cellsa13122 = new PdfPCell(new Phrase(new Phrase("0.00", FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK))));
+                        PdfPCell Cellsa13122 = new PdfPCell(new Phrase(new Phrase("" + GSt_5.TaxableAmount, FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK))));
                         Cellsa13122.HorizontalAlignment = 1;
                         Cellsa13122.Border = Rectangle.LEFT_BORDER;
                         Cellsa13122.BackgroundColor = BaseColor.WHITE;
@@ -2089,7 +2084,7 @@ namespace Inventory.Controllers
                         table3.AddCell(Cellsa13121);
 
 
-                        PdfPCell Cellsa13122 = new PdfPCell(new Phrase(new Phrase("0.00", FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK))));
+                        PdfPCell Cellsa13122 = new PdfPCell(new Phrase(new Phrase("" + GSt_12.TaxableAmount, FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK))));
                         Cellsa13122.HorizontalAlignment = 1;
                         Cellsa13122.BackgroundColor = BaseColor.WHITE;
                         Cellsa13122.Border = Rectangle.LEFT_BORDER;
@@ -2233,7 +2228,7 @@ namespace Inventory.Controllers
                         table3.AddCell(Cellsa13121);
 
 
-                        PdfPCell Cellsa13122 = new PdfPCell(new Phrase(new Phrase("0.00", FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK))));
+                        PdfPCell Cellsa13122 = new PdfPCell(new Phrase(new Phrase("" + GSt_18.TaxableAmount, FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK))));
                         Cellsa13122.HorizontalAlignment = 1;
                         Cellsa13122.BackgroundColor = BaseColor.WHITE;
                         Cellsa13122.Border = Rectangle.LEFT_BORDER;
@@ -2376,7 +2371,7 @@ namespace Inventory.Controllers
                         table3.AddCell(Cellsa13121);
 
 
-                        PdfPCell Cellsa13122 = new PdfPCell(new Phrase(new Phrase("0.00", FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK))));
+                        PdfPCell Cellsa13122 = new PdfPCell(new Phrase(new Phrase("" + GSt_28.TaxableAmount, FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK))));
                         Cellsa13122.HorizontalAlignment = 1;
                         Cellsa13122.BackgroundColor = BaseColor.WHITE;
                         Cellsa13122.Border = Rectangle.LEFT_BORDER;
@@ -2938,7 +2933,7 @@ namespace Inventory.Controllers
                               from emp in employee.DefaultIfEmpty()
 
                               orderby Order.OrderID descending
-                              select new { OrderNo = data.OrderNo, CurrentStatus = data.CurrentStatus, DisapproveReason = data.DisapproveReason, OrderID = Order.OrderID, OrderQty = Order.OrderQty, Price = Order.Price, CGSTAmount = Order.CGSTAmount, SGSTAmount = Order.SGSTAmount, IGSTAmount = Order.IGSTAmount, DiscountAmount = Order.DiscountAmount, TotalAmount = Order.TotalAmount, DeliveredQty = Order.DeliveredQty, ReturnQty = Order.ReturnQty, ProductCode = Order.ProductCode, GSTPercentage = Order.GSTPercentage, Discount = Order.Discount, DiscountAs = Order.DiscountAs, NetAmount = Order.NetAmount, ProductName = prd == null ? string.Empty : prd.ProductName, CustomerName = data.CustomerName, EmployeeName = emp == null ? string.Empty : emp.EmployeeName, DeliverTo = data.DeliverTo, CustomerID = data.CustomerID, OrderDate = data.OrderDate, HsnCode = prd.HsnCode, isIGST = false, IsActive = Order.IsActive, OrderDetailsID = Order.OrderDetailsID, EmployeeID = emp.EmployeeID, BarcodeApplicable = Order.BarcodeApplicable, tempSRNONew = Order.tempSRNO.ToString(), SerialNoApplicable = prd.SerialNoApplicable }
+                              select new {CustomerAddress = data.CustomerAddress, Transport= data.Transport, Delivery = data.Delivery, VehicleNo = data.VehicleNo, DispatchDate = data.DispatchDate, OrderNo = data.OrderNo, CurrentStatus = data.CurrentStatus, DisapproveReason = data.DisapproveReason, OrderID = Order.OrderID, OrderQty = Order.OrderQty, Price = Order.Price, CGSTAmount = Order.CGSTAmount, SGSTAmount = Order.SGSTAmount, IGSTAmount = Order.IGSTAmount, DiscountAmount = Order.DiscountAmount, TotalAmount = Order.TotalAmount, DeliveredQty = Order.DeliveredQty, ReturnQty = Order.ReturnQty, ProductCode = Order.ProductCode, GSTPercentage = Order.GSTPercentage, Discount = Order.Discount, DiscountAs = Order.DiscountAs, NetAmount = Order.NetAmount, ProductName = prd == null ? string.Empty : prd.ProductName, CustomerName = data.CustomerName, EmployeeName = emp == null ? string.Empty : emp.EmployeeName, DeliverTo = data.DeliverTo, CustomerID = data.CustomerID, OrderDate = data.OrderDate, HsnCode = prd.HsnCode, isIGST = false, IsActive = Order.IsActive, OrderDetailsID = Order.OrderDetailsID, EmployeeID = emp.EmployeeID, BarcodeApplicable = Order.BarcodeApplicable, tempSRNONew = Order.tempSRNO.ToString(), SerialNoApplicable = prd.SerialNoApplicable }
                                     ).ToList();
                 return Json(result, JsonRequestBehavior.AllowGet);
             }

@@ -151,23 +151,53 @@
                 </div>
             </div>
             <div class="row">
-
-
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="form-group">
                         <div class="col-md-12">
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 @Html.LabelFor(model => model.CustomerAddress, htmlAttributes: new { @class = "control-label" })
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-10">
                                 <input type="text" id="CustomerAddress" name="CustomerAddress" class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Customer Address is required and cannot be empty" />
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Transport, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="Transport" name="Transport" class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="false" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.DispatchDate, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="DispatchDate" name="DispatchDate" class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="false"  />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Delivery, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="Delivery" name="Delivery" class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="false"  />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.VehicleNo, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="VehicleNo" name="VehicleNo" class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="false" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -494,8 +524,8 @@
                                     <input type="button" id="ViewScannedData" value="View" style="width:78px" onclick="ViewScanned()" class="btn btn-success" />
                                 </td>
                                 @*<td>
-                                        <label id="lbl1">0</label>
-                                    </td>*@
+                                <label id="lbl1">0</label>
+                            </td>*@
                             </tr>
                         </table>
                         <div>
@@ -685,11 +715,8 @@
              $("#pnlBarcode").show();
         }
         $("#OrderDate").ejDatePicker({ value: new Date(), maxDate: new Date(), locale: "en-IN", select: "Validatedate" });
-      //  $("#OrderDate").ejDatePicker({ maxDate: new Date(), locale: "en-IN" });
-        //var d = new Date();
-        //var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
-        //$("#OrderDate").val(strDate);
-     //   getOrderNo();
+        $("#DispatchDate").ejDatePicker({ value: new Date(), locale: "en-IN", select: "Validatedate" });
+     
         $("#P2").hide();
         $("#BarcodeApplicable").click(function () {
             if ($(this).is(":checked")) {
@@ -1836,6 +1863,12 @@
                 var Purchasedate = $('#OrderDate').val();
                 var datearray = Purchasedate.split("/");
                 var Orderdt = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+
+                var Purchasedate1 = $('#DispatchDate').val();
+                var datearray1 = Purchasedate1.split("/");
+                var Dispatchdate = datearray1[1] + '/' + datearray1[0] + '/' + datearray1[2];
+                
+
                 $('#orderdetailsItems tbody tr').each(function (index, ele) {
                     if (($('.quentityNew', this).val() || "") == "" ||
                         $('.TaxNew', this).val() == "" ||
@@ -1861,6 +1894,11 @@
                             TotAmount: $('.grandTot', this).val(),
                             discIn: $('.discInNew', this).val(),
                             discPer: $('.DiscountPerNew', this).val(),
+                            Transport: $('#Transport').val(),
+                            DispatchDate: Dispatchdate,
+                            Delivery: $('#Delivery').val(),
+                            VehicleNo: $('#VehicleNo').val(),
+
 
                             NetAmount: $('#txtTotal').val(),
                             CustomerName: CustomerName,
@@ -1965,7 +2003,12 @@
                   //  $('#InvoiceNo').val(result[0].InvoiceNo);
 
                     $('#CashCustomerName').val(result[0].CustomerName);
-
+                    $('#CustomerAddress').val(result[0].CustomerAddress);
+                    $('#Transport').val(result[0].Transport);
+                    $('#Delivery').val(result[0].Delivery);
+                    $('#VehicleNo').val(result[0].VehicleNo);
+                    var date2 = new Date(parseInt(result[0].DispatchDate.substr(6)));
+                    $("#DispatchDate").val($.datepicker.formatDate("dd/MM/yy", date2));
 
                     $('#ActiveBarcode').val(result[0].BarcodeApplicable);
                     if (result[0].BarcodeApplicable == true) {
