@@ -1866,7 +1866,7 @@ namespace Inventory.Controllers
                  } into gcs
                  select new
                  {
-                     TaxableAmount = gcs.Sum(a=>a.Price) * gcs.Sum(a => a.DeliveredQty),
+                     TaxableAmount = gcs.Sum(a=>a.Price * a.DeliveredQty),
                      SGSTAmount = gcs.Sum(a => a.SGSTAmount),
                      CGSTAmount = gcs.Sum(a => a.CGSTAmount),
                      TotalTAxAmount = gcs.Sum(a => a.CGSTAmount + a.SGSTAmount),

@@ -25,6 +25,7 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using System.Text;
 using Syncfusion.PMML;
+using Microsoft.Ajax.Utilities;
 
 namespace Inventory.Controllers
 {
@@ -48,15 +49,27 @@ namespace Inventory.Controllers
         public string GetData(string sEcho, int iDisplayLength, int iDisplayStart, string sSearch)
         {
 
+            var salesReturnQty = db.Sales.DistinctBy(l => l.ProductCode).Sum(s => s.ReturnQty);
+
             var xx = db.GRNDetail
-                        .GroupBy(l => l.ProductCode)
-                        .Select(cl => new
-                        {
-                            ProductCode = cl.FirstOrDefault().ProductCode,
-                            ReceivedQty = cl.Sum(c => c.ReceivedQty)- cl.Sum(c => c.ReturnQty),
-                            SalesQty = cl.Sum(c => c.SalesQty),
-                            AvailableQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(a => a.SalesQty),
-                        }).ToList();
+                .GroupBy(l => l.ProductCode)
+                .Select(cl => new
+                {
+                    ProductCode = cl.FirstOrDefault().ProductCode,
+                    ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
+                    SalesQty = cl.Sum(c => c.SalesQty) + salesReturnQty,
+                    AvailableQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(a => a.SalesQty),
+                }).ToList();
+
+            //var xx = db.GRNDetail
+            //            .GroupBy(l => l.ProductCode)
+            //            .Select(cl => new
+            //            {
+            //                ProductCode = cl.FirstOrDefault().ProductCode,
+            //                ReceivedQty = cl.Sum(c => c.ReceivedQty)- cl.Sum(c => c.ReturnQty),
+            //                SalesQty = cl.Sum(c => c.SalesQty),
+            //                AvailableQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(a => a.SalesQty),
+            //            }).ToList();
 
             var products = db.Products.ToList();
             var categories = db.Categories.ToList();

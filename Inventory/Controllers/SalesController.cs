@@ -2602,7 +2602,7 @@ namespace Inventory.Controllers
                                   Pincode = om.CustomerPincode,
                                   Mobile = om.CustomerMobile,
                                   GSTNO = om.CustomerGSTNo,
-                                  CustomerName = om.CustomerName,
+                                  CustomerName = om.CustomerName ?? om.DeliverTo,
                                   BasicRate = c.BasicRate,
                                   Discount = c.Discount,
                                   GSTPercentage = c.GSTPercentage,
