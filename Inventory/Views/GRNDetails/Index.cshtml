@@ -277,12 +277,12 @@
 
     function SaveInvoiceDetails() {
         debugger
-        CheckAmount();
-        if ($('#invoiceAmt').val() == "" ) {
-            if ($('#invoiceAmt').val() == "") { $('#invoiceAmt').css("border", "1px solid #e46f61"); } else { $('#invoiceAmt').css("border", "1px solid #a5da6b"); }
-            toastr.warning("Enter Invoice Amount");
-        }
-        else {
+        //CheckAmount();
+        //if ($('#invoiceAmt').val() == "" ) {
+        //    if ($('#invoiceAmt').val() == "") { $('#invoiceAmt').css("border", "1px solid #e46f61"); } else { $('#invoiceAmt').css("border", "1px solid #a5da6b"); }
+        //    toastr.warning("Enter Invoice Amount");
+        //}
+        //else {
 
 
             var DocumentDate = $('#invoiceDate').val();
@@ -322,7 +322,7 @@
 
                 }
             })
-        }
+        /*}*/
     }
     function CalculateInvoiceAmount() {
         var transportAmt = parseFloat($('#trnsprtAmt').val());
