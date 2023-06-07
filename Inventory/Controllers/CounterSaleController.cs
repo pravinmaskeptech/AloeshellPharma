@@ -230,8 +230,8 @@ namespace Inventory.Controllers
                           group p by 1 into g
                           select new
                           {
-                              ReceivedQty = g.Sum(x => x.ReceivedQty),
-                              SalesQty = g.Sum(x => x.SalesQty)
+                              ReceivedQty = g.Sum(x => x.ReceivedQty) - g.Sum(x => x.ReturnQty),
+                              SalesQty = db.orderDetails.Where(s => s.ProductCode == productId).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == productId).Sum(s => s.ReturnQty),
                           }).FirstOrDefault();
                 var Product = db.Products.Where(a => a.ProductCode == productId && a.IsActive == true).FirstOrDefault();
                 var AvailableQty = xx.ReceivedQty - xx.SalesQty;
@@ -2738,20 +2738,35 @@ namespace Inventory.Controllers
                 var Storesmaster = new List<StoreLocations>(db.StoreLocations);
                 var Warehousemaster = new List<Warehouse>(db.Warehouses);
                 var GRNDetailsMaster = new List<GRNDetails>(db.GRNDetail);
-                var result = (from grn in GRNDetailsMaster.Where(a => a.ProductCode == ProductCode).Where(a => (a.ReceivedQty - a.SalesQty) != 0)
 
+                var result = (from grn in GRNDetailsMaster.Where(a => a.ProductCode == ProductCode && (a.ReceivedQty - a.SalesQty) != 0)
                               join Product in Productsmaster on grn.ProductCode equals Product.ProductCode into products
                               from prd in products.DefaultIfEmpty()
-
                               join Warehouse in Warehousemaster on grn.WarehouseID equals Warehouse.WareHouseID into warehouse
                               from Whouse in warehouse.DefaultIfEmpty()
-
                               join StoreLocation in Storesmaster on grn.StoreLocationId equals StoreLocation.StoreLocationId into storeLoc
                               from store in storeLoc.DefaultIfEmpty()
-
                               orderby grn.GRNId descending
-                              select new { GRNId = grn.GRNId, SerialNoApplicable = prd.SerialNoApplicable, SalesQty = grn.SalesQty, temp = 1, WarehouseID = grn.WarehouseID, StoreLocationId = grn.StoreLocationId, BatchNo = grn.BatchNo, ReceivedQty = grn.ReceivedQty, WareHouseName = Whouse == null ? string.Empty : Whouse.WareHouseName, StoreLocation = store == null ? string.Empty : store.StoreLocation, SerialFrom = grn.SerialFrom, SerialTo = grn.SerialTo }
-                                     ).ToList();
+                              let salesQty = db.orderDetails.Where(s => s.ProductCode == ProductCode).Sum(s => s.DeliveredQty)-db.Sales.Where(s => s.ProductCode == ProductCode).Sum(s => s.ReturnQty)
+                           
+                              let ReceivedQty = grn.ReceivedQty - grn.ReturnQty
+                              select new
+                              {
+                                  //AvailableQty = availableQty,
+                                  GRNId = grn.GRNId,
+                                  SerialNoApplicable = prd.SerialNoApplicable,
+                                  SalesQty = salesQty,
+                                  temp = 1,
+                                  WarehouseID = grn.WarehouseID,
+                                  StoreLocationId = grn.StoreLocationId,
+                                  BatchNo = grn.BatchNo,
+                                  ReceivedQty = ReceivedQty,
+                                  WareHouseName = Whouse == null ? string.Empty : Whouse.WareHouseName,
+                                  StoreLocation = store == null ? string.Empty : store.StoreLocation,
+                                  SerialFrom = grn.SerialFrom,
+                                  SerialTo = grn.SerialTo
+                              }).ToList();
+
                 return Json(result, JsonRequestBehavior.AllowGet);
                 //}
                 //else

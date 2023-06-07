@@ -76,8 +76,7 @@ namespace Inventory.Models
         [Display(Name = "Max Level")]
         public int? MaxLevel { get; set; }
 
-       
-        [StringLength(10)]
+
         [Display(Name = "Hsn Code")]
         public string HsnCode { get; set; }
 

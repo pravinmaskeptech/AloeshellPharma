@@ -49,17 +49,15 @@ namespace Inventory.Controllers
         public string GetData(string sEcho, int iDisplayLength, int iDisplayStart, string sSearch)
         {
 
-            var salesReturnQty = db.Sales.DistinctBy(l => l.ProductCode).Sum(s => s.ReturnQty);
-
             var xx = db.GRNDetail
-                .GroupBy(l => l.ProductCode)
-                .Select(cl => new
-                {
-                    ProductCode = cl.FirstOrDefault().ProductCode,
-                    ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
-                    SalesQty = cl.Sum(c => c.SalesQty) + salesReturnQty,
-                    AvailableQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(a => a.SalesQty),
-                }).ToList();
+     .GroupBy(l => l.ProductCode)
+     .Select(cl => new
+     {
+         ProductCode = cl.Key,
+         ReceivedQty = cl.Sum(c => c.ReceivedQty)- cl.Sum(c => c.ReturnQty),
+         SalesQty = db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty),
+         AvailableQty = (cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - (db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty)),
+     }).ToList();
 
             //var xx = db.GRNDetail
             //            .GroupBy(l => l.ProductCode)
@@ -74,7 +72,7 @@ namespace Inventory.Controllers
             var products = db.Products.ToList();
             var categories = db.Categories.ToList();
 
-            var result = from product in products.Where(a=>a.ProductName=="sgahdfafddadf")
+            var result = from product in products.Where(a => a.ProductName == "sgahdfafddadf")
                          join grn in xx on product.ProductCode equals grn.ProductCode into supplier
                          from grn in supplier.DefaultIfEmpty()
                          join category in categories on product.CategoryId equals category.CategoryId
@@ -109,47 +107,47 @@ namespace Inventory.Controllers
 
             }
 
-            Session["FromDate"] = ""; 
-            Session["ToDate"]="";
-            Session["Product"]="";
+            Session["FromDate"] = "";
+            Session["ToDate"] = "";
+            Session["Product"] = "";
             Session["Category"] = "";
 
 
-            if (FromDate == "" || ToDate == ""  || ToDate == null || FromDate == null)
+            if (FromDate == "" || ToDate == "" || ToDate == null || FromDate == null)
             {
-             
-                 xx = db.GRNDetail
-                            .GroupBy(l => l.ProductCode)
-                            .Select(cl => new
-                            {
-                                ProductCode = cl.FirstOrDefault().ProductCode,
-                                ReceivedQty = cl.Sum(c => c.ReceivedQty)- cl.Sum(c => c.ReturnQty),
-                                SalesQty = cl.Sum(c => c.SalesQty),
-                                AvailableQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(a => a.SalesQty),
-                            }).ToList();
 
-                 products = db.Products.ToList();
-                 categories = db.Categories.ToList();
+                xx = db.GRNDetail
+                           .GroupBy(l => l.ProductCode)
+                           .Select(cl => new
+                           {
+                               ProductCode = cl.FirstOrDefault().ProductCode,
+                               ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
+                               SalesQty = db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty),
+                               AvailableQty = (cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - (db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty)),
+                           }).ToList();
 
-                result = ( from product in products
-                             join grn in xx on product.ProductCode equals grn.ProductCode into supplier
-                             from grn in supplier.DefaultIfEmpty()
-                           join category in categories on product.CategoryId equals category.CategoryId
+                products = db.Products.ToList();
+                categories = db.Categories.ToList();
 
-                           where !string.IsNullOrEmpty(grn?.ProductCode)
+                result = (from product in products
+                          join grn in xx on product.ProductCode equals grn.ProductCode into supplier
+                          from grn in supplier.DefaultIfEmpty()
+                          join category in categories on product.CategoryId equals category.CategoryId
 
-                           select new
-                             {
-                                 product.ProductName,
-                               CategoryName = category.CategoryName,
+                          where !string.IsNullOrEmpty(grn?.ProductCode)
 
-                               grn?.ProductCode,
-                               grn?.ReceivedQty,
-                                 grn?.SalesQty,
-                                 grn?.AvailableQty
-                             }).ToList();
+                          select new
+                          {
+                              product.ProductName,
+                              CategoryName = category.CategoryName,
 
-                
+                              grn?.ProductCode,
+                              grn?.ReceivedQty,
+                              grn?.SalesQty,
+                              grn?.AvailableQty
+                          }).ToList();
+
+
             }
             else
             {
@@ -162,36 +160,36 @@ namespace Inventory.Controllers
                 try
                 { toDateValue = DateTime.ParseExact(ToDate.ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture); }
                 catch { }
-                 xx = db.GRNDetail.Where(a => a.GRNDate >= fromDateValue && a.GRNDate <= toDateValue)
-                            .GroupBy(l => l.ProductCode)
-                            .Select(cl => new
-                            {
-                                ProductCode = cl.FirstOrDefault().ProductCode,
-                                ReceivedQty = cl.Sum(c => c.ReceivedQty),
-                                SalesQty = cl.Sum(c => c.SalesQty),
-                                AvailableQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(a => a.SalesQty),
-                            }).ToList();
-                             
+                xx = db.GRNDetail.Where(a => a.GRNDate >= fromDateValue && a.GRNDate <= toDateValue)
+                           .GroupBy(l => l.ProductCode)
+                           .Select(cl => new
+                           {
+                               ProductCode = cl.FirstOrDefault().ProductCode,
+                               ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
+                               SalesQty = db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty),
+                               AvailableQty = (cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - (db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty)),
+                           }).ToList();
 
-                 result = (from product in products
-                           join grn in xx on product.ProductCode equals grn.ProductCode into supplier
-                             from grn in supplier.DefaultIfEmpty()
-                           join category in categories on product.CategoryId equals category.CategoryId
 
-                           where !string.IsNullOrEmpty(grn?.ProductCode)
+                result = (from product in products
+                          join grn in xx on product.ProductCode equals grn.ProductCode into supplier
+                          from grn in supplier.DefaultIfEmpty()
+                          join category in categories on product.CategoryId equals category.CategoryId
 
-                           select new
-                             {
-                                 product.ProductName,
-                               CategoryName = category.CategoryName,
+                          where !string.IsNullOrEmpty(grn?.ProductCode)
 
-                               grn?.ProductCode,
-                               grn?.ReceivedQty,
-                                 grn?.SalesQty,
-                                 grn?.AvailableQty
-                             }).ToList();
+                          select new
+                          {
+                              product.ProductName,
+                              CategoryName = category.CategoryName,
 
-               
+                              grn?.ProductCode,
+                              grn?.ReceivedQty,
+                              grn?.SalesQty,
+                              grn?.AvailableQty
+                          }).ToList();
+
+
 
             }
 
@@ -218,12 +216,12 @@ namespace Inventory.Controllers
             return sb.ToString();
         }
 
-       
-        public ActionResult SearchData(string FromDate, string ToDate, string Product,string Category)
+
+        public ActionResult SearchData(string FromDate, string ToDate, string Product, string Category)
         {
             try
             {
-               
+
 
                 Session["FromDate"] = FromDate;
                 Session["ToDate"] = ToDate;
@@ -239,14 +237,8 @@ namespace Inventory.Controllers
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
         }
-       
-      
 
+    }
 
-      
-       
-       
-}
-   
 
 }
