@@ -1,0 +1,518 @@
+﻿@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Create", "DCReturns", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="CustomerId" name="CustomerId" value="" />
+    <input type="hidden" id="WarehouseID" name="WarehouseID" value=""/>
+    <input type="hidden" id="StoreLocationId" name="StoreLocationId" value=""/>
+     <input type="hidden" id="QuantitiTotal" name="QuantitiTotal" value=0 />
+    <input type="hidden" id="COUNTNO" name="COUNTNO" value=0 />
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h2 class="box-title"> DC RETURN</h2>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">    
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Return No
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="DCReturnNo" name="POReturnNo" disabled="disabled" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" />
+                            </div>
+                        </div>
+                    </div>
+                </div>         
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Return Date
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="ReturnDate" name="ReturnDate" required class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="true" data_bv_notempty_message="Purchase Order Date is required and cannot be empty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Status
+                            </div>
+                            <div class="col-md-7">
+                                <select name="Status" id="Status" class='Status form-control'>
+                                    <option value='Return'>Return</option>
+                                    @*<option value='Replace'>Replace</option>*@
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Return/Replace/Reason
+                            </div>
+                            <div class="col-md-8">
+                                <textarea id="ReturnReson" name="ReturnReson" rows="2" cols="42"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Search Invoice No
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EJ().Autocomplete("InvoiceNo").WatermarkText("Select Invoice No").Datasource((IEnumerable<string>)ViewBag.PONOdatasource).Width("100%").AutocompleteFields(field => field.Key("InvoiceNo").Text("InvoiceNo")).HighlightSearch(true).ShowPopupButton(true).Width("100%").ClientSideEvents(e => e.Select("ShowSOdetails"))
+                            </div>
+                        </div>
+                    </div>
+                </div>              
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                Customer Name
+                            </div>
+                            <div class="col-md-8">
+                                @Html.Editor("CustomerName", new { htmlAttributes = new { @class = "form-control", Autocomplete = "off", data_bv_notempty = "true", data_bv_notempty_message = "The  Name is required and cannot be empty", maxlength = "20", disabled = "disabled", } })
+                            </div>
+                        </div>
+                    </div>   
+                </div>              
+            </div>         
+           
+
+        </div>   
+        <div id="orderItems" style="overflow-x:auto;">
+            <table class="table table-responsive" id="orderdetailsItems" display block; overflow-x auto; white-space nowrap; style="width:1070px"></table><br />
+            <span id="orderItemError" style="color:red"></span>           
+        </div>    
+        <div class="modal fade" id="BatchNoWiseSales">
+            <div class="modal-dialog" style="width:53%; margin-top:100px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#367fa9; color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add Quantity</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" id="form1" class="form-horizontal" data-bv-message="This value is not valid" data-toggle="validator" data-bv-feedbackicons-valid="glyphicon glyphicon-ok" data-bv-feedbackicons-invalid="glyphicon glyphicon-remove" data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label class="control-label">Product Name</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="ProductName" class="form-control" disabled="disabled" required="required" maxlength="100" />
+                                            <input type="hidden" id="ProdCode" class="form-control" value="" />
+                                            <input type="hidden" id="batchNo" class="form-control" value="" />
+                                            <input type="hidden" id="OrderDTLid" class="form-control" value="" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label class="control-label">Product Quantity</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="ProductQuantity" class="form-control" disabled="disabled" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="SalesItem">
+                        <table class="table table-responsive" id="SalesItem" display block; overflow-x auto; white-space nowrap; style="width:1000px"></table>
+                        <span id="SalesError" style="color:red"></span>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label"></label>
+                                </div>
+                                <div class="col-md-6">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label"></label>
+                                </div>
+                                <div class="col-md-6">
+                                    <br /> <input type="button" id="btnAdd" name="btnAdd" value="Add" class="btn btn-info" onclick="getQuantity()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    span.error {
+                        display: block;
+                        visibility: hidden;
+                        color: red;
+                        font-size: 60%;
+                    }
+
+                    tr.error {
+                        background-color: rgba(255,0,0,0.35);
+                    }
+                </style>
+            </div>
+        </div>  
+        <div class="row" style="width:1580px">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <div style="padding:6px 10px; text-align:right">
+                            <input id="submit" type="button" value="Save Order" class="btn btn-warning" style="padding:6px 6px" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        $("#ReturnDate").ejDatePicker({ minDate: new Date(), locale: "en-IN", });
+        var d = new Date();
+        var strDate = d.toLocaleDateString("en-IN", { day: '2-digit', month: '2-digit', year: 'numeric' });
+        $("#ReturnDate").ejDatePicker("option", "value", strDate);
+        getDCReturnNo();
+    })
+    function getDCReturnNo() {
+        $.ajax({
+            type: "GET",
+            url: '/DCReturns/getSORturnNo',
+            success: function (result) {
+                $('#DCReturnNo').val("DCR_" + result);
+            }
+        })
+    }
+    function ShowSOdetails() {
+        $('#tbl1').show();     
+        $('#orderdetailsItems').empty();
+        $.ajax({
+            type: "GET",
+            url: '/DCReturns/ShowSOdetails',
+            data: { 'InvoiceNo': $('#InvoiceNo').val() },
+            success: function (result) {
+                var ResultCount = result.length;
+                
+                if (ResultCount != 0) {
+                 //   getSupplierName(result[0].SupplierID);
+                   
+                    $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' > <th>ITEM NAME</th><th>BATCH NO</th><th>DELIVERED QTY</th> <th>QTY</th><th>Status</th><th>RETURN REASON</th> <th></th> </tr> <tbody>").appendTo("#orderdetailsItems");
+                    var Count = 1;
+                    $('#CustomerName').val(result[0].CustomerName);                   
+                    $('#CustomerId').val(result[0].CustomerID);
+                    $.each(result, function (i, item) {                        
+                        var DeliveredQty = parseFloat(result[i].DeliveredQty).toFixed(2);
+                        if (parseFloat(DeliveredQty) > 0) {
+                            $(" <tbody> <tr id='R" + Count + "'> <td><input type='text' id='productNew" + Count + "' readonly  style='width : 180px' class='productnew form-control'' /></td>  <td><input type='text' id='batchNo" + Count + "' style='width : 140px' readonly class='batchNo form-control'' /></td>  <td><input type='text' id='salesQtiNew" + Count + "' readonly style='width : 120px'  class='salesQtiNew form-control'' /></td>  <td><input type='text' id='ReturnQtyNew" + Count + "'  style='width : 100px'  onchange='ShowQtyPopup(" + Count + ")'   onkeypress = 'return event.charCode >= 46 && event.charCode <= 57 && event.charCode !=47' class='ReturnQtyNew  form-control'' /></td> <td> <select name='StatusNew" + Count + "' style='width:100px' id='StatusNew" + Count + "' class='StatusNew form-control'> <option value='Select'>Select</option> <option value='Return'>Return</option></select></td><td><input type='text' id='ReturnReason" + Count + "'   style='width : 220px'  class='ReturnReason form-control'' /></td> <td><input type='button' id='" + Count + "' onclick='Remove(" + Count + ")' value='Remove' style='width: 85' class='btn btn-danger' /> <input type='hidden'  id='ProductIDNew" + Count + "'    class='ProductIDNew form-control'' /><input type='hidden'  id='SoidNew" + Count + "'    class='SoidNew form-control'' /><input type='hidden'  id='OrderNoNew" + Count + "'    class='OrderNoNew form-control'' /></td> </tr> <tbody>").appendTo("#orderdetailsItems");
+                            $("#ProductIDNew" + Count + "").val(result[i].ProductCode);
+                            $("#productNew" + Count + "").val(result[i].ProductName);
+                            $("#SoidNew" + Count + "").val(result[i].SalesId);                           
+                            $("#salesQtiNew" + Count + "").val(parseFloat(parseFloat(result[i].DeliveredQty) - parseFloat(result[i].ReturnQty)).toFixed(2));
+                            $("#batchNo" + Count).val(result[i].BatchNo);
+                            $("#OrderNoNew" + Count).val(result[i].OrderNo);
+                            $("#StatusNew" + Count).val($('#Status').val());
+                            $("#ReturnReason" + Count).val($('#ReturnReson').val());
+                            
+                            Count = Count + 1;
+                        }
+                    });
+                }else
+                {
+                    toastr.warning('NO data Found...');
+                    $('#orderdetailsItems').empty();
+                }
+            }
+        })
+    }
+    function ShowQtyPopup(Count) {        
+        $("#ReturnQtyNew" + Count + "").val('');
+        $('#BatchNoWiseSales').modal({ backdrop: 'static', keyboard: false })
+        $("#BatchNoWiseSales").modal("show");
+        $('#ProductName').val($('#productNew' + Count).val());
+        $('#ProdCode').val($('#ProductIDNew' + Count).val());
+        
+        //$('#OrderDTLid').val($('#OrderDetailsID' + Count).val());
+        $("#ProductQuantity").val($("#ReturnQtyNew" + Count + "").val());
+        $('#COUNTNO').val(Count);        
+        $("#SalesItem tr").remove();
+        // $("#OrderDetailsIdNew" + Count1 + "").val(result[i].PurchaseOrderDetailsID);
+        
+        //var a = parseFloat($("#ReturnQtyNew" + Count + "").val());
+        //var b = parseFloat($("#salesQtiNew" + Count + "").val());
+
+        if (parseFloat($("#ReturnQtyNew" + Count + "").val()) > parseFloat($("#ProductQuantity").val())) {
+            $("#ReturnQtyNew" + Count + "").val();
+            toastr.warning('return qty must not greater than sales qty');
+             $("#BatchNoWiseSales").modal("hide");
+        } else {
+            var str = $('#batchNo' + Count).val();
+            var temp = new Array();
+            temp = str.split(",");
+            var i = 0;
+            for (a in temp) {
+                temp[a] = parseInt(temp[a], 10); // Explicitly include base as per Álvaro's comment  
+                var batchno = temp[i];
+                i = i + 1;
+                debugger;
+                $.ajax({
+                    type: "GET",
+                    url: '/DCReturns/ShowGRNDetails',
+                    data: { 'ProductCode': $('#ProdCode').val(), 'BatchNo': str, },
+                    success: function (result) {
+                        
+                        if (result.length != 0) {
+                            $('#SalesItem').empty();
+                          
+                            var rowCount = $('#SalesItem tr').length;
+                            var Count1 = 0;
+                            if (rowCount == 0) {
+                                $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' > <th>ID</th><th>Warehouse</th><th>Location</th> <th>Batch No</th><th>Sales Qty</th><th>Return Qty </th><th></th> </tr> <tbody>").appendTo("#SalesItem");
+                                var Count1 = 1;
+                            } else {
+                                var Count1 = Count1 + 1;
+                            }
+                            $.each(result, function (i, item) {
+                                $(" <tbody> <tr id='R" + Count1 + "'><td><input type='text' id='grnIdNew" + Count1 + "' readonly  style='width : 100px' class='grnIdNew form-control'' /></td>  <td><input type='text' id='warehouseNameNew" + Count1 + "' style='width : 130px' readonly class='warehouseNameNew form-control'' /></td> <td><input type='text' id='storeLocationNameNew" + Count1 + "' style='width : 130px' readonly class='storeLocationNameNew form-control'' /></td>  <td><input type='text' id='batchNumberNew" + Count1 + "' style='width : 130px'   readonly class='batchNumberNew form-control'' /></td>  <td><input type='text' id='SalesQtyNew" + Count1 + "' style='width : 100px' readonly class='SalesQtyNew form-control'' /></td>  <td><input type='text' id='getQtyNew" + Count1 + "'  style='width : 100px'  onchange='CheckQtyTotal(" + Count1 + ")' class='getQtyNew form-control'' />  <input type='hidden'  id='warehouseIdNew" + Count1 + "' class='warehouseIdNew form-control'' />   <input type='hidden'  id='StoreLocationIdNew" + Count1 + "' class='StoreLocationIdNew form-control'' />  <input type='hidden'  id='receiveQtyNew" + Count1 + "' class='receiveQtyNew form-control'' /> <input type='hidden'  id='OrderDetailsIdNew" + Count1 + "' class='OrderDetailsIdNew form-control'' /> </td></tr> <tbody>").appendTo("#SalesItem");
+                                $("#grnIdNew" + Count1 + "").val(result[i].GRNId);
+                               
+                                $("#SalesQtyNew" + Count1 + "").val(parseFloat(result[i].SalesQty));
+                                $("#warehouseNameNew" + Count1 + "").val(result[i].WareHouseName);
+                                $("#storeLocationNameNew" + Count1 + "").val(result[i].StoreLocation);
+                                $("#batchNumberNew" + Count1 + "").val(result[i].BatchNo);
+                                $("#warehouseIdNew" + Count1 + "").val(result[i].WarehouseID);
+                                $("#StoreLocationIdNew" + Count1 + "").val(result[i].StoreLocationId);
+                                $("#receiveQtyNew" + Count1 + "").val(result[i].ReceivedQty);
+                                $("#OrderDetailsIdNew" + Count1 + "").val(result[i].PurchaseOrderDetailsID);
+                                $("#getQty" + Count1 + "").val('');
+                                Count1 = Count1 + 1;
+                            });
+                        } else {
+                            toastr.error('Stock Not Fount');
+                            $("#BatchNoWiseSales").modal("hide");
+                            $('#DeliveredQtyNew' + Count).val(0);
+                            $('#OrderNo').focus();
+                        }
+                    }
+                })
+            }
+        }
+    }
+    function CheckQtyTotal(Count1) {     
+        var totQty = 0;
+        var SalesQty = $("#SalesQtyNew" + Count1 + "").val();
+        var getQty = $("#getQtyNew" + Count1 + "").val();
+        
+        if (parseFloat(getQty) > parseFloat(SalesQty)) {
+            $("#getQtyNew" + Count1 + "").val(0);
+            toastr.error('enter quantity must not greater than sales qty...')
+        } else {
+            $('#QuantitiTotal').val(0);
+            $('#SalesItem tbody tr').each(function (index, ele) {
+                var getQty = $('.getQtyNew', this).val();
+                var batchno = $('.batchNumberNew', this).val() + ',';
+                if (getQty == undefined || getQty == "") {
+                } else {
+                    if (getQty != 0) {
+                        $('#QuantitiTotal').val((parseFloat($('#QuantitiTotal').val()) + parseFloat(getQty)).toFixed(2));
+                        $('#TotbatchNo').val($('#TotbatchNo').val() +","+ batchno);
+                    }
+                }
+            });
+        }
+    };
+    function getSupplierName(SupplierID) {       
+            $.ajax({
+                type: "GET",
+                url: "/DCReturns/getSupplierName",
+                data: { 'SupplierID': SupplierID },
+                success: function (result) {
+                    $("#SupplierName").val(result);
+                },
+            })       
+    }
+    $(document).ready(function () {
+        debugger
+        $('#submit').click(function () {
+            
+            if ($('#ReturnDate').val() == "") {
+                if ($('#ReturnDate').val() == "") { toastr.error("please Enter Return Date") }
+            } else {
+                var rowCount = $('#orderdetailsItems tr').length;
+                if (rowCount > 0) {
+                    var isAllValid = true;
+                    $('#orderItemError').text('');
+                    var list = [];
+                    var errorItemCount = 0;
+                    var ReturnDate = $('#ReturnDate').val();
+                    var datearray = ReturnDate.split("/");
+                    var dt = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+                    $('#orderdetailsItems tbody tr').each(function (index, ele) {
+                        if (($('.ReturnQtyNew', this).val() || 0) == "" ||
+                             $('.productNew', this).val() == "" ||
+                             $('.batchNo', this).val() == "" ||
+                             $('.ReturnQtyNew', this).val() == "" ||
+                             $('.ReturnReason', this).val() == "" ||
+                            isNaN($('.salesQtiNew', this).val())) {
+                            errorItemCount++;
+                            $(this).addClass('error');
+                         //   isAllValid = false;
+                        } else {                           
+                            var orderItem = {
+                                ProductCode: $('.ProductIDNew', this).val(),
+                                ReturnQty: $('.ReturnQtyNew', this).val(),
+                                SalesId: $('.SoidNew', this).val(),
+                                InvoiceNo: $('#InvoiceNo').val(),
+                                CustomerId: $('#CustomerId').val(),
+                                ReturnDate: dt,                                
+                                ReturnReason: $('.ReturnReason', this).val(),
+                                BatchNo: $('.batchNo', this).val(),
+                                DCReturnNo: $('#DCReturnNo').val(),
+                                OrderNo: $('.OrderNoNew', this).val(),
+                                Returnstatus: $('.StatusNew', this).val(),
+                                Status: $('.StatusNew', this).val(),
+                            }
+                            list.push(orderItem);
+                        }
+                    })
+
+                    if (isAllValid) {
+                        var data = {
+                            Returns: list
+                        }
+                        $(this).val('Please wait...');
+                        $.ajax({
+                            type: 'POST',
+                            url: '/DCReturns/save',
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if (data.status) {
+                                    toastr.success("Successfully saved..");
+                                    window.location.href = "/DCReturns/Index";
+                                }
+                                else {
+                                    toastr.error("something Wrong..");
+                                }
+                                $('#submit').val('Save');
+                            },
+                            error: function (error) {
+                                console.log(error);
+                                $('#submit').val('Save');
+                            }
+                        });
+                    }
+                } else {
+                    toastr.error("please add data to list.");
+                }
+            }
+        });
+    });
+    function getQuantity() {
+        
+        var Count = $('#COUNTNO').val();
+        var ORDERQTY = $('#quentityNew' + Count).val();
+        var Qty = parseFloat($('#QuantitiTotal').val());      
+        if (parseFloat(Qty) > parseFloat(ORDERQTY)) {
+            $('#ReturnQtyNew' + Count).val('');
+            toastr.error('enter quentity must not greater than Order Qty...');
+        } else {
+            $('#ReturnQtyNew' + Count).val(Qty);            
+            $('#COUNTNO').val(0);          
+            var list = [];
+            var isAllValid = true;
+            $('#SalesItem tbody tr').each(function (index, ele) {
+                if (($('.grnIdNew', this).val() || "") == "" ||
+                    $('.getQtyNew', this).val() == "" ||                 
+                    isNaN($('.grnIdNew', this).val())) {
+                    $(this).addClass('error');
+                } else {
+                    var GrnItem = {
+                        ReturnQty: $('.getQtyNew', this).val(),
+                        GrnId: $('.grnIdNew', this).val(),
+                        WarehouseId: $('.warehouseIdNew', this).val(),
+                        StoreLocationId: $('.StoreLocationIdNew', this).val(),
+                        ReceivedQty: $('.receiveQtyNew', this).val(),
+                        BatchNo: $('.batchNumberNew', this).val(),
+                        InvoiceNo: $('#InvoiceNo').val(),
+                        ProductCode: $('#ProdCode').val(),
+                        OrderDetailsID: $('#OrderDetailsIdNew').val(),
+                    }
+                    list.push(GrnItem);
+                }
+            })
+
+            if (isAllValid == true) {
+                var data = {
+                    GrnData: list
+                }
+                //$("#BatchNoWiseSales").modal("hide");
+                $(this).val('Please wait...');
+                $.ajax({
+                    type: 'POST',
+                    url: '/DCReturns/SaveTempSOReturn',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.status) {
+                            list = [];
+                            $('#SalesItem').empty();
+                            $("#BatchNoWiseSales").modal("hide");
+                        }
+                        else {
+                            toastr.error("something Wrong..");
+                        }
+                    },
+                });
+            } else {
+                toastr.error("error..");
+            }
+        }
+    }
+</script>

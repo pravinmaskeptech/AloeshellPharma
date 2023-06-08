@@ -1,0 +1,275 @@
+﻿@model IEnumerable<Inventory.Models.DCReturns>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";}
+<style>
+    .e-grid .e-headercell, .e-grid .e-grouptopleftcell {
+       background-color: #3c8dbc;
+        border-top-color: #3c8dbc;
+        border-left-color: #3c8dbc;
+        border-bottom-color: #3c8dbc;
+        color: #fff;
+    }
+
+    .e-grid .e-gridheader .e-icon {
+        color: #fff;
+    }
+
+    .Expand {
+        background-position: -180px 3px;
+    }
+
+    .Collapse {
+        background-position: -205px 3px;
+    }
+
+    .refresh {
+        background-position: -76px 3px;
+    }
+
+    .e-toolbaricons {
+        background-image: url("../../Content/ej/web/common-images/icons-gray.png");
+    }
+
+    .Expand:hover, .Collapse:hover, .refresh:hover {
+        background-image: url("../../Content/ej/web/common-images/icons-white.png");
+    }
+</style>
+<div class="box-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                @(Html.EJ().Grid<Inventory.Models.SOReturns>
+                    ("DCReturns").Datasource((IEnumerable<object>
+                        )ViewBag.datasource)
+                        .AllowScrolling()
+                        .AllowFiltering()
+                        .AllowTextWrap()
+                        .FilterSettings(filter => { filter.ShowFilterBarStatus().StatusBarWidth(500).FilterBarMode(FilterBarMode.Immediate).MaxFilterChoices(1000).FilterType(FilterType.Menu); })   /*Filtering Enabled*/
+                        .AllowSorting()    /*Sorting Enabled*/
+                        .AllowMultiSorting()
+                        .AllowPaging()    /*Paging Enabled*/
+                        .SelectionType(SelectionType.Multiple)
+                        .AllowResizing()
+                        .IsResponsive()
+                        .MinWidth(1000)
+                        .AllowReordering()
+                        .AllowResizeToFit()
+                        .AllowResizing()
+                        .ScrollSettings(scroll => { scroll.Height(300); })
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar().ToolbarItems(items =>
+                            {
+                                items.AddTool(ToolBarItems.Search); items.AddTool(ToolBarItems.ExcelExport);
+                            });
+                        })
+                                .Mappers(map => map.ExportToExcelAction("/DCReturns/ExportToExcel"))
+                        .AllowSearching(true)
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar(true).CustomToolbarItems(new List<object>
+                                () { new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#Refresh" }, new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#AddNew" } });
+                        })
+                                    .ClientSideEvents(eve => { eve.ToolbarClick("onToolBarClick").ActionComplete("Complete"); })
+                            .Columns(col =>
+                            {
+                                col.HeaderText("").Template("<input type='Button' class='btn btn-sm btn-warning' id='LetterGeneration' Value='View Details' onclick='F1();' /></a> ").AllowFiltering(false).Width(70).Add();
+                                //col.HeaderText("Action").Template("<input type='Button' id='{{:DCReturnNo}}' class='btn btn-sm btn-warning'  onclick='PrintCreditNote(this.id);' id='Button11' Value='Print' /> ").AllowFiltering(false).Width(70).Add();//                            
+
+                                col.Field("DCReturnNo").HeaderText("SR No").TextAlign(TextAlign.Left).Visible(true).Width(90).Add();
+                                col.Field("InvoiceNo").HeaderText("Invoice No").TextAlign(TextAlign.Left).Visible(true).Width(90).Add();
+                                col.Field("CustomerName").HeaderText("Customer").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(110).Add();
+                                col.Field("ReturnQty").HeaderText("Return /Replace Qty").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(110).Add();
+                                col.Field("Status").HeaderText("Status").IsPrimaryKey(true).TextAlign(TextAlign.Left).Width(110).Add();
+                                col.Field("ReturnBy").HeaderText("ReturnBy").TextAlign(TextAlign.Left).Visible(true).Width(90).Add();
+                            }).ClientSideEvents(evt => evt.RowSelected("onRowSelected")))
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="OfferLetterGeneration">
+        <div class="modal-dialog" style="width:68%; margin-top:100px;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#367fa9; color:white">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Sales Return Details</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="BatchSetting" name="BatchSetting" value="@ViewBag.BatchNoSetting" />
+                    <form method="post" id="form1" class="form-horizontal" data-bv-message="This value is not valid" data-toggle="validator" data-bv-feedbackicons-valid="glyphicon glyphicon-ok" data-bv-feedbackicons-invalid="glyphicon glyphicon-remove" data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label class="control-label">Invoice No</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="InvoiceNo" class="form-control" disabled="disabled" required="required" autocomplete="off" maxlength="100" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label">Customer Name</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="CustomerName" class="form-control" required="required" disabled="disabled" autocomplete="off" maxlength="100" />
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div id="orderItems">
+                    <table class="table table-responsive" id="orderdetailsItems" display block; overflow-x auto; white-space nowrap; style="width:780px"></table>
+                    <span id="orderItemError" style="color:red"></span>
+                </div>
+            </div>
+
+            <style>
+                span.error {
+                    display: block;
+                    visibility: hidden;
+                    color: red;
+                    font-size: 60%;
+                }
+
+                tr.error {
+                    background-color: rgba(255,0,0,0.35);
+                }
+            </style>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script id="Refresh" type="text/x-jsrender">
+    <a href="#" class="e-toolbaricons refresh" />
+</script>
+<script id="AddNew" type="text/x-jsrender">
+    <button class="btn btn-primary btn-sm add" id="btnBatch">Return By Batch No</button>
+   <input type="button"id="btnReturn" value="Return By Serial No"class="btn btn-primary" onclick="test()">
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var Message = '@TempData["Msg"]';
+        if (Message != "")
+            toastr.error(Message);
+        var tanId = '@TempData["Temp"]';
+        if (tanId != "" && tanId != undefined && tanId != null) {
+            toastr.success(tanId);
+        }
+    });
+</script>
+<script type="text/javascript">
+    function onToolBarClick(sender) {
+        if (sender.itemName == "Expand")
+            this.expandAll();
+        else if (sender.itemName == "Collapse")
+            this.collapseAll();
+        else if (sender.itemName == "Refresh") {
+            var instance = $("#DCReturns").ejGrid("instance");
+            instance._filterCollection = [];
+            instance.clearFiltering();
+            instance.clearSearching();
+            this.refreshContent();
+        }
+        if (sender.itemName == "AddNew") {
+            window.location.href = "../DCReturns/Create";
+        }
+        if (sender.itemName == "ReturnBySerialNo") {
+            window.location.href = "../DCReturns/Return";
+        }
+    }
+    function Complete(sender) {       
+        var BatchSetting = $("#BatchSetting").val();
+        if (BatchSetting == "BatchNo") {
+
+        }
+        else {
+            $("#btnBatch").css("display", "none");
+        }
+    }
+</script>
+<script>
+    function PrintCreditNote(ID) {
+        $.ajax({
+            url: '/DCReturns/PrintCreditNote',
+            type: "POST",
+            dataType: "JSON",
+            data: { InvoiceNo: ID },
+            success: function (result) {
+                if (result.Message == "success") {
+                    try {
+                        var WinPrint = window.open('/DCReturns/GetReport', '_blank');
+                        //WinPrint.focus(); WinPrint.print();
+                        if (result != null) {
+                            toastr.success("Created Successfully");
+                        }
+                        else {
+                            toastr.error(result.Message);
+                        }
+                    }
+                    catch (e) {
+                    }
+                } else {
+                    toastr.error(result.Message);
+                };
+            }
+        });
+    }   
+    function test() {
+        window.location.href = "/DCReturns/Return";
+    }
+    function F1() {
+        $('#OfferLetterGeneration').modal({ backdrop: 'static', keyboard: false })
+        $("#OfferLetterGeneration").modal("show");
+        $("#orderdetailsItems tr").remove();
+    }
+    function onRowSelected(args) {
+        debugger
+        $('#TotAmt').val(0);
+        var result = this.getSelectedRecords();
+        $('#InvoiceNo').val(result[0].InvoiceNo);
+        
+        $('#CustomerName').val(result[0].CustomerName);
+
+        $("#pnlShipperFreeze").show();
+        $.ajax({
+            type: "GET",
+            url: '/DCReturns/GetAllSODetails',
+            data: { 'InvoiceNo': $('#InvoiceNo').val(), SONO: result[0].DCReturnNo },
+            success: function (result) {
+                var ResultCount = result.length;
+                
+                if (ResultCount != 0) {
+                    var BatchSetting = $("#BatchSetting").val();
+                    $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' > <th>ITEM NAME</th>" + (BatchSetting=="BatchNo"?'<th>BATCH NO</th>':'') + "<th>SERIAL NO</th> <th>Return Date</th> <th>RETURN QTY</th><th> RERURN REASON</th> </tr> <tbody>").appendTo("#orderdetailsItems");
+                    var Count = 1;
+                    $.each(result, function (i, item) {
+                        $(" <tbody> <tr id='R" + Count + "'>      <td> <input type='text' id='product" + Count + "' readonly  style='width : 140px' class='product form-control'' /></td>" + (BatchSetting=="BatchNo"?'<td><input type="text"  id="BatchNo' + Count + '" style="width : 110px" readonly class="BatchNo form-control" /></td>':'') + "<td><input type='text' id='SerialNumber" + Count + "' readonly style='width : 110px' class='SerialNumber form-control'' /></td>    <td><input type='text' id='returnDate" + Count + "' style='width : 110px' readonly class='returnDate form-control'' /></td>  <td><input type='text' id='ReturnQty" + Count + "' style='width : 110px' readonly class='ReturnQty form-control'' /></td>    <td><input type='text' id='ReturnReason" + Count + "'  style='width : 200px' readonly  class='ReturnReason  form-control'' /></td>          </tr> <tbody>").appendTo("#orderdetailsItems");
+                        $("#product" + Count + "").val(result[i].ProductCode);
+                        $("#SerialNumber" + Count + "").val(result[i].SerialNumber);
+                        $("#BatchNo" + Count + "").val(result[i].BatchNo);
+                        $("#ReturnQty" + Count + "").val(result[i].ReturnQty);
+                        $("#ReturnReason" + Count + "").val(result[i].ReturnReason);
+                        try {
+                            var date = new Date(parseInt(result[i].ReturnDate.substr(6)));
+                            var ReturnQty = $.datepicker.formatDate("dd/MM/yy", date);
+                            $("#returnDate" + Count + "").val(ReturnQty);
+                        } catch { };
+
+                        //var date1 = new Date(parseInt(result[i].ExpiryDate.substr(6)));
+                        //var ExpiryDate = $.datepicker.formatDate("dd/MM/yyyy", date1);
+                        //$("#ExpiryDate" + Count + "").val(ExpiryDate);
+
+                        //$("#ReturnQty" + Count + "").val(result[i].ReturnQty);
+                        //$("#SalesQty" + Count + "").val(result[i].SalesQty);
+
+                        Count = Count + 1;
+                    });
+                } else {
+                    toastr.warning('NO data Found...');
+                    $('#orderdetailsItems').empty();
+                }
+            }
+        })
+    }
+</script>

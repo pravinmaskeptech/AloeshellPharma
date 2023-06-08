@@ -218,8 +218,6 @@ namespace Inventory.Controllers
                 return new JsonResult { Data = new { status } };
             }
 
-
-
             try
             {
                 POInvoice inv = new POInvoice();

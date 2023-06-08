@@ -27,14 +27,14 @@ using System.Text.RegularExpressions;
 
 namespace Inventory.Controllers
 {
-    public class SOReturnsController : Controller
+    public class DCReturnsController : Controller
     {
         InventoryModel db = new InventoryModel();
         // GET: SOReturns
         public ActionResult Create()
         {
             ViewBag.Warehousedatasource = db.Warehouses.ToList();
-            ViewBag.PONOdatasource = db.Sales.Where(a => a.DeliveredQty - a.ReturnQty > 0 && a.SerialNoApplicable == false && a.InvoiceNo.StartsWith("INV/")).Select(x => x.InvoiceNo).Distinct().ToList();
+            ViewBag.PONOdatasource = db.Sales.Where(a => a.DeliveredQty - a.ReturnQty > 0 && a.SerialNoApplicable == false && a.InvoiceNo.StartsWith("DC/")).Select(x => x.InvoiceNo).Distinct().ToList();
             return View();
         }
         public ActionResult Return()
@@ -51,14 +51,17 @@ namespace Inventory.Controllers
 
         public ActionResult CreditReturns()
         {
-            
+
             var results1 = from p in db.Sales
-                           where p.ReturnQty > 0 && p.InvoiceNo.StartsWith("INV/")
+                           where p.ReturnQty > 0 && p.InvoiceNo.StartsWith("DC/")
+
+                           // join cst in db.Customers on p.CustomerID equals cst.CustomerID into Customers
+                           //    group p by p.InvoiceNo into g
 
                            join Custss in db.orderMain on p.OrderNo equals Custss.OrderNo into customerss
                            from aa in customerss.DefaultIfEmpty()
 
-                           select new {  CustomerName = aa.CustomerName != null ? aa.CustomerName : aa.DeliverTo, InvoiceNo = p.InvoiceNo, InvoiceDate = p.InvoiceDate, ReturnItems = p.ReturnQty, Amount = (p.AmountPerUnit*p.ReturnQty), InvoiceID = p.SalesId };
+                           select new { CustomerName = aa.CustomerName != null ? aa.CustomerName : aa.DeliverTo, InvoiceNo = p.InvoiceNo, InvoiceDate = p.InvoiceDate, ReturnItems = p.ReturnQty, Amount = (p.AmountPerUnit * p.ReturnQty), InvoiceID = p.SalesId };
 
 
             var results = from p in results1
@@ -80,7 +83,7 @@ namespace Inventory.Controllers
                            where p.InvoiceNo == invno && p.ReturnQty > 0 && p.CreditDocNo == null
                            join c in db.orderMain on p.OrderNo equals c.OrderNo into cust
                            from cs in cust.DefaultIfEmpty()
-                           select new {  CustomerNm = cs.CustomerName != null ? cs.CustomerName : cs.DeliverTo, TotalAmount = p.TotalAmount };
+                           select new { CustomerNm = cs.CustomerName != null ? cs.CustomerName : cs.DeliverTo, TotalAmount = p.TotalAmount };
                 var cnm = Cust.FirstOrDefault();
 
                 //ViewBag.Custnam = cnm.CustomerNm.ToString();
@@ -142,32 +145,33 @@ namespace Inventory.Controllers
                 else
                     ViewBag.BatchNoSetting = "";
 
-                var SOReturnsMaster = db.sOReturns.ToList();
+                var SOReturnsMaster = db.DCReturns.ToList();
 
                 ViewBag.datasource = (from c in SOReturnsMaster
-                 join Cust in db.Sales on c.InvoiceNo equals Cust.InvoiceNo into customers
-                 from aaa in customers.DefaultIfEmpty()
+                                      join Cust in db.Sales on c.InvoiceNo equals Cust.InvoiceNo into customers
+                                      from aaa in customers.DefaultIfEmpty()
 
-                 join Custss in db.orderMain on aaa.OrderNo equals Custss.OrderNo into customerss
-                 from aa in customerss.DefaultIfEmpty()
-
-                 group c by new
-                 {
-                     c.SOReturnNo,
-                     c.InvoiceNo,
-                     c.InvoiceDate,
-                     c.Status,
-                     aa.CustomerName
-                 } into gcs
-                 select new
-                 {
-                     InvoiceNo = gcs.Key.InvoiceNo,
-                     InvoiceDate = gcs.Key.InvoiceDate,
-                     CustomerName = gcs.Key.CustomerName,
-                     SOReturnNo = gcs.Key.SOReturnNo,
-                     Status = gcs.Key.Status,
-                     ReturnQty = gcs.Sum(a => a.ReturnQty),
-                 }).ToList();
+                                      join Custss in db.orderMain on aaa.OrderNo equals Custss.OrderNo into customerss
+                                      from aa in customerss.DefaultIfEmpty()
+                                      orderby c.DCReturnNo descending
+                                      group c by new
+                                      {
+                                          c.DCReturnNo,
+                                          c.InvoiceNo,
+                                          c.InvoiceDate,
+                                          c.Status,
+                                          aa.CustomerName
+                                      } into gcs
+                                      select new
+                                      {
+                                          InvoiceNo = gcs.Key.InvoiceNo,
+                                          InvoiceDate = gcs.Key.InvoiceDate,
+                                          CustomerName = gcs.Key.CustomerName,
+                                          DCReturnNo = gcs.Key.DCReturnNo,
+                                          Status = gcs.Key.Status,
+                                          ReturnQty = gcs.Sum(a => a.ReturnQty),
+                                          ReturnBy = gcs.Any(a => a.SerialNumber != null) ? "Serial Number" : "Batch Number"
+                                      }).ToList();
 
                 return View();
 
@@ -191,12 +195,7 @@ namespace Inventory.Controllers
             }
             else
             {
-                //   int poid = db.POMains.Where(a => a.PurchaseOrderNo == PONO).Select(a => a.PurchaseOrderID).Single();
 
-                //  var result = db.poDetails.Where(a => a.PurchaseOrderID == poid &&  a.ReceivedQty>0).ToList();
-                //var result = db.GRNDetail.Where(a => a.PONo == PONO).ToList();
-
-                //return Json(result, JsonRequestBehavior.AllowGet);
 
                 var Productsmaster = new List<Products>(db.Products);
                 var Storesmaster = new List<StoreLocations>(db.StoreLocations);
@@ -210,9 +209,6 @@ namespace Inventory.Controllers
 
                               join podtl in OrderDetailsmasters on sales.OrderNo equals podtl.OrderNo into OrderDetailss
                               from orderDtl in OrderDetailss.Where(a => a.ProductCode == sales.ProductCode && a.OrderNo == sales.OrderNo).DefaultIfEmpty()
-
-                                  //join Customer in Customersmasters on sales.CustomerID equals Customer.CustomerID into Customers
-                                  //from Cust in Customers.DefaultIfEmpty()
 
                               join Product in Productsmaster on sales.ProductCode equals Product.ProductCode into products
                               from prd in products.DefaultIfEmpty()
@@ -259,7 +255,7 @@ namespace Inventory.Controllers
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
         }
-        public JsonResult save(List<SOReturns> Returns)
+        public JsonResult save(List<DCReturns> Returns)
         {
             var status = false;
             int cnt = 1;
@@ -302,7 +298,7 @@ namespace Inventory.Controllers
                                 grn.SalesQty = grn.SalesQty - t.ReturnQty;
                                 //grn.ReceivedQty = grn.ReceivedQty + t.ReturnQty;
                             }
-                            SOReturns poRtn = new SOReturns();
+                            DCReturns poRtn = new DCReturns();
                             poRtn.ProductCode = x.ProductCode;
                             poRtn.CompanyID = Convert.ToInt32(Session["CompanyID"]);
                             poRtn.ReturnQty = x.ReturnQty;
@@ -311,14 +307,14 @@ namespace Inventory.Controllers
                             poRtn.BatchNo = x.BatchNo;
                             poRtn.InvoiceNo = x.InvoiceNo;
                             poRtn.ReturnDate = x.ReturnDate;
-                            poRtn.SOReturnNo = x.SOReturnNo;
+                            poRtn.DCReturnNo = x.DCReturnNo;
                             poRtn.InvoiceDate = x.InvoiceDate;
                             poRtn.CustomerId = x.CustomerId;
                             poRtn.ReturnReason = x.ReturnReason;
                             poRtn.CreatedBy = User.Identity.Name;
                             poRtn.CreatedDate = DateTime.Today;
                             poRtn.Status = x.Returnstatus;
-                            db.sOReturns.Add(poRtn);
+                            db.DCReturns.Add(poRtn);
                             foreach (var vp in tmp)
                                 db.tempSOReturn.Remove(vp);
                             db.SaveChanges();
@@ -346,8 +342,8 @@ namespace Inventory.Controllers
                 var Productsmaster = new List<Products>(db.Products);
                 var Storesmaster = new List<StoreLocations>(db.StoreLocations);
                 var Warehousemaster = new List<Warehouse>(db.Warehouses);
-                var SOReturnsMaster = new List<SOReturns>(db.sOReturns);
-                var result = (from returns in SOReturnsMaster.Where(a => a.InvoiceNo == InvoiceNo && a.SOReturnNo == SONO)
+                var SOReturnsMaster = new List<DCReturns>(db.DCReturns);
+                var result = (from returns in SOReturnsMaster.Where(a => a.InvoiceNo == InvoiceNo && a.DCReturnNo == SONO)
 
                               join Product in Productsmaster on returns.ProductCode equals Product.ProductCode into products
                               from prd in products.DefaultIfEmpty()
@@ -358,8 +354,8 @@ namespace Inventory.Controllers
                               join StoreLocation in Storesmaster on returns.StoreLocationId equals StoreLocation.StoreLocationId into storeLoc
                               from store in storeLoc.DefaultIfEmpty()
 
-                              orderby returns.SOreturnId descending
-                              select new { SOreturnId = returns.SOreturnId, SerialNumber = returns.SerialNumber, InvoiceNo = returns.InvoiceNo, ReturnDate = returns.ReturnDate, BatchNo = returns.BatchNo, ReturnQty = returns.ReturnQty, ReturnReason = returns.ReturnReason, ProductCode = prd == null ? string.Empty : prd.ProductName, Warehouse = Whouse == null ? string.Empty : Whouse.WareHouseName, StoreLocation = store == null ? string.Empty : store.StoreLocation }
+                              orderby returns.DCreturnId descending
+                              select new { DCreturnId = returns.DCreturnId, SerialNumber = returns.SerialNumber, InvoiceNo = returns.InvoiceNo, ReturnDate = returns.ReturnDate, BatchNo = returns.BatchNo, ReturnQty = returns.ReturnQty, ReturnReason = returns.ReturnReason, ProductCode = prd == null ? string.Empty : prd.ProductName, Warehouse = Whouse == null ? string.Empty : Whouse.WareHouseName, StoreLocation = store == null ? string.Empty : store.StoreLocation }
                                     ).ToList();
 
                 return Json(result, JsonRequestBehavior.AllowGet);
@@ -373,33 +369,47 @@ namespace Inventory.Controllers
             }
             else
             {
-                //     select 
                 var Productsmaster = new List<Products>(db.Products);
                 var Storesmaster = new List<StoreLocations>(db.StoreLocations);
                 var Warehousemaster = new List<Warehouse>(db.Warehouses);
                 var Suppliersmasters = new List<Suppliers>(db.suppliers);
-                var ProductSerialNoMaster = new List<ProductSerialNo>(db.ProductSerialNo);
+                var ProductSerialNoMaster = db.ProductSerialNo
+                    .Where(a => a.SerialNo == SerialNo && a.ProductCode == ProductId && (a.Status == "Sold" || a.Status == "Sale" || a.Status == "DCSold"))
+                    .ToList(); // Changed to fetch a collection
 
-                var result = (from serialno in ProductSerialNoMaster.Where(a => a.SerialNo == SerialNo && a.ProductCode == ProductId && (a.Status == "Sold" || a.Status == "Sale"))
-
+                var result = (from serialno in ProductSerialNoMaster
                               join Product in Productsmaster on serialno.ProductCode equals Product.ProductCode into products
                               from prd in products.DefaultIfEmpty()
-
                               join Warehouse in Warehousemaster on serialno.WarehouseId equals Warehouse.WareHouseID into warehouse
                               from Whouse in warehouse.DefaultIfEmpty()
-
                               join StoreLocation in Storesmaster on serialno.StoreLocationId equals StoreLocation.StoreLocationId into storeLoc
                               from store in storeLoc.DefaultIfEmpty()
-
                               orderby serialno.SerialNoId descending
-                              select new { InvoiceNo = serialno.InvoiceNo, SerialNoId = serialno.SerialNoId, PODetailsId = serialno.PODetailsId, ProductCode = serialno.ProductCode, BatchNo = serialno.BatchNo, WarehouseId = serialno.WarehouseId, StoreLocationId = serialno.StoreLocationId, GrnNo = serialno.GrnNo, ProductName = prd == null ? string.Empty : prd.ProductName, WareHouseName = Whouse == null ? string.Empty : Whouse.WareHouseName, StoreLocation = store == null ? string.Empty : store.StoreLocation, PONO = serialno.PONO, SerialNo = serialno.SerialNo, Status = serialno.Status, GrnDate = serialno.GrnDate }
-                                     ).Distinct().ToList();
-                return Json(result, JsonRequestBehavior.AllowGet);
+                              select new
+                              {
+                                  InvoiceNo = serialno.InvoiceNo,
+                                  SerialNoId = serialno.SerialNoId,
+                                  PODetailsId = serialno.PODetailsId,
+                                  ProductCode = serialno.ProductCode,
+                                  BatchNo = serialno.BatchNo,
+                                  WarehouseId = serialno.WarehouseId,
+                                  StoreLocationId = serialno.StoreLocationId,
+                                  GrnNo = serialno.GrnNo,
+                                  ProductName = prd == null ? string.Empty : prd.ProductName,
+                                  WareHouseName = Whouse == null ? string.Empty : Whouse.WareHouseName,
+                                  StoreLocation = store == null ? string.Empty : store.StoreLocation,
+                                  PONO = serialno.PONO,
+                                  SerialNo = serialno.SerialNo,
+                                  Status = serialno.Status,
+                                  GrnDate = serialno.GrnDate
+                              }).Distinct().ToList();
 
+                return Json(result, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpPost]
-        public JsonResult SaveReturnSerialNo(List<SOReturns> ReturnsData)
+        public JsonResult SaveReturnSerialNo(List<DCReturns> ReturnsData)
         {
             var status = false;
             int cnt = 1;
@@ -424,26 +434,22 @@ namespace Inventory.Controllers
                             {
                                 sale.ReplaceQty = Convert.ToDecimal(sale.ReplaceQty) + Convert.ToDecimal(x.ReturnQty);
                                 sale.ReplaceReason = x.ReturnReason;
-                                serialno.Status = "SO Replace";
+                                serialno.Status = "DC Replace";
                             }
                             else
                             {
                                 sale.ReturnQty = Convert.ToDecimal(sale.ReturnQty) + Convert.ToDecimal(x.ReturnQty);
                                 sale.ReturnReason = x.ReturnReason;
-                                serialno.Status = "SO Return";
+                                serialno.Status = "DC Return";
                             }
 
-                            //var order = db.orderDetails.Where(a => a.OrderNo == sale.OrderNo && a.ProductCode==x.ProductCode).FirstOrDefault();
-                            //order.ReturnQty = Convert.ToDecimal(order.ReturnQty) + Convert.ToDecimal(x.ReturnQty);
-                            //order.ReturnReason = x.ReturnReason;
-                            //order.DeliveredQty = Convert.ToDecimal(order.DeliveredQty) - Convert.ToDecimal(x.ReturnQty);                           
 
 
                             var grn = db.GRNDetail.Where(a => a.PONo == serialno.PONO && a.ProductCode == x.ProductCode && a.BatchNo == x.BatchNo).FirstOrDefault();
                             grn.SalesQty = Convert.ToDecimal(grn.SalesQty) - Convert.ToDecimal(grn.ReturnQty);
                             //grn.ReceivedQty = Convert.ToDecimal(grn.ReceivedQty) + Convert.ToDecimal(grn.ReturnQty);
 
-                            SOReturns poRtn = new SOReturns();
+                            DCReturns poRtn = new DCReturns();
                             poRtn.ReturnDate = x.ReturnDate;
                             poRtn.InvoiceNo = x.InvoiceNo;
                             poRtn.ProductCode = x.ProductCode;
@@ -452,7 +458,7 @@ namespace Inventory.Controllers
                             poRtn.InvoiceDate = sale.InvoiceDate;
                             poRtn.CompanyID = Convert.ToInt32(Session["CompanyID"]);
                             poRtn.BatchNo = x.BatchNo;
-                            poRtn.SOReturnNo = x.SOReturnNo;
+                            poRtn.DCReturnNo = x.DCReturnNo;
                             poRtn.WarehouseID = x.WarehouseID;
                             poRtn.StoreLocationId = x.StoreLocationId;
                             poRtn.InvoiceDate = x.InvoiceDate;
@@ -464,7 +470,7 @@ namespace Inventory.Controllers
                             poRtn.ReturnReason = x.ReturnReason;
 
 
-                            db.sOReturns.Add(poRtn);
+                            db.DCReturns.Add(poRtn);
                             db.SaveChanges();
                             status = true;
                         }
@@ -481,7 +487,7 @@ namespace Inventory.Controllers
             return new JsonResult { Data = new { status } };
         }
 
-        public JsonResult SaveTempSOReturn(List<SOReturns> GrnData)
+        public JsonResult SaveTempSOReturn(List<DCReturns> GrnData)
         {
             var status = false;
             try
@@ -537,24 +543,24 @@ namespace Inventory.Controllers
         }
         public JsonResult getSORturnNo()
         {
-            var result = db.sOReturns.Count();
+            var result = db.DCReturns.Count();
             result = result + 1;
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         public JsonResult getCreditNoteNo()
         {
 
-            var count = db.BillNumbering.Where(a => a.Type == "CRNote").Select(a => a.Number).SingleOrDefault();
+            var count = db.BillNumbering.Where(a => a.Type == "DCCRNote").Select(a => a.Number).SingleOrDefault();
             count = count + 1;
             return Json(count, JsonRequestBehavior.AllowGet);
-        } 
+        }
 
         public JsonResult PrintCreditNote(string InvoiceNo)
         {
             try
             {
 
-                var srdetails = db.sOReturns.Where(a => a.SOReturnNo == InvoiceNo).FirstOrDefault();
+                var srdetails = db.DCReturns.Where(a => a.DCReturnNo == InvoiceNo).FirstOrDefault();
                 if (srdetails == null)
                 {
                     InvoiceNo = InvoiceNo;
@@ -577,8 +583,8 @@ namespace Inventory.Controllers
                 var Productsmaster = new List<Products>(db.Products);
                 var Storesmaster = new List<StoreLocations>(db.StoreLocations);
                 var Warehousemaster = new List<Warehouse>(db.Warehouses);
-                var SOReturnsMaster = new List<SOReturns>(db.sOReturns);
-                var result11 = (from returns in SOReturnsMaster.Where(a => a.InvoiceNo == InvoiceNo )
+                var SOReturnsMaster = new List<DCReturns>(db.DCReturns);
+                var result11 = (from returns in SOReturnsMaster.Where(a => a.InvoiceNo == InvoiceNo)
 
                                 join Product in Productsmaster on returns.ProductCode equals Product.ProductCode into products
                                 from prd in products.DefaultIfEmpty()
@@ -589,7 +595,7 @@ namespace Inventory.Controllers
                                 join StoreLocation in Storesmaster on returns.StoreLocationId equals StoreLocation.StoreLocationId into storeLoc
                                 from store in storeLoc.DefaultIfEmpty()
 
-                                orderby returns.SOreturnId descending
+                                orderby returns.DCreturnId descending
                                 //     select new { SOreturnId = returns.SOreturnId, SerialNumber = returns.SerialNumber, InvoiceNo = returns.InvoiceNo, ReturnDate = returns.ReturnDate, BatchNo = returns.BatchNo, ReturnQty = returns.ReturnQty, ReturnReason = returns.ReturnReason, ProductCode = prd == null ? string.Empty : prd.ProductName, Warehouse = Whouse == null ? string.Empty : Whouse.WareHouseName, StoreLocation = store == null ? string.Empty : store.StoreLocation }
                                 select new { InvoiceNo = returns.InvoiceNo, ReturnDate = returns.ReturnDate, ReturnQty = returns.ReturnQty, ProductName = prd == null ? string.Empty : prd.ProductName, ProductCode = prd == null ? string.Empty : prd.ProductCode }
                                     ).ToList();
@@ -986,7 +992,7 @@ namespace Inventory.Controllers
                 c112.HorizontalAlignment = 0;
                 table3.AddCell(c112);
                 var crdata = db.CreditNote.Where(a => a.InvoiceNo == InvoiceNo).FirstOrDefault();
-                if(crdata == null)
+                if (crdata == null)
                 {
                     var results = new { Message = "Make Credit Note First" };
                     return Json(results, JsonRequestBehavior.AllowGet);
@@ -1003,7 +1009,7 @@ namespace Inventory.Controllers
                 table3.AddCell(c1129);
 
                 Paragraph p49 = new Paragraph();
-                p49.Add(new Phrase("CREDIT NOTE", FontFactory.GetFont("Arial", 13, Font.BOLD)));
+                p49.Add(new Phrase(" DC CREDIT NOTE", FontFactory.GetFont("Arial", 13, Font.BOLD)));
                 PdfPCell c1115 = new PdfPCell(p49);
                 c1115.HorizontalAlignment = 1;
                 c1115.Border = Rectangle.TOP_BORDER;
@@ -1013,7 +1019,7 @@ namespace Inventory.Controllers
 
                 //New Column Added
                 Paragraph pr53545 = new Paragraph();
-                pr53545.Add(new Phrase("\n\n   Invoice No\n", FontFactory.GetFont("Arial", 9, Font.NORMAL)));
+                pr53545.Add(new Phrase("\n\n   Challan No\n", FontFactory.GetFont("Arial", 9, Font.NORMAL)));
 
 
                 PdfPCell c11256465 = new PdfPCell(pr53545);
@@ -1204,7 +1210,7 @@ namespace Inventory.Controllers
 
 
 
-            exp.Export(obj, DataSource, "CreditNote.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+            exp.Export(obj, DataSource, "DCCreditNote.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
         }
 
         private GridProperties ConvertGridObject(string gridProperty)

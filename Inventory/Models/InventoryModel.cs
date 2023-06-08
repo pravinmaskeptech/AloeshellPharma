@@ -84,5 +84,8 @@ namespace Inventory.Models
         public virtual DbSet<MMEMaster> MMEMaster { get; set; }
 
         public virtual DbSet<DiscountStructure>DiscountStructure { get; set; }
+        public virtual DbSet<DCReturns> DCReturns { get; set; }
+
+        public virtual DbSet<DCReplacement> DCReplacement { get; set; }
     }
 }

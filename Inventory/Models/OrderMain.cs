@@ -171,6 +171,6 @@ namespace Inventory.Models
         public DateTime? DispatchDate { get; set; }
         public string Delivery { get; set; }
         public string VehicleNo { get; set; }
-
+        public bool? IsDCSale { get; set; }
     }
 }

@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@using (Html.BeginForm("Create", "POMain", FormMethod.Post, new
+@using (Html.BeginForm("Create", "DeliveryChallanSale", FormMethod.Post, new
 {
     enctype = "multipart/form-data",
     @class = "form-horizontal",
@@ -53,7 +53,7 @@
     </head>
     <div class="box box-info">
         <div class="box-header with-border" style="background-color:#3c8dbc; color:white">
-            <h3 class="box-title">New Counter Sale</h3>
+            <h3 class="box-title">New DC Sale</h3>
             <div class="box-tools pull-right">
             </div>
         </div>
@@ -136,7 +136,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6" id="IsCashCust">
+                <div class="col-md-6" id="IsCashCust1">
                     <div class="form-group">
                         <div class="col-md-12">
                             <div class="col-md-4">
@@ -150,7 +150,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" id="IsCashCust1">
+            <div class="row" id="IsCashCust">
                 <div class="col-md-12">
                     <div class="form-group">
                         <div class="col-md-12">
@@ -613,7 +613,7 @@
 
                 $.ajax({
                     type: "GET",
-                    url: '/CounterSale/getProductData',
+                    url: '/DeliveryChallanSale/getProductData',
                     data: { 'productId': ProductId },
                     success: function (result) {
                         debugger
@@ -665,7 +665,7 @@
         if ($('#ProductId').val() != null) {
             $.ajax({
                 type: "GET",
-                url: '/CounterSale/getTax',
+                url: '/DeliveryChallanSale/getTax',
                 data: { 'ProductId': $('#ProductId').val() },
                 success: function (result) {
                     $('#Tax').val((result.TaxPercent).toFixed(2));
@@ -744,7 +744,7 @@
     function getOrderNo() {
         $.ajax({
             type: "GET",
-            url: '/CounterSale/getOrderNo',
+            url: '/DeliveryChallanSale/getOrderNo',
             success: function (result) {
                 $('#OrderNo').val(result);
                 $('#DeliverTo').ejAutocomplete({ dataSource: "", fields: { key: "", text: "" }, EnablePersistence: false, ShowPopupButton: true, width: 200, });
@@ -1129,7 +1129,7 @@
             $('#ProductCode').val(''); $('#OrderQty').val(''); $('#Tax').val(''); $('#Price').val(''); $('#Amount').val(''); $('#txtTotal').val(''); $('#txtIGST').val(''); $('#txtCGST').val(''); $('#txtSGST').val(''); $('#txtdiscount').val(''); $('#txtGrandTotal').val(''); $('#orderdetailsItems').empty();
             $.ajax({
                 type: "GET",
-                url: '/CounterSale/getProducts',
+                url: '/DeliveryChallanSale/getProducts',
                 data: { 'CustomerId': CustId.key },
                 success: function (data) {
                     var ViewBackData = data;
@@ -1152,7 +1152,7 @@
         if ($('#CustId').val() != "") {
             $.ajax({
                 type: "GET",
-                url: '/CounterSale/GetShipToDetails',
+                url: '/DeliveryChallanSale/GetShipToDetails',
                 data: { 'Custid': $('#CustId').val() },
                 success: function (result) {
                     var ViewBackData = result;
@@ -1173,7 +1173,7 @@
         if ($('#CustId').val() != "") {
             $.ajax({
                 type: "GET",
-                url: '/CounterSale/isIGST',
+                url: '/DeliveryChallanSale/isIGST',
                 data: { 'Custid': $('#CustId').val() },
                 success: function (result) {
                     $('#isIGST').val(result);
@@ -1185,7 +1185,7 @@
 
         $.ajax({
             type: "GET",
-            url: '/CounterSale/checkProduct',
+            url: '/DeliveryChallanSale/checkProduct',
             data: { 'PRD': $('#ProductCode').val() },
             success: function (result) {
                 if (result == "0") {
@@ -1203,7 +1203,7 @@
     function checkCustomerName() {
         $.ajax({
             type: "GET",
-            url: '/CounterSale/checkCustomerName',
+            url: '/DeliveryChallanSale/checkCustomerName',
             data: { 'CustName': $('#Customer').val() },
             success: function (result) {
                 if (result == "0") {
@@ -1222,7 +1222,7 @@
         if ($('#Employee').val() != "") {
             $.ajax({
                 type: "GET",
-                url: '/CounterSale/checkEmployee',
+                url: '/DeliveryChallanSale/checkEmployee',
                 data: { 'EmpName': $('#Employee').val() },
                 success: function (result) {
                     if (result == "0") {
@@ -1240,7 +1240,7 @@
         if ($('#DeliverTo').val() != "") {
             $.ajax({
                 type: "GET",
-                url: '/CounterSale/checkShipTo',
+                url: '/DeliveryChallanSale/checkShipTo',
                 data: { 'Name': $('#DeliverTo').val(), CustId: $('#CustId').val() },
                 success: function (result) {
                     if (result == "0") {
@@ -1300,7 +1300,7 @@
 
             $.ajax({
                 type: "GET",
-                url: '/CounterSale/ShowGRNDetails',
+                url: '/DeliveryChallanSale/ShowGRNDetails',
                 data: { 'ProductCode': $('#PRDID'+ Count ).val() },
                 success: function (result) {
                     debugger
@@ -1383,7 +1383,7 @@
             $('#ProductQuantity').val($('#OrderQty').val());
                 $.ajax({
                     type: "GET",
-                    url: '/CounterSale/ShowGRNDetails',
+                    url: '/DeliveryChallanSale/ShowGRNDetails',
                     data: { 'ProductCode': $('#ProdCode').val() },
                     success: function (result) {
                         debugger
@@ -1460,7 +1460,7 @@
             if (isduplicate == false) {
                 $.ajax({
                     type: "GET",
-                    url: '/CounterSale/getSerialNoData',
+                    url: '/DeliveryChallanSale/getSerialNoData',
                     data: { 'SerialNo': $('#SerialNumber').val(), 'ProdCode': $('#ProductId').val(), tempSRNO: $('#tempSRNO').val() },
                     success: function (result) {
 
@@ -1623,7 +1623,7 @@
                 $(this).val('Please wait...');
                 $.ajax({
                     type: 'POST',
-                    url: '/CounterSale/SaveTempDetails',
+                    url: '/DeliveryChallanSale/SaveTempDetails',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     success: function (data) {
@@ -1711,13 +1711,14 @@
         if ($('#CustomerType').val() == "Customer") {
             $('#IsCashCust').show();
             $('#IsCashCust1').show();
+            
         } else {
             $('#IsCashCust').hide();
             $('#IsCashCust1').hide();
         }
         $.ajax({
             type: 'GET',
-            url: '@Url.Action("GetCustomerData","CounterSale")',
+            url: '@Url.Action("GetCustomerData", "DeliveryChallanSale")',
             data: { CustomerType: $('#CustomerType').val()},
             dataType: 'json',
             success: function (result)
@@ -1747,7 +1748,7 @@
         $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' ><th>PRODUCT Code</th><th>PRODUCT</th><th>SERIAL NO</th><th></th><th></th></tr> <tbody>").appendTo("#SalesItembySerialNo");
         $.ajax({
             type: "GET",
-            url: '/CounterSale/ViewScanned',
+            url: '/DeliveryChallanSale/ViewScanned',
             data: {'ProdCode': $('#ProductId').val(), tempSRNO: $('#tempSRNO').val() },
             success: function (result) {
                 var Count=20051
@@ -1775,7 +1776,7 @@
         var SerialNo = $('#SerialNoNew' + Count).val();
         $.ajax({
             type: "GET",
-            url: '/CounterSale/RemoveSerialNOForEdit',
+            url: '/DeliveryChallanSale/RemoveSerialNOForEdit',
             data: { 'ProdCode': $('#ProductId').val(), tempSRNO: $('#tempSRNO').val(), SerialNo: SerialNo },
             success: function (result) {
                 if (result.Message == "success") {
@@ -1794,7 +1795,7 @@
         if (isValid == true) {
             $.ajax({
                 type: "GET",
-                url: '/CounterSale/ApplyCode',
+                url: '/DeliveryChallanSale/ApplyCode',
                 data: { 'DoctorCode': $('#DoctorCode').val() },
                 success: function (result) {
                     if (result.Message == "success") {
@@ -1936,7 +1937,7 @@
                     //$(this).val('Please wait...');
                     $.ajax({
                         type: 'POST',
-                        url: '/CounterSale/save',
+                        url: '/DeliveryChallanSale/save',
                         data: JSON.stringify(data),
                         contentType: 'application/json',
                         success: function (result) {
@@ -1944,7 +1945,7 @@
                             if (result.Message == "success") {
                               /*  $.preloader.stop();*/
                                 toastr.success("Successfully saved..");
-                                window.location.href = "/CounterSale/Index";
+                                window.location.href = "/DeliveryChallanSale/Index";
                                 // OrderNo=$("#OrderNo").val();
                                 //window.location.href = "/ProductionOrder/ProductionOrder?OrderNo=" + OrderNo + "";
                             }
@@ -1976,7 +1977,7 @@
         GetSoldSerialNo(lastsegment);
         $.ajax({
             type: "GET",
-            url: '/CounterSale/EditGetAllOrderDetails',
+            url: '/DeliveryChallanSale/EditGetAllOrderDetails',
             data: { 'OrderId': lastsegment },
             success: function (result) {
                 //serialForProduct = result;
@@ -2144,7 +2145,7 @@
         var jj = JSON.stringify(serialForProduct);
         $.ajax({
             type: "GET",
-            url: '/CounterSale/EditGetSerialNoApplicable',
+            url: '/DeliveryChallanSale/EditGetSerialNoApplicable',
             data: jj,
             success: function (result) {
 
@@ -2263,7 +2264,7 @@
                     $('#submitsdsf').prop('disabled', true);
                     $.ajax({
                         type: 'POST',
-                        url: '/CounterSale/Update',
+                        url: '/DeliveryChallanSale/Update',
                         data: JSON.stringify(data),
                         contentType: 'application/json',
                         success: function (result) {
@@ -2271,7 +2272,7 @@
                             if (result.Message == "success") {
                               /*  $.preloader.stop();*/
                                 toastr.success("Successfully saved..");
-                                window.location.href = "/CounterSale/Index";
+                                window.location.href = "/DeliveryChallanSale/Index";
                                 // OrderNo=$("#OrderNo").val();
                                 //window.location.href = "/ProductionOrder/ProductionOrder?OrderNo=" + OrderNo + "";
                             }
@@ -2301,7 +2302,7 @@
         $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' ><th>PRODUCT Code</th><th>PRODUCT</th><th>SERIAL NO</th><th></th><th></th></tr> <tbody>").appendTo("#SalesItembySerialNo");
         $.ajax({
             type: "GET",
-            url: '/CounterSale/ViewScanned',
+            url: '/DeliveryChallanSale/ViewScanned',
             data: { 'ProdCode': $('#ProductId').val(), tempSRNO: $('#tempSRNO').val() },
             success: function (result) {
                 var Count = 20051
@@ -2331,7 +2332,7 @@
         $(" <tbody> <tr bgcolor='#3c8dbc' style='color: #FBF8F7' ><th>PRODUCT Code</th><th>PRODUCT</th><th>SERIAL NO</th><th></th><th></th></tr> <tbody>").appendTo("#SalesItembySerialNo");
         $.ajax({
             type: "GET",
-            url: '/CounterSale/ViewScannedEdit',
+            url: '/DeliveryChallanSale/ViewScannedEdit',
             data: { 'ProdCode': $('#PRDID' + Count).val(), tempSRNO: $('#tempSRNO').val() },
             success: function (result) {
                 var Count = 200051
@@ -2361,7 +2362,7 @@
     debugger;
     $.ajax({
         type: "GET",
-        url: '/CounterSale/GetSoldSerialNo',
+        url: '/DeliveryChallanSale/GetSoldSerialNo',
         data: { id: lastsegment },
         success: function (result) {
             debugger
@@ -2404,7 +2405,7 @@
         var grnResult;
         $.ajax({
             type: "GET",
-            url: '/CounterSale/ShowGRNDetails',
+            url: '/DeliveryChallanSale/ShowGRNDetails',
             data: { 'ProductCode': $('#PRDID' + Count).val() },
             success: function (result) {
                 if (result.length != 0) {
@@ -2428,7 +2429,7 @@
                     }
                     $.ajax({
                         type: 'POST',
-                        url: '/CounterSale/SaveTempDetails',
+                        url: '/DeliveryChallanSale/SaveTempDetails',
                         data: JSON.stringify(data),
                         contentType: 'application/json',
                         success: function (data) {
@@ -2447,26 +2448,4 @@
         });
         
     }
-
-
-    // DTDC PRINT
-
-    $("#four_label_print").click(function () {
-        $.post("/CounterSale/Print4X6Label", { reference_number: 'I56685219' }, function (res) {
-                console.log(res);
-            });
-        });
-        //PrintPODLabel
-
-        $("#pod_label_print").click(function () {
-            $.get("/CounterSale/PrintPODLabel", { reference_number: 'I56685219' }, function (res) {
-                debugger;
-                console.log(res);
-                var data = res.split(',');
-                var url = data[1].substring(15,data[1].length-3);
-                $("#pod_label").attr('src',url);
-                //printpdf(url);
-            }); 
-
-        });
 </script>

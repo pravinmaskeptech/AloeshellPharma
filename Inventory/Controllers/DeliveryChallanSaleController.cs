@@ -2,7 +2,6 @@
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json;
 using Syncfusion.JavaScript;
 using Syncfusion.Olap.MDXQueryParser;
 using System;
@@ -15,63 +14,24 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web;
 using System.Web.Http.Results;
 using System.Web.Mvc;
 
 namespace Inventory.Controllers
 {
-    public class CounterSaleController : Controller
+    public class DeliveryChallanSaleController : Controller
     {
         // GET: CounterSale
         private InventoryModel db = new InventoryModel();
         public ActionResult Index()
         {
-            //ViewBag.datasource = (from Order in db.orderMain.Where(a=>a.IsCashCustomer==true)
-
-            //                      join Saless in db.Sales on Order.OrderNo equals Saless.OrderNo into SalesData  
-            //                      from sl in SalesData.DefaultIfEmpty()
-
-            //                      orderby Order.OrderID descending
-            //                      select new { sl.InvoiceNo,sl.InvoiceDate, OrderID = Order.OrderID,CurrentStatus = Order.CurrentStatus, DeliverTo = Order.DeliverTo, NetAmount = Order.NetAmount, Discount = Order.Discount, Freeze = Order.Freeze, IGST = Order.IGST, SGST = Order.SGST, CGST = Order.CGST, TotalAmount = Order.TotalAmount, CustomerName=Order.CustomerName }
-            //                    ).ToList();
-
-
-            //            var data = (
-            //    from Order in db.orderMain.Where(a => a.IsCashCustomer == true)
-            //    join Saless in db.Sales on Order.OrderNo equals Saless.OrderNo into SalesData
-            //    from sl in SalesData.DefaultIfEmpty()
-            //    orderby Order.OrderID descending
-            //    group new { sl.InvoiceNo, sl.InvoiceDate, Order.OrderID, Order.CurrentStatus, Order.DeliverTo, Order.NetAmount, Order.Discount, Order.Freeze, Order.IGST, Order.SGST, Order.CGST, Order.TotalAmount, Order.CustomerName }
-            //    by new { Order.OrderID, Order.CurrentStatus, Order.DeliverTo, Order.NetAmount, Order.Discount, Order.Freeze, Order.IGST, Order.SGST, Order.CGST, Order.TotalAmount, Order.CustomerName } into groupedData
-            //    select new
-            //    {
-
-            //        groupedData.Key.OrderID,
-            //        groupedData.Key.CurrentStatus,
-            //        groupedData.Key.DeliverTo,
-            //        groupedData.Key.NetAmount,
-            //        groupedData.Key.Discount,
-            //        groupedData.Key.Freeze,
-            //        groupedData.Key.IGST,
-            //        groupedData.Key.SGST,
-            //        groupedData.Key.CGST,
-            //        groupedData.Key.TotalAmount,
-            //        groupedData.Key.CustomerName,
-            //        //Count = groupedData.Count(),
-            //        InvoiceNo = groupedData.Max(x => x.InvoiceNo),
-            //        InvoiceDate = groupedData.Max(x => x.InvoiceDate),
-            //        //TotalDiscount = groupedData.Sum(x => x.Discount)
-            //    }
-            //).ToList();
-
             var data = (
     from o in db.orderMain
-    where o.IsCashCustomer == true
+    where o.IsDCSale == true
     join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
     from sl in salesData.DefaultIfEmpty()
-    where sl.InvoiceNo.StartsWith("INV/")
+    //where sl.InvoiceNo.StartsWith("INV/")
     group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName } by new { o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName } into groupedData
     orderby groupedData.Key.OrderID descending
     select new
@@ -107,7 +67,7 @@ namespace Inventory.Controllers
             }
             else
             {
-                var data = db.ProductSerialNo.Where(a => a.SerialNo == SerialNo && (a.Status == "inward" || a.Status == "SO Return") && a.ProductCode == ProdCode).FirstOrDefault();
+                var data = db.ProductSerialNo.Where(a => a.SerialNo == SerialNo && (a.Status == "inward" || a.Status == "SO Return" || a.Status == "DC Return") && a.ProductCode == ProdCode).FirstOrDefault();
                 if (data != null)
                 {
                     data.tempSRNO = tempSRNO;
@@ -126,7 +86,7 @@ namespace Inventory.Controllers
         public JsonResult ViewScanned(string ProdCode, long tempSRNO)
         {
 
-            var data = db.ProductSerialNo.Where(a => a.ProductCode == ProdCode && a.tempSRNO == tempSRNO && (a.Status == "inward" || a.Status == "SO Return")).ToList();
+            var data = db.ProductSerialNo.Where(a => a.ProductCode == ProdCode && a.tempSRNO == tempSRNO && (a.Status == "inward" || a.Status == "SO Return" || a.Status == "DC Return")).ToList();
 
             var result = new { Message = "success", data };
             return Json(result, JsonRequestBehavior.AllowGet);
@@ -146,7 +106,7 @@ namespace Inventory.Controllers
         public JsonResult RemoveSerialNO(string ProdCode, long tempSRNO, string SerialNo)
         {
 
-            var data = db.ProductSerialNo.Where(a => a.ProductCode == ProdCode && a.tempSRNO == tempSRNO && a.SerialNo == SerialNo && (a.Status == "inward" || a.Status == "SO Return"|| a.Status == "DC Return")).FirstOrDefault();
+            var data = db.ProductSerialNo.Where(a => a.ProductCode == ProdCode && a.tempSRNO == tempSRNO && a.SerialNo == SerialNo && (a.Status == "inward" || a.Status == "SO Return" || a.Status == "DC Return")).FirstOrDefault();
             if (data != null)
             {
                 data.tempSRNO = null;
@@ -161,7 +121,7 @@ namespace Inventory.Controllers
         public JsonResult RemoveSerialNOForEdit(string ProdCode, long tempSRNO, string SerialNo)
         {
 
-            var data = db.ProductSerialNo.Where(a => a.ProductCode == ProdCode && a.tempSRNO == tempSRNO && a.SerialNo == SerialNo && (a.Status == "Sold" || a.Status == "Sale")).FirstOrDefault();
+            var data = db.ProductSerialNo.Where(a => a.ProductCode == ProdCode && a.tempSRNO == tempSRNO && a.SerialNo == SerialNo && (a.Status == "Sold" || a.Status == "Sale" || a.Status == "DCSold")).FirstOrDefault();
             if (data != null)
             {
                 data.tempSRNO = null;
@@ -177,21 +137,6 @@ namespace Inventory.Controllers
 
 
         }
-
-        //public JsonResult RemoveSerialNO(string ProdCode, long tempSRNO)
-        //{
-
-        //    var data = db.ProductSerialNo.Where(a => a.ProductCode == ProdCode && a.tempSRNO == tempSRNO).FirstOrDefault();
-        //    if (data != null)
-        //    {
-        //        data.tempSRNO = null;
-        //        db.SaveChanges();
-        //    }
-        //    var result = new { Message = "success", data };
-        //    return Json(result, JsonRequestBehavior.AllowGet);
-
-
-        //}
 
         public ActionResult Create()
         {
@@ -295,13 +240,13 @@ namespace Inventory.Controllers
 
             var batchNo = "";
             var GRNID = 0;
-            var count = db.BillNumbering.Where(a => a.Type == "NewSales").FirstOrDefault();
+            var count = db.BillNumbering.Where(a => a.Type == "NewDCSale").FirstOrDefault();
 
-            var Invoiceno = string.Format("INV/2023-24/{0:D4}", count.Number);
+            var Invoiceno = string.Format("DC/2023-24/{0:D4}", count.Number);
             count.Number = count.Number + 1;
 
             var billNo = db.BillNumbering.Where(a => a.Type == "SOMain").FirstOrDefault();
-            var OrderNo = string.Format("SO/2023-24/{0:D4}", billNo.Number);
+            var OrderNo = string.Format("DCSO/2023-24/{0:D4}", billNo.Number);
             billNo.Number = Convert.ToInt32(billNo.Number) + 1;
 
 
@@ -324,9 +269,8 @@ namespace Inventory.Controllers
                                 try
                                 {
                                     OrderMain main = new OrderMain();
-                                    main.IsCashCustomer = true;
-
-
+                                    main.IsDCSale = true;
+                                    main.IsCashCustomer = false;
 
                                     main.CustomerName = x.CustomerName;
                                     if (Customerdata != null)
@@ -399,7 +343,7 @@ namespace Inventory.Controllers
                                 {
                                     var dataa = db.ProductSerialNo.Where(a => a.SerialNoId == aa.SerialNoId).FirstOrDefault();
                                     dataa.DoctorCode = DoctorCode;
-                                    dataa.Status = "Sold";
+                                    dataa.Status = "DCSold";
                                     dataa.InvoiceNo = Invoiceno;
                                     dataa.UpdatedBy = User.Identity.Name;
                                     dataa.UpdateDate = DateTime.Today;
@@ -626,7 +570,7 @@ namespace Inventory.Controllers
 
             var batchNo = "";
             var GRNID = 0;
-            var count = db.BillNumbering.Where(a => a.Type == "NewSales").FirstOrDefault();
+            var count = db.BillNumbering.Where(a => a.Type == "NewDCSale").FirstOrDefault();
 
             var Invoicedata = db.Sales.Where(a => a.OrderNo == OrderNo).FirstOrDefault();
             var Invoiceno = Invoicedata.InvoiceNo;
@@ -680,7 +624,7 @@ namespace Inventory.Controllers
                             foreach (var item in productSerialNo)
                             {
                                 item.InvoiceNo = Invoiceno;
-                                item.Status = "Sold";
+                                item.Status = "DCSold";
                                 item.UpdateDate = DateTime.Today;
                                 item.UpdatedBy = User.Identity.Name;
                                 db.ProductSerialNo.AddOrUpdate(item);
@@ -737,111 +681,12 @@ namespace Inventory.Controllers
                             //salesValue.SalesId = Convert.ToInt32(salesid);
                             db.Sales.AddOrUpdate(salesValue);
 
+
+
+
+
                             Product.ClosingQuantity = (Convert.ToDecimal(Product.ClosingQuantity) - Convert.ToDecimal(x.OrderQty));
                             Product.OutwardQuantity = (Convert.ToDecimal(Product.OutwardQuantity) + Convert.ToDecimal(x.OrderQty));
-
-
-
-
-                            ////Models for place dtdc order
-                            //var destination_details = new
-                            //{
-                            //    name = main.CustomerName,
-                            //    phone = main.CustomerMobile,
-                            //    alternate_phone = main.CustomerMobile,
-                            //    address_line_1 = main.CustomerAddress,
-                            //    address_line_2 = main.CustomerCity,
-                            //    pincode = main.CustomerPincode,
-                            //    city = main.CustomerCity,
-                            //    state = "Maharashtra",
-                            //};
-
-                            //var origin_details = new
-                            //{
-                            //    name = "Siddhivinayak Distributor",
-                            //    phone = "8554855412",
-                            //    alternate_phone = "8554855421",
-                            //    address_line_1 = " SHOP NO. 10, SUYOG NAVKAR",
-                            //    address_line_2 = "GULTEKADI",
-                            //    pincode = "411037",
-                            //    city = "Pune",
-                            //    state = "Maharashtra",
-                            //};
-
-                            //var pieces_detail = new
-                            //{
-                            //    description = "Notebook",
-                            //    declared_value = "100",
-                            //    weight = "0.5",
-                            //    height = "5",
-                            //    length = "5",
-                            //    width = "5",
-                            //};
-                            //var consignments = new
-                            //{
-                            //    customer_code = OrderID,
-                            //    reference_number = "",
-                            //    service_type_id = "B2C SMART EXPRESS",
-                            //    load_type = "NON-DOCUMENT",
-                            //    description = Product.ProductName,
-                            //    cod_favor_of = main.CustomerName,
-                            //    cod_collection_mode = "",
-                            //    consignment_type = "Forward",
-                            //    dimension_unit = "",
-                            //    length = "",
-                            //    width = "",
-                            //    height = "",
-                            //    weight_unit = "kg",
-                            //    weight = "1",
-                            //    declared_value = "",
-                            //    cod_amount = Convert.ToString(x.TotalAmount),
-                            //    num_pieces = Convert.ToString(x.OrderQty),
-                            //    customer_reference_number = Convert.ToString(OrderID),
-                            //    is_risk_surcharge_applicable = "true",
-                            //    destination_details = destination_details,
-                            //    origin_details = origin_details,
-                            //};
-
-                            ////Pin code serviceblitily check
-                            //using (var clientPin = new HttpClient())
-                            //{
-                            //    clientPin.BaseAddress = new Uri("https://firstmileapi.dtdc.com");
-                            //    //HTTP GET
-                            //    clientPin.DefaultRequestHeaders.Accept.Clear();
-                            //    clientPin.DefaultRequestHeaders.Add("x-access-token", ConfigurationManager.AppSettings["AccessTokenPinCode"].ToString());
-
-                            //    var response = clientPin.GetAsync(string.Format("/dtdc-api/api/custOrder/service/getServiceTypes/{0}/{1}", origin_details.pincode, destination_details.pincode));
-
-                            //    response.Wait();
-
-                            //    var resultPin = response.Result;
-                            //    if (resultPin.IsSuccessStatusCode)
-                            //    {
-                            //        //Place order on DTDC START
-                            //        using (var client = new HttpClient())
-                            //        {
-                            //            client.BaseAddress = new Uri("https://dtdcapi.shipsy.io\r\n");
-                            //            //HTTP GET
-                            //            client.DefaultRequestHeaders.Accept.Clear();
-                            //            client.DefaultRequestHeaders.Add("api-key", ConfigurationManager.AppSettings["APIKEY"].ToString());
-
-                            //            var data = new { consignments = consignments };
-                            //            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
-                            //            var httpContent = new StringContent(json);
-
-                            //            var responseTask = client.PostAsync("/api/customer/integration/consignment/softdata", httpContent);
-                            //            responseTask.Wait();
-
-                            //            var result = responseTask.Result;
-                            //            if (result.IsSuccessStatusCode)
-                            //            {
-
-                            //            }
-                            //        }
-                            //        //Place order on DTDC END
-                            //    }
-                            //}
-                            ////Pin code serviceblitily check END
 
                             db.SaveChanges();
 
@@ -1138,7 +983,7 @@ namespace Inventory.Controllers
                                   DeliveredQty = c.DeliveredQty,
                                   Address = om.CustomerAddress,
                                   Transport = om.Transport ?? string.Empty,
-                                  DispatchDate = om.DispatchDate ,
+                                  DispatchDate = om.DispatchDate,
                                   Delivery = om.Delivery ?? string.Empty,
                                   VehicleNo = om.VehicleNo ?? string.Empty,
                                   ManufacturingDate = grn.ManufacturingDate,
@@ -1260,7 +1105,7 @@ namespace Inventory.Controllers
 
 
                 Paragraph para1 = new Paragraph();
-                para1.Add(new Phrase("TAX INVOICE", FontFactory.GetFont("Arial", 20, Font.BOLD)));
+                para1.Add(new Phrase("DELIVERY CHALLAN", FontFactory.GetFont("Arial", 20, Font.BOLD)));
                 para1.Add(new Phrase("\n\n\n", FontFactory.GetFont("Arial", 5, Font.BOLD)));
                 PdfPCell Cell101 = new PdfPCell(para1);
                 Cell101.SetLeading(10f, 1.2f);
@@ -1467,154 +1312,7 @@ namespace Inventory.Controllers
 
                 }
                 catch { }
-                //try
-                //{
-                //    Paragraph para2 = new Paragraph();
-                //    para2.Add(new Phrase("Transport :-", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                //    PdfPCell Cell102 = new PdfPCell(para2);
-                //    Cell102.HorizontalAlignment = 0;
-                //    Cell102.Colspan = 2;
-                //    Cell102.Border = Rectangle.NO_BORDER;
-                //    table0.AddCell(Cell102);
-
-
-                //    Paragraph para3 = new Paragraph();
-                //    para3.Add(new Phrase("", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                //    PdfPCell Cell103 = new PdfPCell(para3);
-                //    Cell103.HorizontalAlignment = 0;
-                //    Cell103.Colspan = 2;
-                //    Cell103.Border = Rectangle.NO_BORDER;
-                //    table0.AddCell(Cell103);
-
-
-
-                //}
-                //catch { }
-                //try
-                //{
-                //    Paragraph para2 = new Paragraph();
-                //    para2.Add(new Phrase("Dispatch date and time :-", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                //    PdfPCell Cell102 = new PdfPCell(para2);
-                //    Cell102.HorizontalAlignment = 0;
-                //    Cell102.Colspan = 2;
-                //    Cell102.Border = Rectangle.NO_BORDER;
-                //    table0.AddCell(Cell102);
-
-
-                //    Paragraph para3 = new Paragraph();
-                //    para3.Add(new Phrase("", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                //    PdfPCell Cell103 = new PdfPCell(para3);
-                //    Cell103.HorizontalAlignment = 0;
-                //    Cell103.Colspan = 2;
-                //    Cell103.Border = Rectangle.NO_BORDER;
-                //    table0.AddCell(Cell103);
-
-
-
-                //}
-                //catch { }
-                ////try
-                ////{
-                ////    Paragraph para2 = new Paragraph();
-                ////    para2.Add(new Phrase("Weight :-", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                ////    PdfPCell Cell102 = new PdfPCell(para2);
-                ////    Cell102.HorizontalAlignment = 0;
-                ////    Cell102.Colspan = 2;
-                ////    Cell102.Border = Rectangle.NO_BORDER;
-                ////    table0.AddCell(Cell102);
-
-
-                ////    Paragraph para3 = new Paragraph();
-                ////    para3.Add(new Phrase("", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                ////    PdfPCell Cell103 = new PdfPCell(para3);
-                ////    Cell103.HorizontalAlignment = 0;
-                ////    Cell103.Colspan = 2;
-                ////    Cell103.Border = Rectangle.NO_BORDER;
-                ////    table0.AddCell(Cell103);
-
-
-
-                ////}
-                ////catch { }
-                //try
-                //{
-                //    Paragraph para2 = new Paragraph();
-                //    para2.Add(new Phrase("Delivery :-", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                //    PdfPCell Cell102 = new PdfPCell(para2);
-                //    Cell102.HorizontalAlignment = 0;
-                //    Cell102.Colspan = 2;
-                //    Cell102.Border = Rectangle.NO_BORDER;
-                //    table0.AddCell(Cell102);
-
-
-                //    Paragraph para3 = new Paragraph();
-                //    para3.Add(new Phrase("", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                //    PdfPCell Cell103 = new PdfPCell(para3);
-                //    Cell103.HorizontalAlignment = 0;
-                //    Cell103.Colspan = 2;
-                //    Cell103.Border = Rectangle.NO_BORDER;
-                //    table0.AddCell(Cell103);
-
-
-
-                //}
-                //catch { }
-                //try
-                //{
-                //    //Paragraph para2 = new Paragraph();
-                //    //para2.Add(new Phrase("ORDER DATE :-", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                //    //PdfPCell Cell102 = new PdfPCell(para2);
-                //    //Cell102.HorizontalAlignment = 0;
-                //    //Cell102.Colspan = 2;
-                //    //Cell102.Border = Rectangle.NO_BORDER;
-                //    //table0.AddCell(Cell102);
-
-
-                //    Paragraph para3 = new Paragraph();
-                //    para3.Add(new Phrase("", FontFactory.GetFont("Arial", 9, Font.BOLD)));
-                //    PdfPCell Cell103 = new PdfPCell(para3);
-                //    Cell103.HorizontalAlignment = 0;
-                //    Cell103.Colspan = 2;
-                //    Cell103.Border = Rectangle.NO_BORDER;
-                //    table0.AddCell(Cell103);
-
-                //}
-                //catch { } 
-
-
-                //PdfPTable table1 = new PdfPTable(6);
-                //float[] widths1 = new float[] {  3f, 3f, 4f, 4f, 3f, 3f };
-                //table1.SetWidths(widths1);
-                //table1.WidthPercentage = 98;
-                //table1.HorizontalAlignment = 1;
-
-                //// string imageURL = Server.MapPath("~/img/logo.png");
-                //string imageURL = Server.MapPath("/Photo/MicraftLogo.png");
-                //iTextSharp.text.Image jpg = iTextSharp.text.Image.GetInstance(imageURL);
-                //jpg.ScaleToFit(50, 80);
-                //jpg.SpacingBefore = 1f;
-                //jpg.SpacingAfter = 1f;
-                //jpg.Alignment = Element.ALIGN_CENTER;
-
-                //Paragraph P117585 = new Paragraph();
-                //P117585.Add(new Chunk(jpg, 0, 0, true));
-                //P117585.Add(new Phrase("\n", FontFactory.GetFont("Arial", 5, Font.BOLD)));
-                //P117585.Add(new Phrase("Siddhivinayak Distributor", FontFactory.GetFont("Arial", 12, Font.BOLD)));
-                //P117585.Add(new Phrase("\n", FontFactory.GetFont("Arial", 5, Font.BOLD)));
-                //P117585.Add(new Phrase("Shop no 10, Suyog Navkar Building A, \n", FontFactory.GetFont("Arial", 9, Font.NORMAL)));
-                //P117585.Add(new Phrase("Near 7 Loves Chowk, Market Yard Road, Pune 411 037.\n", FontFactory.GetFont("Arial", 9, Font.NORMAL)));
-                ////P117585.Add(new Phrase("Tel. No.: 020-79629339\n", FontFactory.GetFont("Arial", 9, Font.NORMAL)));
-                ////P117585.Add(new Phrase("D.L. No.: 20B-490622, 21B-490623\n", FontFactory.GetFont("Arial", 9, Font.NORMAL)));
-                //P117585.Add(new Phrase("GSTIN: 27ABVPK5495R2Z9\n", FontFactory.GetFont("Arial", 9, Font.NORMAL)));
-                //P117585.Add(new Phrase("DL.No: MH-PZ3517351,MH-PZ3517352\n", FontFactory.GetFont("Arial", 9, Font.NORMAL)));
-                ////    P117585.Add(new Phrase("E-Mail : aloeshellpharmaa@gmail.com\n\n", FontFactory.GetFont("Arial", 9, Font.NORMAL)));
-
-
-                //PdfPCell Cell1 = new PdfPCell(P117585);
-                //Cell1.SetLeading(10f, 1.0f);
-                //Cell1.Colspan = 2;
-                //Cell1.HorizontalAlignment = 0;
-                //table1.AddCell(Cell1);
+               
 
                 PdfPTable table1 = new PdfPTable(6);
                 float[] widths1 = new float[] { 3f, 3f, 4f, 4f, 3f, 3f };
@@ -1967,7 +1665,7 @@ namespace Inventory.Controllers
                  } into gcs
                  select new
                  {
-                     TaxableAmount = gcs.Sum(a=>a.Price * a.DeliveredQty),
+                     TaxableAmount = gcs.Sum(a => a.Price * a.DeliveredQty),
                      SGSTAmount = gcs.Sum(a => a.SGSTAmount),
                      CGSTAmount = gcs.Sum(a => a.CGSTAmount),
                      TotalTAxAmount = gcs.Sum(a => a.CGSTAmount + a.SGSTAmount),
@@ -2848,8 +2546,8 @@ namespace Inventory.Controllers
                               join StoreLocation in Storesmaster on grn.StoreLocationId equals StoreLocation.StoreLocationId into storeLoc
                               from store in storeLoc.DefaultIfEmpty()
                               orderby grn.GRNId descending
-                              let salesQty = db.orderDetails.Where(s => s.ProductCode == ProductCode).Sum(s => s.DeliveredQty)-db.Sales.Where(s => s.ProductCode == ProductCode).Sum(s => s.ReturnQty)
-                           
+                              let salesQty = db.orderDetails.Where(s => s.ProductCode == ProductCode).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == ProductCode).Sum(s => s.ReturnQty)
+
                               let ReceivedQty = grn.ReceivedQty - grn.ReturnQty
                               select new
                               {
@@ -2869,44 +2567,7 @@ namespace Inventory.Controllers
                               }).ToList();
 
                 return Json(result, JsonRequestBehavior.AllowGet);
-                //}
-                //else
-                //{
-                //    var GRN = new List<GRNDetails>(db.GRNDetail);
-                //    var Productsmaster = new List<Products>(db.Products);
-                //    var Storesmaster = new List<StoreLocations>(db.StoreLocations);
-                //    var Warehousemaster = new List<Warehouse>(db.Warehouses);
-                //    var TempTableMaster = new List<TempTable>(db.tempTable);
-                //    var result = (from tmp in TempTableMaster.Where(a => a.ProductCode == ProductCode && a.OrderDetailsID == OrderDetailsid)
-                //                  join Product in Productsmaster on tmp.ProductCode equals Product.ProductCode into products
-                //                  from prd in products.DefaultIfEmpty()
-                //                  join Warehouse in Warehousemaster on tmp.WarehouseID equals Warehouse.WareHouseID into warehouse
-                //                  from Whouse in warehouse.DefaultIfEmpty()
-                //                  join StoreLocation in Storesmaster on tmp.StoreLocationId equals StoreLocation.StoreLocationId into storeLoc
-                //                  from store in storeLoc.DefaultIfEmpty()
-                //                  join grn in GRN on tmp.GRNId equals grn.GRNId into grn1
-                //                  from grndetail in grn1.DefaultIfEmpty()
-                //                  orderby tmp.GRNId descending
-                //                  select new
-                //                  {
-                //                      GRNId = tmp.GRNId,
-                //                      temp = 0,
-                //                      SalesQty = tmp.SalesQty,
-                //                      WarehouseID = tmp.WarehouseID,
-                //                      StoreLocationId = tmp.StoreLocationId,
-                //                      BatchNo = tmp.BatchNo,
-                //                      ReceivedQty = tmp.ReceivedQty,
-                //                      WareHouseName = Whouse == null ? string.Empty : Whouse.WareHouseName,
-                //                      SerialFrom = tmp.SerialFrom,
-                //                      SerialTo = tmp.SerialTo,
-                //                      SelectSerialFrom = tmp.SelectSerialFrom,
-                //                      SelectSerialTo = tmp.SelectSerialTo,
-                //                      StoreLocation = store == null ? string.Empty : store.StoreLocation
-                //                  }).ToList();
-
-                //    return Json(result, JsonRequestBehavior.AllowGet);
-                //}
-                //  return Json(null, JsonRequestBehavior.AllowGet);
+               
             }
         }
 
@@ -3049,7 +2710,7 @@ namespace Inventory.Controllers
                               from emp in employee.DefaultIfEmpty()
 
                               orderby Order.OrderID descending
-                              select new {CustomerAddress = data.CustomerAddress, Transport= data.Transport, Delivery = data.Delivery, VehicleNo = data.VehicleNo, DispatchDate = data.DispatchDate, OrderNo = data.OrderNo, CurrentStatus = data.CurrentStatus, DisapproveReason = data.DisapproveReason, OrderID = Order.OrderID, OrderQty = Order.OrderQty, Price = Order.Price, CGSTAmount = Order.CGSTAmount, SGSTAmount = Order.SGSTAmount, IGSTAmount = Order.IGSTAmount, DiscountAmount = Order.DiscountAmount, TotalAmount = Order.TotalAmount, DeliveredQty = Order.DeliveredQty, ReturnQty = Order.ReturnQty, ProductCode = Order.ProductCode, GSTPercentage = Order.GSTPercentage, Discount = Order.Discount, DiscountAs = Order.DiscountAs, NetAmount = Order.NetAmount, ProductName = prd == null ? string.Empty : prd.ProductName, CustomerName = data.CustomerName, EmployeeName = emp == null ? string.Empty : emp.EmployeeName, DeliverTo = data.DeliverTo, CustomerID = data.CustomerID, OrderDate = data.OrderDate, HsnCode = prd.HsnCode, isIGST = false, IsActive = Order.IsActive, OrderDetailsID = Order.OrderDetailsID, EmployeeID = emp.EmployeeID, BarcodeApplicable = Order.BarcodeApplicable, tempSRNONew = Order.tempSRNO.ToString(), SerialNoApplicable = prd.SerialNoApplicable }
+                              select new { CustomerAddress = data.CustomerAddress, Transport = data.Transport, Delivery = data.Delivery, VehicleNo = data.VehicleNo, DispatchDate = data.DispatchDate, OrderNo = data.OrderNo, CurrentStatus = data.CurrentStatus, DisapproveReason = data.DisapproveReason, OrderID = Order.OrderID, OrderQty = Order.OrderQty, Price = Order.Price, CGSTAmount = Order.CGSTAmount, SGSTAmount = Order.SGSTAmount, IGSTAmount = Order.IGSTAmount, DiscountAmount = Order.DiscountAmount, TotalAmount = Order.TotalAmount, DeliveredQty = Order.DeliveredQty, ReturnQty = Order.ReturnQty, ProductCode = Order.ProductCode, GSTPercentage = Order.GSTPercentage, Discount = Order.Discount, DiscountAs = Order.DiscountAs, NetAmount = Order.NetAmount, ProductName = prd == null ? string.Empty : prd.ProductName, CustomerName = data.CustomerName, EmployeeName = emp == null ? string.Empty : emp.EmployeeName, DeliverTo = data.DeliverTo, CustomerID = data.CustomerID, OrderDate = data.OrderDate, HsnCode = prd.HsnCode, isIGST = false, IsActive = Order.IsActive, OrderDetailsID = Order.OrderDetailsID, EmployeeID = emp.EmployeeID, BarcodeApplicable = Order.BarcodeApplicable, tempSRNONew = Order.tempSRNO.ToString(), SerialNoApplicable = prd.SerialNoApplicable }
                                     ).ToList();
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
@@ -3071,7 +2732,7 @@ namespace Inventory.Controllers
 
             foreach (var productCode in sale)
             {
-                var srNoList = db.ProductSerialNo.Where(a => a.InvoiceNo == productCode.InvoiceNo && a.ProductCode == productCode.ProductCode && (a.Status == "Sold" || a.Status == "Sale")).Select(a => a.SerialNo).ToList();
+                var srNoList = db.ProductSerialNo.Where(a => a.InvoiceNo == productCode.InvoiceNo && a.ProductCode == productCode.ProductCode && (a.Status == "Sold" || a.Status == "Sale"|| a.Status=="DCSold")).Select(a => a.SerialNo).ToList();
                 if (srNoList == null)
                 {
                     return Json(null, JsonRequestBehavior.AllowGet);
@@ -3095,63 +2756,6 @@ namespace Inventory.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        // DTDC PRINT
-
-        [HttpPost]
-        public ActionResult Print4X6Label(string reference_number)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("https://dtdcapi.shipsy.io");
-                //HTTP GET
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("api-key", ConfigurationManager.AppSettings["APIKEY"].ToString());
-
-
-                var data = new { reference_number = reference_number };
-                string json = JsonConvert.SerializeObject(data, Formatting.Indented);
-                var httpContent = new StringContent(json);
-
-
-                var responseTask = client.PostAsync("/api/customer/integration/consignment/label/multipiece", httpContent);
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    return Json(result, JsonRequestBehavior.AllowGet);
-                }
-            }
-            return Json("ERROR", JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult PrintPODLabel(string reference_number)
-        {
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("https://dtdcapi.shipsy.io");
-
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("api-key", ConfigurationManager.AppSettings["APIKEY"].ToString());
-
-                var responseTask = client.GetAsync(string.Format("/api/customer/integration/consignment/shippinglabel/link?reference_number={0}", reference_number));
-
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    var readTask = result.Content.ReadAsStringAsync();
-                    readTask.Wait();
-                    var data = readTask.Result;
-
-                    return Json(data, JsonRequestBehavior.AllowGet);
-                }
-            }
-            return Json("ERROR", JsonRequestBehavior.AllowGet);
-        }
 
     }
 }

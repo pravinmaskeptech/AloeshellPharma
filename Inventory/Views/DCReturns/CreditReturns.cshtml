@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "DC Credit Returns";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4><b>DC CREDIT NOTE</b></h4>
+
+@using (Html.BeginForm("CreditReturns", "DCReturns", FormMethod.Post, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    data_bv_message = "This value is not valid",
+    data_toggle = "validator",
+    data_bv_feedbackicons_valid = "glyphicon glyphicon-ok",
+    data_bv_feedbackicons_invalid = "glyphicon glyphicon-remove",
+    data_bv_feedbackicons_validating = "glyphicon glyphicon-refresh"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Count" name="Count" value="1" />
+    <input type="hidden" id="ProductId" name="ProductId" />
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">DC Credit Returns</h3>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+
+        <div class="col-md-12 col-xs-12">
+            @(Html.EJ().Grid<Inventory.Models.Sales>
+                    ("CreditReturns").Datasource((IEnumerable<object>
+                        )ViewBag.datasource)
+                        .AllowScrolling()
+                        .AllowFiltering()
+                        .AllowTextWrap()
+                        .FilterSettings(filter => { filter.ShowFilterBarStatus().StatusBarWidth(500).FilterBarMode(FilterBarMode.Immediate).MaxFilterChoices(1000).FilterType(FilterType.Menu); })   /*Filtering Enabled*/
+                        .AllowSorting()    /*Sorting Enabled*/
+                        .AllowMultiSorting()
+                        .AllowPaging()    /*Paging Enabled*/
+                        .SelectionType(SelectionType.Multiple)
+                        .AllowResizing()
+                        .IsResponsive()
+                        .MinWidth(1000)
+                        .AllowReordering()
+                        .AllowResizeToFit()
+                        .AllowResizing()
+                        .ScrollSettings(scroll => { scroll.Height(300); })
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar().ToolbarItems(items =>
+                            {
+                                items.AddTool(ToolBarItems.Search); items.AddTool(ToolBarItems.ExcelExport);
+                            });
+                        })
+                                .Mappers(map => map.ExportToExcelAction("/DCReturns/ExportToExcel"))
+                        .AllowSearching(true)
+                        .ToolbarSettings(toolbar =>
+                        {
+                            toolbar.ShowToolbar(true).CustomToolbarItems(new List<object>
+                                () { new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#Refresh" }, new Syncfusion.JavaScript.Models.CustomToolbarItem() { TemplateID = "#AddNew" } });
+                        })
+                            .ClientSideEvents(eve => { eve.ToolbarClick("onToolBarClick").ActionBegin("GetData"); })
+                            .Columns(col =>
+                            {
+                                col.HeaderText("Action").Template("<input type='Button' id='{{:InvoiceNo}}' class='btn btn-sm btn-warning'  onclick='PrintCreditNote(this.id);' id='Button11' Value='Print' /> ").AllowFiltering(false).Width(70).Add();//                            
+                                col.HeaderText("Action").Template("<a href='/DCReturns/CreateCreditNote/{{:InvoiceID}}' ><input type='Button' id='Btn{{:InvoiceID}}' class='btn btn-sm btn-primary'  onclick='CreateCreditNote(this.id);' Value='Credit Note' /></a> ").AllowFiltering(false).Width(70).Add();//                            
+                                col.Field("CustomerName").HeaderText("Customer Name").TextAlign(TextAlign.Left).Visible(true).Width(100).Add();
+                                col.Field("InvoiceNo").HeaderText("Invoice No").TextAlign(TextAlign.Left).Visible(true).Width(130).Add();
+                                col.Field("InvoiceDate").HeaderText("Invoice Date").IsPrimaryKey(true).Format("{0:dd/MM/yyyy}").TextAlign(TextAlign.Left).Width(110).Add();
+                                col.Field("ReturnItems").HeaderText("Return Items").TextAlign(TextAlign.Left).Visible(true).Width(100).Add();
+                                col.Field("Amount").HeaderText("Amount").TextAlign(TextAlign.Left).Visible(true).Width(100).Add();
+                                
+                            }).ClientSideEvents(evt => evt.RowSelected("onRowSelected")))
+        </div>
+        <div class="row" style="width:1580px">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <div>
+                            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+     function GetData() {
+    debugger;
+    $.ajax({
+        url: '@Url.Action("GetData", "DCReturns")',
+        type: "GET",
+        dataType: "JSON",
+        success: function (result) {
+            debugger;
+            $.each(result, function (index, item) {
+             /*   if (item.CompanyID == 1) {*/
+                    $("#Btn" + item.SalesId).removeClass("btn-primary").addClass("btn-warning").val("View");
+              /*  }*/
+            });
+        },
+    });
+    }
+
+
+
+    function PrintCreditNote(ID) {
+        $.ajax({
+            url: '/DCReturns/PrintCreditNote',
+            type: "POST",
+            dataType: "JSON",
+            data: { InvoiceNo: ID },
+            success: function (result) {
+                if (result.Message == "success") {
+                    try {
+                        var WinPrint = window.open('/OrderMain/GetReport', '_blank');
+                        //WinPrint.focus(); WinPrint.print();
+                        if (result != null) {
+                            toastr.success("Created Successfully");
+                        }
+                        else {
+                            toastr.error(result.Message);
+                        }
+                    }
+                    catch (e) {
+                    }
+                } else {
+                    toastr.error(result.Message);
+                };
+            }
+        });
+    }
+</script>

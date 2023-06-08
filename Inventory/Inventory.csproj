@@ -299,6 +299,7 @@
     <Compile Include="Controllers\BOMController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\CompanyDetailsController.cs" />
+    <Compile Include="Controllers\DeliveryChallanSaleController.cs" />
     <Compile Include="Controllers\CounterSaleController.cs" />
     <Compile Include="Controllers\CurrencyController.cs" />
     <Compile Include="Controllers\CustomerContactsController.cs" />
@@ -362,7 +363,9 @@
     <Content Include="App_Data\rptCreditNote.rdl" />
     <Content Include="App_Data\rptCustomerOutstanding.rdl" />
     <None Include="Controllers\SOReturnsController.cs.BAK" />
+    <Compile Include="Controllers\DCReplacementController.cs" />
     <Compile Include="Controllers\SOReplacementController.cs" />
+    <Compile Include="Controllers\DCReturnsController.cs" />
     <Compile Include="Controllers\SOReturnsController.cs" />
     <Compile Include="Controllers\StockAllocationController.cs" />
     <Compile Include="Controllers\LedgerReportController.cs" />
@@ -427,7 +430,9 @@
     <Compile Include="Models\SalesPersonMaster.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\Shipper.cs" />
+    <Compile Include="Models\DCReplacement.cs" />
     <Compile Include="Models\SOReplacement.cs" />
+    <Compile Include="Models\DCReturns.cs" />
     <Compile Include="Models\SOReturns.cs" />
     <Compile Include="Models\StockAllocation.cs" />
     <Compile Include="Models\StockStatus.cs" />
@@ -602,6 +607,16 @@
     <Content Include="Views\PurchaseReport\Index.cshtml" />
     <Content Include="Views\SalesReport\Index.cshtml" />
     <Content Include="Views\ProductExpiryReport\Index.cshtml" />
+    <Content Include="Views\DeliveryChallanSale\Create.cshtml" />
+    <Content Include="Views\DeliveryChallanSale\Edit.cshtml" />
+    <Content Include="Views\DeliveryChallanSale\Index.cshtml" />
+    <Content Include="Views\DCReturns\Create.cshtml" />
+    <Content Include="Views\DCReturns\CreateCreditNote.cshtml" />
+    <Content Include="Views\DCReturns\CreditReturns.cshtml" />
+    <Content Include="Views\DCReturns\Index.cshtml" />
+    <Content Include="Views\DCReturns\Return.cshtml" />
+    <Content Include="Views\DCReplacement\Edit.cshtml" />
+    <Content Include="Views\DCReplacement\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Antlr3.Runtime.dll" />
