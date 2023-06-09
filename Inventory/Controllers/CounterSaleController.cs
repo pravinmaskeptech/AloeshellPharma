@@ -107,7 +107,7 @@ namespace Inventory.Controllers
             }
             else
             {
-                var data = db.ProductSerialNo.Where(a => a.SerialNo == SerialNo && (a.Status == "inward" || a.Status == "SO Return") && a.ProductCode == ProdCode).FirstOrDefault();
+                var data = db.ProductSerialNo.Where(a => a.SerialNo == SerialNo && (a.Status == "inward" || a.Status == "SO Return" || a.Status == "DC Return") && a.ProductCode == ProdCode).FirstOrDefault();
                 if (data != null)
                 {
                     data.tempSRNO = tempSRNO;
@@ -228,15 +228,34 @@ namespace Inventory.Controllers
             }
             else
             {
-                var xx = (from p in db.GRNDetail.Where(a => a.ProductCode == productId)
+                dynamic xx;
+                decimal? AvailableQty = 0;
+                var Product = db.Products.Where(a => a.ProductCode == productId && a.IsActive == true).FirstOrDefault();
+                if (Product.SerialNoApplicable == true)
+                {
+
+                    xx = (from p in db.GRNDetail.Where(a => a.ProductCode == productId)
+                              group p by 1 into g
+                              select new
+                              {
+                                  ReceivedQty = g.Sum(x => x.ReceivedQty) - g.Sum(x => x.ReturnQty),
+                                  SalesQty = db.orderDetails.Where(s => s.ProductCode == productId).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == productId).Sum(s => s.ReturnQty),
+                              }).FirstOrDefault();
+
+                    AvailableQty = xx.ReceivedQty - xx.SalesQty;
+                }
+                else
+                {
+                    xx = (from p in db.GRNDetail.Where(a => a.ProductCode == productId)
                           group p by 1 into g
                           select new
                           {
                               ReceivedQty = g.Sum(x => x.ReceivedQty) - g.Sum(x => x.ReturnQty),
-                              SalesQty = db.orderDetails.Where(s => s.ProductCode == productId).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == productId).Sum(s => s.ReturnQty),
+                              SalesQty = g.Sum(x=>x.SalesQty),
                           }).FirstOrDefault();
-                var Product = db.Products.Where(a => a.ProductCode == productId && a.IsActive == true).FirstOrDefault();
-                var AvailableQty = xx.ReceivedQty - xx.SalesQty;
+
+                    AvailableQty = xx.ReceivedQty - xx.SalesQty;
+                }
                 var result = new { Product, AvailableQty };
 
 
@@ -743,7 +762,7 @@ namespace Inventory.Controllers
 
 
 
-                            ////Models for place dtdc order
+                            //Models for place dtdc order
                             //var destination_details = new
                             //{
                             //    name = main.CustomerName,
@@ -853,6 +872,15 @@ namespace Inventory.Controllers
                         {
                             var Product = db.Products.Where(p => p.ProductCode == x.ProductCode).FirstOrDefault();
                             var Customerdata = db.Customers.Where(a => a.CustomerName == x.CustomerName).FirstOrDefault();
+                            var productSerialNo = db.ProductSerialNo.Where(s => s.ProductCode == Product.ProductCode && s.tempSRNO == tempSRNO && (s.Status != "Sold" || s.Status != "Sale")).ToList();
+                            foreach (var item in productSerialNo)
+                            {
+                                item.InvoiceNo = Invoiceno;
+                                item.Status = "Sold";
+                                item.UpdateDate = DateTime.Today;
+                                item.UpdatedBy = User.Identity.Name;
+                                db.ProductSerialNo.AddOrUpdate(item);
+                            }
                             if (Product.SerialNoApplicable == false)
 
                             {
@@ -866,6 +894,7 @@ namespace Inventory.Controllers
                                     db.GRNDetail.AddOrUpdate(grn);
                                 }
                             }
+
 
                             OrderDetails details = new OrderDetails();
 
@@ -2839,7 +2868,7 @@ namespace Inventory.Controllers
                 var Storesmaster = new List<StoreLocations>(db.StoreLocations);
                 var Warehousemaster = new List<Warehouse>(db.Warehouses);
                 var GRNDetailsMaster = new List<GRNDetails>(db.GRNDetail);
-
+                
                 var result = (from grn in GRNDetailsMaster.Where(a => a.ProductCode == ProductCode && (a.ReceivedQty - a.SalesQty) != 0)
                               join Product in Productsmaster on grn.ProductCode equals Product.ProductCode into products
                               from prd in products.DefaultIfEmpty()
@@ -2856,7 +2885,7 @@ namespace Inventory.Controllers
                                   //AvailableQty = availableQty,
                                   GRNId = grn.GRNId,
                                   SerialNoApplicable = prd.SerialNoApplicable,
-                                  SalesQty = salesQty,
+                                  SalesQty = grn.SalesQty,
                                   temp = 1,
                                   WarehouseID = grn.WarehouseID,
                                   StoreLocationId = grn.StoreLocationId,
@@ -3071,7 +3100,7 @@ namespace Inventory.Controllers
 
             foreach (var productCode in sale)
             {
-                var srNoList = db.ProductSerialNo.Where(a => a.InvoiceNo == productCode.InvoiceNo && a.ProductCode == productCode.ProductCode && (a.Status == "Sold" || a.Status == "Sale")).Select(a => a.SerialNo).ToList();
+                var srNoList = db.ProductSerialNo.Where(a => a.InvoiceNo == productCode.InvoiceNo && a.ProductCode == productCode.ProductCode && (a.Status == "Sold" || a.Status == "Sale" || a.Status == "DCSold")).Select(a => a.SerialNo).ToList();
                 if (srNoList == null)
                 {
                     return Json(null, JsonRequestBehavior.AllowGet);

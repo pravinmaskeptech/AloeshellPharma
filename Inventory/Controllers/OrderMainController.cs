@@ -49,7 +49,8 @@ namespace Inventory.Controllers
         {
             var Customermaster = new List<Customer>(db.Customers);
             var OrderMainMaster = new List<OrderMain>(db.orderMain);
-            ViewBag.datasource = (from Order in OrderMainMaster.Where(a => a.IsCashCustomer == false)
+            ViewBag.datasource = (from Order in OrderMainMaster.Where(a => a.IsCashCustomer == false && a.OrderNo.StartsWith("SO/"))
+                                 
                                   join Customer in Customermaster on Order.CustomerID equals Customer.CustomerID into customer
                                   from cust in customer.DefaultIfEmpty()
                                   orderby Order.OrderID descending
@@ -62,6 +63,7 @@ namespace Inventory.Controllers
             var Customermaster = new List<Customer>(db.Customers);
             var OrderMainMaster = new List<OrderMain>(db.orderMain);
             var result = (from Order in OrderMainMaster
+                          where Order.OrderNo.StartsWith("SO/")
                           join Customer in Customermaster on Order.CustomerID equals Customer.CustomerID into customer
                           from cust in customer.DefaultIfEmpty()
                           orderby Order.OrderID descending
@@ -128,19 +130,58 @@ namespace Inventory.Controllers
             }
             else
             {
-                var result = db.Products.Where(a => a.ProductCode == productId && a.IsActive == true).FirstOrDefault();
-                var customer = db.Customers.Where(a => a.CustomerName == CustomerID).FirstOrDefault();
-                var dataCust = db.CustomerProductRelations.Where(a => a.ProductCode == productId && a.CustomerId == customer.CustomerID).FirstOrDefault();
-                if(dataCust == null)
+                dynamic xx;
+                decimal? AvailableQty = 0;
+                var Product = db.Products.Where(a => a.ProductCode == productId && a.IsActive == true).FirstOrDefault();
+                if (Product.SerialNoApplicable == true)
                 {
-                    result.SellingPrice = result.SellingPrice;
+
+                    xx = (from p in db.GRNDetail.Where(a => a.ProductCode == productId)
+                          group p by 1 into g
+                          select new
+                          {
+                              ReceivedQty = g.Sum(x => x.ReceivedQty) - g.Sum(x => x.ReturnQty),
+                              SalesQty = db.orderDetails.Where(s => s.ProductCode == productId).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == productId).Sum(s => s.ReturnQty),
+                          }).FirstOrDefault();
+
+                    AvailableQty = xx.ReceivedQty - xx.SalesQty;
                 }
                 else
                 {
-                    result.SellingPrice = dataCust.ProductPrice;
+                    xx = (from p in db.GRNDetail.Where(a => a.ProductCode == productId)
+                          group p by 1 into g
+                          select new
+                          {
+                              ReceivedQty = g.Sum(x => x.ReceivedQty) - g.Sum(x => x.ReturnQty),
+                              SalesQty = g.Sum(x => x.SalesQty),
+                          }).FirstOrDefault();
+
+                    AvailableQty = xx.ReceivedQty - xx.SalesQty;
                 }
+                var result = new { Product, AvailableQty };
+
+
                
-                return Json(result, JsonRequestBehavior.AllowGet);
+
+            //if (productId == "")
+            //{
+            //    return Json(null, JsonRequestBehavior.AllowGet);
+            //}
+            //else
+            //{
+            //    var result = db.Products.Where(a => a.ProductCode == productId && a.IsActive == true).FirstOrDefault();
+            //    var customer = db.Customers.Where(a => a.CustomerName == CustomerID).FirstOrDefault();
+            //    var dataCust = db.CustomerProductRelations.Where(a => a.ProductCode == productId && a.CustomerId == customer.CustomerID).FirstOrDefault();
+            //    if(dataCust == null)
+            //    {
+            //        result.SellingPrice = result.SellingPrice;
+            //    }
+            //    else
+            //    {
+            //        result.SellingPrice = dataCust.ProductPrice;
+            //    }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult getTax(string ProductId)

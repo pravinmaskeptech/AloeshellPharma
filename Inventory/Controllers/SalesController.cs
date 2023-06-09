@@ -28,8 +28,8 @@ namespace Inventory.Controllers
                 ViewBag.BatchNoSetting = "";
 
             var result = from c in db.Sales
-                         //where c.OrderDetailsID != 0 
-                                 join cust in db.Customers on c.CustomerID equals cust.CustomerID into supplierr
+                         where c.InvoiceNo.StartsWith("INV/") && c.CustomerID != null
+                         join cust in db.Customers on c.CustomerID equals cust.CustomerID into supplierr
                                  from aa in supplierr.DefaultIfEmpty()
                                  group c by new
                                  {
@@ -83,7 +83,7 @@ namespace Inventory.Controllers
             else
                 ViewBag.BatchNoSetting = "";
             var result = db.orderDetails.Where(a => a.OrderQty != a.DeliveredQty).Select(x => x.OrderID).ToList();
-            ViewBag.OrderMaindatasource = db.orderMain.Where(a => result.Contains(a.OrderID) && a.CurrentStatus== "Approve").ToList();
+            ViewBag.OrderMaindatasource = db.orderMain.Where(a => result.Contains(a.OrderID) && a.CurrentStatus== "Approve" && a.IsCashCustomer == false).ToList();
             return View();
         }
 
@@ -322,7 +322,7 @@ namespace Inventory.Controllers
                                   from store in storeLoc.DefaultIfEmpty()
 
                                   orderby grn.GRNId descending
-                                  select new { GRNId = grn.GRNId, SalesQty = grn.SalesQty, temp = 1, WarehouseID = grn.WarehouseID, StoreLocationId = grn.StoreLocationId, BatchNo = grn.BatchNo, ReceivedQty = grn.ReceivedQty, WareHouseName = Whouse == null ? string.Empty : Whouse.WareHouseName, StoreLocation = store == null ? string.Empty : store.StoreLocation}
+                                  select new { GRNId = grn.GRNId, SalesQty = grn.SalesQty, temp = 1, WarehouseID = grn.WarehouseID, StoreLocationId = grn.StoreLocationId, BatchNo = grn.BatchNo, ReceivedQty = grn.ReceivedQty - grn.ReturnQty, WareHouseName = Whouse == null ? string.Empty : Whouse.WareHouseName, StoreLocation = store == null ? string.Empty : store.StoreLocation}
                                          ).ToList();
                     return Json(result, JsonRequestBehavior.AllowGet);
                 }
@@ -455,7 +455,7 @@ namespace Inventory.Controllers
                     var Warehousemaster = new List<Warehouse>(db.Warehouses);
                     var Suppliersmasters = new List<Suppliers>(db.suppliers);
                     var ProductSerialNoMaster = new List<ProductSerialNo>(db.ProductSerialNo);
-                    var result = (from serialno in ProductSerialNoMaster.Where(a => a.SerialNo == SerialNo && (a.Status == "inward" || a.Status == "Inward" )&& a.ProductCode == ProdCode)
+                    var result = (from serialno in ProductSerialNoMaster.Where(a => a.SerialNo == SerialNo && (a.Status == "inward" || a.Status == "SO Return" || a.Status == "DC Return" )&& a.ProductCode == ProdCode)
 
                                   join Product in Productsmaster on serialno.ProductCode equals Product.ProductCode into products
                                   from prd in products.DefaultIfEmpty()

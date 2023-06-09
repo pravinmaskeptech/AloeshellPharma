@@ -2357,47 +2357,89 @@
         })
     }
 
-	 function GetSoldSerialNo(lastsegment) {
-    debugger;
-    $.ajax({
-        type: "GET",
-        url: '/CounterSale/GetSoldSerialNo',
-        data: { id: lastsegment },
-        success: function (result) {
-            debugger
-            var myList = result;
-            var html = '<table border="1"><th>Product</th><th>Serial No</th>';
+    function GetSoldSerialNo(lastsegment) {
+        debugger;
+        $.ajax({
+            type: "GET",
+            url: '/CounterSale/GetSoldSerialNo',
+            data: { id: lastsegment },
+            success: function (result) {
+                debugger
+                var myList = result;
+                var html = '<table border="1"><th>Product</th><th>Serial No</th>';
 
-            if (myList != null && myList.length > 0) {
-                for (var i = 0; i < myList.length; i++) {
-                    var item = myList[i];
-                    var productCode = item.ProductCode;
-                    var serialNumbers = item.SerialNumbers;
+                if (myList != null && myList.length > 0) {
+                    for (var i = 0; i < myList.length; i++) {
+                        var item = myList[i];
+                        var productCode = item.ProductCode;
+                        var serialNumbers = item.SerialNumbers;
 
-                    html += '<tr><td>' + productCode + '</td><td>';
+                        html += '<tr><td>' + productCode + '</td><td>';
 
-                    if (serialNumbers != null && serialNumbers.length > 0) {
-                        for (var j = 0; j < serialNumbers.length; j++) {
-                            var serialNumber = serialNumbers[j];
-                            html += serialNumber + ',';
-
+                        if (serialNumbers != null && serialNumbers.length > 0) {
+                            for (var j = 0; j < serialNumbers.length; j++) {
+                                var serialNumber = serialNumbers[j];
+                                html += serialNumber + ',';
+                            }
+                        } else {
+                            html += 'No serial numbers found';
                         }
-                    } else {
-                        html += 'No serial numbers found';
+
+                        html += '</td></tr>';
                     }
-
-                    html += '</td></tr>';
+                } else {
+                    html += '<li>No items found.</li>';
                 }
-            } else {
-                html += '<li>No items found.</li>';
-            }
 
-            html += '</table>';
-            $("#showSrNo").html(html);
-            $('#showSrNo').show();
-        }
-    });
-}
+                html += '</table>';
+                $("#showSrNo").html(html);
+                $('#showSrNo').show();
+            }
+        });
+    }
+
+
+//	 function GetSoldSerialNo(lastsegment) {
+//    debugger;
+//    $.ajax({
+//        type: "GET",
+//        url: '/CounterSale/GetSoldSerialNo',
+//        data: { id: lastsegment },
+//        success: function (result) {
+//            debugger
+//            var myList = result;
+//            var html = '<table border="1"><th>Product</th><th>Serial No</th>';
+
+//            if (myList != null && myList.length > 0) {
+//                for (var i = 0; i < myList.length; i++) {
+//                    var item = myList[i];
+//                    var productCode = item.ProductCode;
+//                    var serialNumbers = item.SerialNumbers;
+
+//                    html += '<tr><td>' + productCode + '</td><td>';
+
+//                    if (serialNumbers != null && serialNumbers.length > 0) {
+//                        for (var j = 0; j < serialNumbers.length; j++) {
+//                            var serialNumber = serialNumbers[j];
+//                            html += serialNumber + ',';
+
+//                        }
+//                    } else {
+//                        html += 'No serial numbers found';
+//                    }
+
+//                    html += '</td></tr>';
+//                }
+//            } else {
+//                html += '<li>No items found.</li>';
+//            }
+
+//            html += '</table>';
+//            $("#showSrNo").html(html);
+//            $('#showSrNo').show();
+//        }
+//    });
+//}
 
     function updateValueToTempTable(Count, item, orderDtlId) {
         console.log("item details",item)

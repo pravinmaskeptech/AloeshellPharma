@@ -404,33 +404,33 @@
         });
     });
 
-    $(document).ready(function () {
-        $('#create').on('click', function (evt) {
+    //$(document).ready(function () {
+    //    $('#create').on('click', function (evt) {
            
-            var Flag = true;
-            var country = $("#Country").val();
-            var state = $("#State").val();
-            var upload = $('#UploadFilePath').val();
-            if (upload == "")
-            {
-                toastr.error("Please Select File to upload");
-                $("#form0").bootstrapValidator('revalidateField', 'CompanyName');
-                Flag = false;
-            }    
-            if (country == null || country == "") {
-                toastr.error("Please Select Country");
-                Flag = false;
-            }
-            if (state == null || state == "") {
-                toastr.error("Please Select State");
-                Flag = false;
-            }
+    //        var Flag = true;
+    //        var country = $("#Country").val();
+    //        var state = $("#State").val();
+    //        var upload = $('#UploadFilePath').val();
+    //        if (upload == "")
+    //        {
+    //            toastr.error("Please Select File to upload");
+    //            $("#form0").bootstrapValidator('revalidateField', 'CompanyName');
+    //            Flag = false;
+    //        }    
+    //        if (country == null || country == "") {
+    //            toastr.error("Please Select Country");
+    //            Flag = false;
+    //        }
+    //        if (state == null || state == "") {
+    //            toastr.error("Please Select State");
+    //            Flag = false;
+    //        }
 
-            if (Flag == false) {
-                event.preventDefault();
-            }
-        });
-    });
+    //        if (Flag == false) {
+    //            event.preventDefault();
+    //        }
+    //    });
+    //});
   
 
     $('#UploadFilePath').change(function () {

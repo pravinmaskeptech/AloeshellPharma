@@ -854,17 +854,41 @@
                     url: '/OrderMain/getProductData',
                     data: { 'productId': ProductId, 'CustomerID': cust },
                     success: function (result) {
+                        debugger
+                        toastr.warning("Product Quantity : " + result.AvailableQty);
+                        $('#Tax').val(result.Product.GSTPer);
+                        $('#CustomerType').prop("disabled", false);
+                        if ($('#CustomerType').val() == "Customer") {
+                            debugger
+                            var mrp = result.Product.MRP;
+                            var gst = $('#Tax').val();
 
-                        toastr.warning("Product Quantity : " + result.ClosingQuantity);
-                        $('#Price').val((result.SellingPrice).toFixed(2));
-                        $('#Discount').val((result.Discount).toFixed(2));
-                        $('#discIn').val(result.DiscountIn);
-                        $('#Tax').val(result.GSTPer);
+                            var callculation = ((parseFloat(mrp) * parseFloat(gst)) / (100 + parseFloat(gst)))
+
+                            var tamt = callculation;
+                            tamt = (parseFloat(mrp) - parseFloat(tamt)).toFixed(2);
+                            $('#Price').val(tamt);
+                        } else {
+                            $('#Price').val((result.Product.SellingPrice).toFixed(2));
+                        }
+                        //   $('#CustomerType').prop("disabled", true);
+
+                        $('#Discount').val((result.Product.Discount).toFixed(2));
+                        //  $('#discIn').val(result.DiscountIn);
+
+
+                        $('#SerialNoApplicable').val(result.Product.SerialNoApplicable);
+
+                        //toastr.warning("Product Quantity : " + result.ClosingQuantity);
+                        //$('#Price').val((result.SellingPrice).toFixed(2));
+                        //$('#Discount').val((result.Discount).toFixed(2));
+                        //$('#discIn').val(result.DiscountIn);
+                        //$('#Tax').val(result.GSTPer);
                         if ($("#BarcodeApplicable").is(":checked")) {
 
                             $('#PRDCode').focus();
                             $("#OrderQty").val(parseFloat($("#OrderQty").val()) + 1);
-                            $('#ProductCode').val(result.ProductName);
+                            $('#ProductCode').val(result.Product.ProductName);
                         }
                         getTax();
                     }

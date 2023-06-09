@@ -698,6 +698,16 @@ namespace Inventory.Controllers
                         {
                             var Product = db.Products.Where(p => p.ProductCode == x.ProductCode).FirstOrDefault();
                             var Customerdata = db.Customers.Where(a => a.CustomerName == x.CustomerName).FirstOrDefault();
+
+                            var productSerialNo = db.ProductSerialNo.Where(s => s.ProductCode == Product.ProductCode && s.tempSRNO == tempSRNO && (s.Status != "Sold" || s.Status != "Sale")).ToList();
+                            foreach (var item in productSerialNo)
+                            {
+                                item.InvoiceNo = Invoiceno;
+                                item.Status = "DCSold";
+                                item.UpdateDate = DateTime.Today;
+                                item.UpdatedBy = User.Identity.Name;
+                                db.ProductSerialNo.AddOrUpdate(item);
+                            }
                             if (Product.SerialNoApplicable == false)
 
                             {
