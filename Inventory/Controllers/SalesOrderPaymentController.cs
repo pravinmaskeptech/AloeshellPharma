@@ -39,18 +39,18 @@ namespace Inventory.Controllers
         }
         public JsonResult ShowInvoiceDetails(int CustomerId)
         {
-            // var result = db.Sales.Where(a =>  TotalAmount != a.PayAmount && a.CustomerID == CustomerId && a.Status != "Complite").ToList();
             try
             {
-                var result = (from c in db.Sales.Where(a => a.TotalAmount != a.PayAmount && a.CustomerID == CustomerId &&( a.Status != "Complite" || a.Status == null)).ToList()
+                var result = (from c in db.Sales
+                              where c.TotalAmount != c.PayAmount && c.CustomerID == CustomerId && c.Status == null
                               join sply in db.orderMain on c.OrderNo equals sply.OrderNo into main
-                              from aa in main.Where(a => a.TotalAmount != a.PayAmount && a.CustomerID == CustomerId && (a.Status != "Complite" || a.Status == null)).DefaultIfEmpty()
+                              from m in main.DefaultIfEmpty()
                               group c by new
                               {
                                   c.InvoiceDate,
                                   c.InvoiceNo,
-                                  aa.PayAmount,
-                                  c.OrderNo,
+                                  m.PayAmount,
+                                  c.OrderNo
                               } into gcs
                               select new
                               {
@@ -58,14 +58,17 @@ namespace Inventory.Controllers
                                   OrderNo = gcs.Key.OrderNo,
                                   InvoiceNo = gcs.Key.InvoiceNo,
                                   PayAmount = gcs.Key.PayAmount,
-                                  InvoiceAmount = (gcs.Sum(a => a.TotalAmount)),
+                                  InvoiceAmount = gcs.Sum(a => a.TotalAmount)
                               }).ToList();
+
                 return Json(result, JsonRequestBehavior.AllowGet);
-            }catch(Exception ee)
+            }
+            catch (Exception ee)
             {
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
+
         public JsonResult save(List<SalesOrderPayment> Invoice)
         {
             var status = false;

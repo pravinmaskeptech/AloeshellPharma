@@ -87,5 +87,8 @@ namespace Inventory.Models
         public virtual DbSet<DCReturns> DCReturns { get; set; }
 
         public virtual DbSet<DCReplacement> DCReplacement { get; set; }
+        //public virtual DbSet<Destination_details> Destination_details { get; set; }
+        //public virtual DbSet<Origin_details> Origin_details { get; set; }
+        //public virtual DbSet<Consignments> Consignments { get; set; }
     }
 }

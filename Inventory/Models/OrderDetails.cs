@@ -84,7 +84,10 @@ namespace Inventory.Models
 
         public Int64? tempSRNO { get; set; }
 
-        public int? GRN_ID { get; set; }  
+        public int? GRN_ID { get; set; }
+
+        public string ReferenceNumber { get; set; }
+        public string CustRefNo { get; set; }
 
     }
 }

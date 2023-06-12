@@ -2,6 +2,7 @@
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 using Syncfusion.JavaScript;
 using Syncfusion.Olap.MDXQueryParser;
 using System;
@@ -14,6 +15,9 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Web;
 using System.Web.Http.Results;
 using System.Web.Mvc;
@@ -2720,7 +2724,7 @@ namespace Inventory.Controllers
                               from emp in employee.DefaultIfEmpty()
 
                               orderby Order.OrderID descending
-                              select new { CustomerAddress = data.CustomerAddress, Transport = data.Transport, Delivery = data.Delivery, VehicleNo = data.VehicleNo, DispatchDate = data.DispatchDate, OrderNo = data.OrderNo, CurrentStatus = data.CurrentStatus, DisapproveReason = data.DisapproveReason, OrderID = Order.OrderID, OrderQty = Order.OrderQty, Price = Order.Price, CGSTAmount = Order.CGSTAmount, SGSTAmount = Order.SGSTAmount, IGSTAmount = Order.IGSTAmount, DiscountAmount = Order.DiscountAmount, TotalAmount = Order.TotalAmount, DeliveredQty = Order.DeliveredQty, ReturnQty = Order.ReturnQty, ProductCode = Order.ProductCode, GSTPercentage = Order.GSTPercentage, Discount = Order.Discount, DiscountAs = Order.DiscountAs, NetAmount = Order.NetAmount, ProductName = prd == null ? string.Empty : prd.ProductName, CustomerName = data.CustomerName, EmployeeName = emp == null ? string.Empty : emp.EmployeeName, DeliverTo = data.DeliverTo, CustomerID = data.CustomerID, OrderDate = data.OrderDate, HsnCode = prd.HsnCode, isIGST = false, IsActive = Order.IsActive, OrderDetailsID = Order.OrderDetailsID, EmployeeID = emp.EmployeeID, BarcodeApplicable = Order.BarcodeApplicable, tempSRNONew = Order.tempSRNO.ToString(), SerialNoApplicable = prd.SerialNoApplicable }
+                              select new { ReferenceNumber = Order.ReferenceNumber, CustomerAddress = data.CustomerAddress, Transport = data.Transport, Delivery = data.Delivery, VehicleNo = data.VehicleNo, DispatchDate = data.DispatchDate, OrderNo = data.OrderNo, CurrentStatus = data.CurrentStatus, DisapproveReason = data.DisapproveReason, OrderID = Order.OrderID, OrderQty = Order.OrderQty, Price = Order.Price, CGSTAmount = Order.CGSTAmount, SGSTAmount = Order.SGSTAmount, IGSTAmount = Order.IGSTAmount, DiscountAmount = Order.DiscountAmount, TotalAmount = Order.TotalAmount, DeliveredQty = Order.DeliveredQty, ReturnQty = Order.ReturnQty, ProductCode = Order.ProductCode, GSTPercentage = Order.GSTPercentage, Discount = Order.Discount, DiscountAs = Order.DiscountAs, NetAmount = Order.NetAmount, ProductName = prd == null ? string.Empty : prd.ProductName, CustomerName = data.CustomerName, EmployeeName = emp == null ? string.Empty : emp.EmployeeName, DeliverTo = data.DeliverTo, CustomerID = data.CustomerID, OrderDate = data.OrderDate, HsnCode = prd.HsnCode, isIGST = false, IsActive = Order.IsActive, OrderDetailsID = Order.OrderDetailsID, EmployeeID = emp.EmployeeID, BarcodeApplicable = Order.BarcodeApplicable, tempSRNONew = Order.tempSRNO.ToString(), SerialNoApplicable = prd.SerialNoApplicable }
                                     ).ToList();
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
@@ -2764,6 +2768,254 @@ namespace Inventory.Controllers
             ViewBag.SerialNoResult = result;
 
             return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public JsonResult DTDCBooking(int OrderID)
+        {
+            var main = db.orderMain.Where(a => a.OrderID == OrderID).FirstOrDefault();
+            if (main == null)
+            {
+                return Json("OrderID Not Found", JsonRequestBehavior.AllowGet);
+            }
+            var details = db.orderDetails.Where(a => a.OrderID == OrderID).ToList();
+            if (details == null || details.Count == 0)
+            {
+                return Json("OrderID Not Found", JsonRequestBehavior.AllowGet);
+            }
+            foreach (var x in details)
+            {
+                var Product = db.Products.Where(a => a.ProductCode == x.ProductCode).FirstOrDefault();
+
+                Destination_details destination_details = new Destination_details()
+                {
+                    name = main.CustomerName,
+                    phone = main.CustomerMobile,
+                    alternate_phone = main.CustomerMobile,
+                    address_line_1 = main.CustomerAddress,
+                    address_line_2 = main.CustomerCity,
+                    pincode = main.CustomerPincode,
+                    city = main.CustomerCity,
+                    state = "Maharashtra",
+                };
+
+                Origin_details origin_details = new Origin_details()
+                {
+                    name = "Siddhivinayak Distributor",
+                    phone = "8554855412",
+                    alternate_phone = "8554855421",
+                    address_line_1 = " SHOP NO. 10, SUYOG NAVKAR",
+                    address_line_2 = "GULTEKADI",
+                    pincode = "411037",
+                    city = "Pune",
+                    state = "Maharashtra",
+                };
+
+                Consignments consignments = new Consignments()
+                {
+                    customer_code = ConfigurationManager.AppSettings["CUSTOMERCODE"].ToString(),
+                    service_type_id = "B2C SMART EXPRESS",
+                    load_type = "NON-DOCUMENT",
+                    description = Product.ProductName,
+                    cod_favor_of = "",
+                    cod_amount = Convert.ToString(x.TotalAmount),
+                    cod_collection_mode = "CASH",
+                    consignment_type = "Forward",
+                    dimension_unit = "cm",
+                    length = "10",
+                    width = "10",
+                    height = "10",
+                    weight_unit = "kg",
+                    weight = "0.50",
+                    declared_value = "2123",
+                    customer_reference_number = Convert.ToString(x.OrderDetailsID),
+                    commodity_id = "sport-shoes",
+                    origin_details = origin_details,
+                    destination_details = destination_details,
+
+                };
+
+                //Pin code serviceblitily check
+                using (var clientPin = new HttpClient())
+                {
+                    clientPin.BaseAddress = new Uri("https://firstmileapi.dtdc.com");
+                    //HTTP GET
+                    clientPin.DefaultRequestHeaders.Accept.Clear();
+                    clientPin.DefaultRequestHeaders.Add("x-access-token", ConfigurationManager.AppSettings["AccessTokenPinCode"].ToString());
+
+                    var response = clientPin.GetAsync(string.Format("/dtdc-api/api/custOrder/service/getServiceTypes/{0}/{1}", origin_details.pincode, destination_details.pincode));
+
+                    response.Wait();
+
+                    var resultPin = response.Result;
+                    if (resultPin.IsSuccessStatusCode)
+                    {
+                        //Place order on DTDC START
+                        using (var client = new HttpClient())
+                        {
+                            client.BaseAddress = new Uri("https://dtdcapi.shipsy.io");
+                            //HTTP POST
+                            client.DefaultRequestHeaders.Accept.Clear();
+                            client.DefaultRequestHeaders.Add("api-key", ConfigurationManager.AppSettings["APIKEY"].ToString());
+                            List<Consignments> con = new List<Consignments>();
+                            con.Add(consignments);
+                            var data = new { consignments = con };
+                            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+                            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+                            var responseTask = client.PostAsync("/api/customer/integration/consignment/softdata", httpContent);
+                            responseTask.Wait();
+
+                            var result = responseTask.Result;
+                            if (result.IsSuccessStatusCode)
+                            {
+                                var readTask = result.Content.ReadAsStringAsync();
+                                readTask.Wait();
+                                var dataResult = readTask.Result;
+                                string[] dataArray = dataResult.Split(',');
+                                string[] RefeArray = dataArray[2].Split(':');
+                                string reference_number = RefeArray[1].ToString();
+                                x.ReferenceNumber = reference_number.Substring(1, reference_number.Length - 2);
+                                x.CustRefNo = consignments.customer_reference_number;
+
+                            }
+                            db.Entry(x).State = EntityState.Modified;
+                            db.SaveChanges();
+                            
+                        }
+                        //Place order on DTDC END
+                    }
+                }
+                //Pin code serviceblitily check END
+            }
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult Print4X6Label(string reference_number)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://dtdcapi.shipsy.io");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Add("api-key", ConfigurationManager.AppSettings["APIKEY"].ToString());
+                    var data = new { reference_number = reference_number };
+                    string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+                    var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                    var responseTask = client.PostAsync("/api/customer/integration/consignment/label/multipiece", httpContent);
+                    responseTask.Wait();
+
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsStringAsync();
+                        readTask.Wait();
+                        var dataResult = readTask.Result;
+
+                        return Json(dataResult, JsonRequestBehavior.AllowGet);
+                    }
+                }
+
+                return Json("ERROR", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.StackTrace, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        public JsonResult PrintPODLabel(string reference_number)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://dtdcapi.shipsy.io");
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "https://dtdcapi.shipsy.io");
+                    client.DefaultRequestHeaders.Add("api-key", ConfigurationManager.AppSettings["APIKEY"].ToString());
+
+                    var responseTask = client.GetAsync(string.Format("/api/customer/integration/consignment/shippinglabel/link?reference_number={0}", reference_number));
+
+                    responseTask.Wait();
+
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsStringAsync();
+                        readTask.Wait();
+                        var data = readTask.Result;
+
+                        return Json(data, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                return Json("ERROR", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.StackTrace, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpPost]
+        public JsonResult CancelBooking(string AWBNo)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://dtdcapi.shipsy.io");
+                //HTTP GET
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("api-key", ConfigurationManager.AppSettings["APIKEY"].ToString());
+                string[] str = { AWBNo };
+
+                var data = new { AWBNo = str, customerCode = ConfigurationManager.AppSettings["CUSTOMERCODE"].ToString() };
+                string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var responseTask = client.PostAsync("/api/customer/integration/consignment/cancel", httpContent);
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsStringAsync();
+                    readTask.Wait();
+                    var dataResult = readTask.Result;
+                    return Json(dataResult, JsonRequestBehavior.AllowGet);
+                }
+            }
+            return Json("ERROR", JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult TrackBooking()
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://blktracksvc.dtdc.com");
+                //HTTP GET
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("x-access-token", ConfigurationManager.AppSettings["TRACKAPIKEY"].ToString());
+
+                var data = new { TrkType = "123", strcnno = "I56685220", addtnlDtl = "Y" };
+                string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+                var httpContent = new StringContent(json);
+
+                var responseTask = client.PostAsync("/dtdc-api/rest/JSONCnTrk/getTrackDetails", httpContent);
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return Json(result, JsonRequestBehavior.AllowGet);
+                }
+            }
+            return Json("ERROR", JsonRequestBehavior.AllowGet);
         }
 
 

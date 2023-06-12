@@ -374,7 +374,7 @@ namespace Inventory.Controllers
                 var Warehousemaster = new List<Warehouse>(db.Warehouses);
                 var Suppliersmasters = new List<Suppliers>(db.suppliers);
                 var ProductSerialNoMaster = db.ProductSerialNo
-                    .Where(a => a.SerialNo == SerialNo && a.ProductCode == ProductId && (a.Status == "Sold" || a.Status == "Sale" || a.Status == "DCSold"))
+                    .Where(a => a.SerialNo == SerialNo && a.ProductCode == ProductId && (a.Status == "DCSold"))
                     .ToList(); // Changed to fetch a collection
 
                 var result = (from serialno in ProductSerialNoMaster

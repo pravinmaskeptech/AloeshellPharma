@@ -393,6 +393,9 @@
     <Compile Include="Models\CustomerContacts.cs" />
     <Compile Include="Models\CustomerProductRelations.cs" />
     <Compile Include="Models\Damage.cs" />
+    <Compile Include="Models\Destination_details.cs" />
+    <Compile Include="Models\Consignments.cs" />
+    <Compile Include="Models\Origin_details.cs" />
     <Compile Include="Models\DebitNote.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\DiscountStructure.cs" />

@@ -38,6 +38,7 @@
 
     <input type="hidden" id="OrderNo" />
     <input type="hidden" id="InvoiceNo" />
+    <input type="hidden" id="ReferenceNumber" />
     <head>
         <style>
             input:checked {
@@ -180,7 +181,7 @@
                                 @Html.LabelFor(model => model.DispatchDate, htmlAttributes: new { @class = "control-label" })
                             </div>
                             <div class="col-md-8">
-                                <input type="text" id="DispatchDate" name="DispatchDate" class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="false"  />
+                                <input type="text" id="DispatchDate" name="DispatchDate" class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="false" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -188,7 +189,7 @@
                                 @Html.LabelFor(model => model.Delivery, htmlAttributes: new { @class = "control-label" })
                             </div>
                             <div class="col-md-8">
-                                <input type="text" id="Delivery" name="Delivery" class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="false"  />
+                                <input type="text" id="Delivery" name="Delivery" class="form-control" style="width:100%" autocomplete="off" data_bv_notempty="false" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -315,7 +316,7 @@
                     <span id="orderItemError" style="color:red"></span>
                 </div>
                 <div class="row" style="width: 100%; ">
-                    <div class="col-md-7">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <div class="col-md-12" id="showSrNo">
 
@@ -329,7 +330,42 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-3" id="dtdcbookingbutton">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <h4><b>DTDC Options</b></h4>
+                            </div>
+                            <div class="col-md-12">
+                                <input type="button" id="Booking" value="BOOK THROUGH DTDC" onclick="" class="btn btn-warning" style="padding: 10px 10px; width: 200px; " />
+                            </div>
+                            <div class="col-md-12">
+
+                            </div>
+                            <div class="col-md-12">
+                                <input type="button" value="4 X 6 LABEL PRINT" id="four_label_print" onclick="" class="btn btn-warning" style="padding: 10px 10px; width: 200px; " />
+                            </div>
+                            <div class="col-md-12">
+
+                            </div>
+                            <div class="col-md-12">
+                                <input type="button" value="POD LABEL PRINT" id="pod_label_print" onclick="" class="btn btn-warning" style="padding: 10px 10px; width: 200px; " />
+                            </div>
+                            <div class="col-md-12">
+
+                            </div>
+                            <div class="col-md-12">
+                                <input type="button" id="cancel_booking" value="CANCEL BOOKING" onclick="" class="btn btn-warning" style="padding: 10px 10px ; width: 200px; " />
+                            </div>
+                            <div class="col-md-12">
+
+                            </div>
+                            <div class="col-md-12">
+                                <input type="button" id="track_booking" value="TRACK BOOKING" onclick="" class="btn btn-warning" style="padding: 10px 10px ; width: 200px; " />
+                            </div>
+                            <iframe id="pod_label"></iframe>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group">
                             <div class="col-md-12">
                                 <br />
@@ -386,7 +422,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" style="width:1580px">
+            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <div class="col-md-4">
@@ -394,11 +430,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
+
+                </div>
+                <div class="col-md-3">
                     <div class="form-group">
                         <div class="col-md-4">
                             <div style="padding:5px 10px; text-align:right">
-                                <input type="button" value="Save Order" id="submitsdsf" onclick="SAveAllData()" class="btn btn-warning" style="padding:5px 5px" /> &nbsp;&nbsp;
+                                <input type="button" value="Save Order" id="submitsdsf" onclick="SAveAllData()" class="btn btn-warning" />
                             </div>
                         </div>
                     </div>
@@ -524,8 +563,8 @@
                                     <input type="button" id="ViewScannedData" value="View" style="width:78px" onclick="ViewScanned()" class="btn btn-success" />
                                 </td>
                                 @*<td>
-                                <label id="lbl1">0</label>
-                            </td>*@
+                                        <label id="lbl1">0</label>
+                                    </td>*@
                             </tr>
                         </table>
                         <div>
@@ -714,9 +753,10 @@
           //  $("#pnlBarcode").hide();
              $("#pnlBarcode").show();
         }
+        $('#dtdcbookingbutton').hide();
         $("#OrderDate").ejDatePicker({ value: new Date(), maxDate: new Date(), locale: "en-IN", select: "Validatedate" });
         $("#DispatchDate").ejDatePicker({ value: new Date(), locale: "en-IN", select: "Validatedate" });
-     
+
         $("#P2").hide();
         $("#BarcodeApplicable").click(function () {
             if ($(this).is(":checked")) {
@@ -1365,7 +1405,7 @@
                 ViewScanned();
                 $('#DeliveredQtyNew' + Count).val('')
             }
-          
+
         } else {
 
                 $("#SalesItem").empty();
@@ -1869,7 +1909,7 @@
                 var Purchasedate1 = $('#DispatchDate').val();
                 var datearray1 = Purchasedate1.split("/");
                 var Dispatchdate = datearray1[1] + '/' + datearray1[0] + '/' + datearray1[2];
-                
+
 
                 $('#orderdetailsItems tbody tr').each(function (index, ele) {
                     if (($('.quentityNew', this).val() || "") == "" ||
@@ -1972,6 +2012,8 @@
 // Edit
     var serialForProduct = [];
     function GetEditData(lastsegment) {
+
+        $('#dtdcbookingbutton').show();
         $('#showSrNo').show();
         GetSoldSerialNo(lastsegment);
         $.ajax({
@@ -1990,7 +2032,7 @@
                     $('#isIGST').val(result[0].isIGST);
                     $('#EmployeeID').val(result[0].EmployeeID);
                     $('#CustId').val(result[0].CustomerID);
-
+                    $('#ReferenceNumber').val(result[0].ReferenceNumber);
 
                     $('#tempSRNO').val(result[0].tempSRNONew);
 
@@ -2118,7 +2160,7 @@
                             var obj = {
                                 ProductCode: $("#PRDID" + Count + "").val(result[i].ProductCode)
                             }
-                        }       
+                        }
 
                     });
                     debugger
@@ -2399,48 +2441,6 @@
     }
 
 
-//	 function GetSoldSerialNo(lastsegment) {
-//    debugger;
-//    $.ajax({
-//        type: "GET",
-//        url: '/CounterSale/GetSoldSerialNo',
-//        data: { id: lastsegment },
-//        success: function (result) {
-//            debugger
-//            var myList = result;
-//            var html = '<table border="1"><th>Product</th><th>Serial No</th>';
-
-//            if (myList != null && myList.length > 0) {
-//                for (var i = 0; i < myList.length; i++) {
-//                    var item = myList[i];
-//                    var productCode = item.ProductCode;
-//                    var serialNumbers = item.SerialNumbers;
-
-//                    html += '<tr><td>' + productCode + '</td><td>';
-
-//                    if (serialNumbers != null && serialNumbers.length > 0) {
-//                        for (var j = 0; j < serialNumbers.length; j++) {
-//                            var serialNumber = serialNumbers[j];
-//                            html += serialNumber + ',';
-
-//                        }
-//                    } else {
-//                        html += 'No serial numbers found';
-//                    }
-
-//                    html += '</td></tr>';
-//                }
-//            } else {
-//                html += '<li>No items found.</li>';
-//            }
-
-//            html += '</table>';
-//            $("#showSrNo").html(html);
-//            $('#showSrNo').show();
-//        }
-//    });
-//}
-
     function updateValueToTempTable(Count, item, orderDtlId) {
         console.log("item details",item)
         var grnResult;
@@ -2483,32 +2483,84 @@
                             }
                         },
                     });
-                   
+
                 }
             }
         });
-        
+
     }
 
 
     // DTDC PRINT
 
+    $("#Booking").click(function () {
+        if (confirm("Do you want to book through DTDC?")) {
+        var url1 = $(location).attr('href').replace(/\/+$/, ''), //rtrim `/`
+            part = url1.split("/"),
+            last_par = part[part.length - 1];
+        $.ajax({
+            type: 'POST',
+            url: '/CounterSale/DTDCBooking',
+            data: { OrderID: last_par },
+            success: function (result) {
+                if (result == "Success") {
+                    alert("Order Booked Successfully");
+                } else {
+                    alert("Booking Failed");
+                }
+
+            }
+        })
+        } else {
+
+        }
+    })
+
     $("#four_label_print").click(function () {
-        $.post("/CounterSale/Print4X6Label", { reference_number: 'I56685219' }, function (res) {
-                console.log(res);
+        if (confirm("Do you want to print?")) {
+        $.post("/CounterSale/Print4X6Label", { reference_number: $("#ReferenceNumber").val() }, function (res) {
+
+            debugger;
+
+            var data = res.split(',');
+            var url = data[2].substring(9, data[2].length - 4);
+            console.log(url);
+            $("#pod_label").attr('src', 'data:Application/pdf;base64,' + url);
+        });
+        } else {
+
+        }
+    });
+    //PrintPODLabel
+
+    $("#pod_label_print").click(function () {
+        if (confirm("Do you want to print?")) {
+        $.get("/CounterSale/PrintPODLabel", { reference_number: $("#ReferenceNumber").val() }, function (res) {
+
+            console.log(res);
+            var data = res.split(',');
+            var url = data[1].substring(15, data[1].length - 3);
+            $("#pod_label").attr('src', url);
+        });
+        } else {
+
+        }
+    });
+    $("#cancel_booking").click(function () {
+        if (confirm("Do you really want to cancel booking?")) {
+            $.post("/CounterSale/CancelBooking", { AWBNo: $("#ReferenceNumber").val() }, function (res) {
+                if (res != undefined || res != null) {
+                    alert("Order Cancelled Successfully!");
+                }
             });
+        } else {
+         
+        }
+    });
+    //TrackBooking
+    $("#track_booking").click(function () {
+        $.post("/CounterSale/TrackBooking", function (res) {
+            console.log(res);
         });
-        //PrintPODLabel
-
-        $("#pod_label_print").click(function () {
-            $.get("/CounterSale/PrintPODLabel", { reference_number: 'I56685219' }, function (res) {
-                debugger;
-                console.log(res);
-                var data = res.split(',');
-                var url = data[1].substring(15,data[1].length-3);
-                $("#pod_label").attr('src',url);
-                //printpdf(url);
-            }); 
-
-        });
+    });
 </script>
