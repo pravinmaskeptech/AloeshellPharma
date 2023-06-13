@@ -35,7 +35,7 @@ namespace Inventory.Controllers
     where o.IsDCSale == true
     join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
     from sl in salesData.DefaultIfEmpty()
-    //where sl.InvoiceNo.StartsWith("INV/")
+        //where sl.InvoiceNo.StartsWith("INV/")
     group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName } by new { o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName } into groupedData
     orderby groupedData.Key.OrderID descending
     select new
@@ -1326,7 +1326,7 @@ namespace Inventory.Controllers
 
                 }
                 catch { }
-               
+
 
                 PdfPTable table1 = new PdfPTable(6);
                 float[] widths1 = new float[] { 3f, 3f, 4f, 4f, 3f, 3f };
@@ -2581,7 +2581,7 @@ namespace Inventory.Controllers
                               }).ToList();
 
                 return Json(result, JsonRequestBehavior.AllowGet);
-               
+
             }
         }
 
@@ -2724,7 +2724,7 @@ namespace Inventory.Controllers
                               from emp in employee.DefaultIfEmpty()
 
                               orderby Order.OrderID descending
-                              select new { ReferenceNumber = Order.ReferenceNumber, CustomerAddress = data.CustomerAddress, Transport = data.Transport, Delivery = data.Delivery, VehicleNo = data.VehicleNo, DispatchDate = data.DispatchDate, OrderNo = data.OrderNo, CurrentStatus = data.CurrentStatus, DisapproveReason = data.DisapproveReason, OrderID = Order.OrderID, OrderQty = Order.OrderQty, Price = Order.Price, CGSTAmount = Order.CGSTAmount, SGSTAmount = Order.SGSTAmount, IGSTAmount = Order.IGSTAmount, DiscountAmount = Order.DiscountAmount, TotalAmount = Order.TotalAmount, DeliveredQty = Order.DeliveredQty, ReturnQty = Order.ReturnQty, ProductCode = Order.ProductCode, GSTPercentage = Order.GSTPercentage, Discount = Order.Discount, DiscountAs = Order.DiscountAs, NetAmount = Order.NetAmount, ProductName = prd == null ? string.Empty : prd.ProductName, CustomerName = data.CustomerName, EmployeeName = emp == null ? string.Empty : emp.EmployeeName, DeliverTo = data.DeliverTo, CustomerID = data.CustomerID, OrderDate = data.OrderDate, HsnCode = prd.HsnCode, isIGST = false, IsActive = Order.IsActive, OrderDetailsID = Order.OrderDetailsID, EmployeeID = emp.EmployeeID, BarcodeApplicable = Order.BarcodeApplicable, tempSRNONew = Order.tempSRNO.ToString(), SerialNoApplicable = prd.SerialNoApplicable }
+                              select new { BookingStatus = data.BookingStatus, ReferenceNumber = data.ReferenceNumber, CustomerAddress = data.CustomerAddress, Transport = data.Transport, Delivery = data.Delivery, VehicleNo = data.VehicleNo, DispatchDate = data.DispatchDate, OrderNo = data.OrderNo, CurrentStatus = data.CurrentStatus, DisapproveReason = data.DisapproveReason, OrderID = Order.OrderID, OrderQty = Order.OrderQty, Price = Order.Price, CGSTAmount = Order.CGSTAmount, SGSTAmount = Order.SGSTAmount, IGSTAmount = Order.IGSTAmount, DiscountAmount = Order.DiscountAmount, TotalAmount = Order.TotalAmount, DeliveredQty = Order.DeliveredQty, ReturnQty = Order.ReturnQty, ProductCode = Order.ProductCode, GSTPercentage = Order.GSTPercentage, Discount = Order.Discount, DiscountAs = Order.DiscountAs, NetAmount = Order.NetAmount, ProductName = prd == null ? string.Empty : prd.ProductName, CustomerName = data.CustomerName, EmployeeName = emp == null ? string.Empty : emp.EmployeeName, DeliverTo = data.DeliverTo, CustomerID = data.CustomerID, OrderDate = data.OrderDate, HsnCode = prd.HsnCode, isIGST = false, IsActive = Order.IsActive, OrderDetailsID = Order.OrderDetailsID, EmployeeID = emp.EmployeeID, BarcodeApplicable = Order.BarcodeApplicable, tempSRNONew = Order.tempSRNO.ToString(), SerialNoApplicable = prd.SerialNoApplicable }
                                     ).ToList();
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
@@ -2746,7 +2746,7 @@ namespace Inventory.Controllers
 
             foreach (var productCode in sale)
             {
-                var srNoList = db.ProductSerialNo.Where(a => a.InvoiceNo == productCode.InvoiceNo && a.ProductCode == productCode.ProductCode && (a.Status == "Sold" || a.Status == "Sale"|| a.Status=="DCSold")).Select(a => a.SerialNo).ToList();
+                var srNoList = db.ProductSerialNo.Where(a => a.InvoiceNo == productCode.InvoiceNo && a.ProductCode == productCode.ProductCode && (a.Status == "Sold" || a.Status == "Sale" || a.Status == "DCSold")).Select(a => a.SerialNo).ToList();
                 if (srNoList == null)
                 {
                     return Json(null, JsonRequestBehavior.AllowGet);
@@ -2779,117 +2779,121 @@ namespace Inventory.Controllers
             {
                 return Json("OrderID Not Found", JsonRequestBehavior.AllowGet);
             }
-            var details = db.orderDetails.Where(a => a.OrderID == OrderID).ToList();
-            if (details == null || details.Count == 0)
+            var details = db.orderDetails.Where(a => a.OrderID == OrderID).FirstOrDefault();
+            if (details == null)
             {
                 return Json("OrderID Not Found", JsonRequestBehavior.AllowGet);
             }
-            foreach (var x in details)
+
+            var Product = db.Products.Where(a => a.ProductCode == details.ProductCode).FirstOrDefault();
+
+            Destination_details destination_details = new Destination_details()
             {
-                var Product = db.Products.Where(a => a.ProductCode == x.ProductCode).FirstOrDefault();
+                name = main.CustomerName,
+                phone = main.CustomerMobile,
+                alternate_phone = main.CustomerMobile,
+                address_line_1 = main.CustomerAddress,
+                address_line_2 = main.CustomerCity,
+                pincode = main.CustomerPincode,
+                city = main.CustomerCity,
+                state = "Maharashtra",
+            };
 
-                Destination_details destination_details = new Destination_details()
+            Origin_details origin_details = new Origin_details()
+            {
+                name = "Siddhivinayak Distributor",
+                phone = "8554855412",
+                alternate_phone = "8554855421",
+                address_line_1 = " SHOP NO. 10, SUYOG NAVKAR",
+                address_line_2 = "GULTEKADI",
+                pincode = "411037",
+                city = "Pune",
+                state = "Maharashtra",
+            };
+
+            Consignments consignments = new Consignments()
+            {
+                customer_code = ConfigurationManager.AppSettings["CUSTOMERCODE"].ToString(),
+                service_type_id = "B2C SMART EXPRESS",
+                load_type = "NON-DOCUMENT",
+                description = Product.ProductName,
+                cod_favor_of = "",
+                cod_amount = Convert.ToString(main.TotalAmount),
+                cod_collection_mode = "CASH",
+                consignment_type = "Forward",
+                dimension_unit = "cm",
+                length = "10",
+                width = "10",
+                height = "10",
+                weight_unit = "kg",
+                weight = "0.50",
+                declared_value = "2123",
+                customer_reference_number = Convert.ToString(OrderID),
+                commodity_id = "sport-shoes",
+                origin_details = origin_details,
+                destination_details = destination_details,
+
+            };
+            var message = "";
+            //Pin code serviceblitily check
+            using (var clientPin = new HttpClient())
+            {
+                clientPin.BaseAddress = new Uri("https://firstmileapi.dtdc.com");
+                //HTTP GET
+                clientPin.DefaultRequestHeaders.Accept.Clear();
+                clientPin.DefaultRequestHeaders.Add("x-access-token", ConfigurationManager.AppSettings["AccessTokenPinCode"].ToString());
+
+                var response = clientPin.GetAsync(string.Format("/dtdc-api/api/custOrder/service/getServiceTypes/{0}/{1}", origin_details.pincode, destination_details.pincode));
+
+                response.Wait();
+
+                var resultPin = response.Result;
+                if (resultPin.IsSuccessStatusCode)
                 {
-                    name = main.CustomerName,
-                    phone = main.CustomerMobile,
-                    alternate_phone = main.CustomerMobile,
-                    address_line_1 = main.CustomerAddress,
-                    address_line_2 = main.CustomerCity,
-                    pincode = main.CustomerPincode,
-                    city = main.CustomerCity,
-                    state = "Maharashtra",
-                };
-
-                Origin_details origin_details = new Origin_details()
-                {
-                    name = "Siddhivinayak Distributor",
-                    phone = "8554855412",
-                    alternate_phone = "8554855421",
-                    address_line_1 = " SHOP NO. 10, SUYOG NAVKAR",
-                    address_line_2 = "GULTEKADI",
-                    pincode = "411037",
-                    city = "Pune",
-                    state = "Maharashtra",
-                };
-
-                Consignments consignments = new Consignments()
-                {
-                    customer_code = ConfigurationManager.AppSettings["CUSTOMERCODE"].ToString(),
-                    service_type_id = "B2C SMART EXPRESS",
-                    load_type = "NON-DOCUMENT",
-                    description = Product.ProductName,
-                    cod_favor_of = "",
-                    cod_amount = Convert.ToString(x.TotalAmount),
-                    cod_collection_mode = "CASH",
-                    consignment_type = "Forward",
-                    dimension_unit = "cm",
-                    length = "10",
-                    width = "10",
-                    height = "10",
-                    weight_unit = "kg",
-                    weight = "0.50",
-                    declared_value = "2123",
-                    customer_reference_number = Convert.ToString(x.OrderDetailsID),
-                    commodity_id = "sport-shoes",
-                    origin_details = origin_details,
-                    destination_details = destination_details,
-
-                };
-
-                //Pin code serviceblitily check
-                using (var clientPin = new HttpClient())
-                {
-                    clientPin.BaseAddress = new Uri("https://firstmileapi.dtdc.com");
-                    //HTTP GET
-                    clientPin.DefaultRequestHeaders.Accept.Clear();
-                    clientPin.DefaultRequestHeaders.Add("x-access-token", ConfigurationManager.AppSettings["AccessTokenPinCode"].ToString());
-
-                    var response = clientPin.GetAsync(string.Format("/dtdc-api/api/custOrder/service/getServiceTypes/{0}/{1}", origin_details.pincode, destination_details.pincode));
-
-                    response.Wait();
-
-                    var resultPin = response.Result;
-                    if (resultPin.IsSuccessStatusCode)
+                    //Place order on DTDC START
+                    using (var client = new HttpClient())
                     {
-                        //Place order on DTDC START
-                        using (var client = new HttpClient())
+                        client.BaseAddress = new Uri("https://dtdcapi.shipsy.io");
+                        //HTTP POST
+                        client.DefaultRequestHeaders.Accept.Clear();
+                        client.DefaultRequestHeaders.Add("api-key", ConfigurationManager.AppSettings["APIKEY"].ToString());
+                        List<Consignments> con = new List<Consignments>();
+                        con.Add(consignments);
+                        var data = new { consignments = con };
+                        string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+                        var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+                        var responseTask = client.PostAsync("/api/customer/integration/consignment/softdata", httpContent);
+                        responseTask.Wait();
+
+                        var result = responseTask.Result;
+                        if (result.IsSuccessStatusCode)
                         {
-                            client.BaseAddress = new Uri("https://dtdcapi.shipsy.io");
-                            //HTTP POST
-                            client.DefaultRequestHeaders.Accept.Clear();
-                            client.DefaultRequestHeaders.Add("api-key", ConfigurationManager.AppSettings["APIKEY"].ToString());
-                            List<Consignments> con = new List<Consignments>();
-                            con.Add(consignments);
-                            var data = new { consignments = con };
-                            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
-                            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                            var readTask = result.Content.ReadAsStringAsync();
+                            readTask.Wait();
+                            var dataResult = readTask.Result;
+                            var responseObj = JsonConvert.DeserializeObject<dynamic>(dataResult);
+                            message = responseObj.data[0].message;
 
-                            var responseTask = client.PostAsync("/api/customer/integration/consignment/softdata", httpContent);
-                            responseTask.Wait();
+                            string[] dataArray = dataResult.Split(',');
+                            string[] RefeArray = dataArray[2].Split(':');
+                            string reference_number = RefeArray[1].ToString();
+                            main.ReferenceNumber = reference_number.Substring(1, reference_number.Length - 2);
+                            main.CustRefNo = consignments.customer_reference_number;
+                            main.BookingStatus = "Booked";
 
-                            var result = responseTask.Result;
-                            if (result.IsSuccessStatusCode)
-                            {
-                                var readTask = result.Content.ReadAsStringAsync();
-                                readTask.Wait();
-                                var dataResult = readTask.Result;
-                                string[] dataArray = dataResult.Split(',');
-                                string[] RefeArray = dataArray[2].Split(':');
-                                string reference_number = RefeArray[1].ToString();
-                                x.ReferenceNumber = reference_number.Substring(1, reference_number.Length - 2);
-                                x.CustRefNo = consignments.customer_reference_number;
-
-                            }
-                            db.Entry(x).State = EntityState.Modified;
-                            db.SaveChanges();
-                            
                         }
-                        //Place order on DTDC END
+                        db.Entry(main).State = EntityState.Modified;
+                        db.SaveChanges();
+
+
                     }
+                    //Place order on DTDC END
                 }
-                //Pin code serviceblitily check END
             }
-            return Json("Success", JsonRequestBehavior.AllowGet);
+            //Pin code serviceblitily check END
+            return Json(new { result = message }, JsonRequestBehavior.AllowGet);
+
         }
 
         [HttpPost]
@@ -2986,9 +2990,15 @@ namespace Inventory.Controllers
                     var readTask = result.Content.ReadAsStringAsync();
                     readTask.Wait();
                     var dataResult = readTask.Result;
+
+                    var main = db.orderMain.Where(a=>a.ReferenceNumber == AWBNo).FirstOrDefault();
+                    main.BookingStatus = "Cancelled";
+                    db.Entry(main).State = EntityState.Modified;
+                    db.SaveChanges();
                     return Json(dataResult, JsonRequestBehavior.AllowGet);
                 }
             }
+
             return Json("ERROR", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]

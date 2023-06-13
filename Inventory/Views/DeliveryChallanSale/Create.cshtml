@@ -38,7 +38,6 @@
 
     <input type="hidden" id="OrderNo" />
     <input type="hidden" id="InvoiceNo" />
-    <input type="hidden" id="ReferenceNumber" />
     <head>
         <style>
             input:checked {
@@ -332,11 +331,17 @@
                     </div>
                     <div class="col-md-3" id="dtdcbookingbutton">
                         <div class="form-group">
-                            <div class="col-md-12">
-                                <h4><b>DTDC Options</b></h4>
+                            <div class="col-md-12" id="heading">
+                                <h4 ><b>DTDC Options</b></h4>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-8">
                                 <input type="button" id="Booking" value="BOOK THROUGH DTDC" onclick="" class="btn btn-warning" style="padding: 10px 10px; width: 200px; " />
+                            </div>
+                            <div class="col-md-4">
+                                <label id="ReferenceNumber1" for="ReferenceNumber"> DTDCReferenceNumber</label>
+                                <input type="text" id="ReferenceNumber" disabled />
+                                <label id="BookingStatus1" for="BookingStatus">DTDCBookingStatus</label>
+                                <input type="text" id="BookingStatus" disabled />
                             </div>
                             <div class="col-md-12">
 
@@ -563,8 +568,8 @@
                                     <input type="button" id="ViewScannedData" value="View" style="width:78px" onclick="ViewScanned()" class="btn btn-success" />
                                 </td>
                                 @*<td>
-                                <label id="lbl1">0</label>
-                            </td>*@
+                                        <label id="lbl1">0</label>
+                                    </td>*@
                             </tr>
                         </table>
                         <div>
@@ -849,7 +854,7 @@
                 if ($('#discIn').val() == "") { toastr.error("Please Select Discount In"); $('#discIn').css("border", "1px solid #e46f61"); isValid = false; } else { $('#discIn').css("border", "1px solid #a5da6b");  }
 
                 if ($('#OrderDate').val() == "") { toastr.error("Please Select Order Date"); $('#OrderDate').css("border", "1px solid #e46f61"); isValid = false; } else { $('#OrderDate').css("border", "1px solid #a5da6b"); }
-                if ($('#CustomerName').val() == "") { toastr.error("Please Enter Customer"); $('#CustomerName').css("border", "1px solid #e46f61"); isValid = false; } else { $('#CustomerName').css("border", "1px solid #a5da6b"); }
+               // if ($('#CustomerName').val() == "") { toastr.error("Please Enter Customer"); $('#CustomerName').css("border", "1px solid #e46f61"); isValid = false; } else { $('#CustomerName').css("border", "1px solid #a5da6b"); }
                // if ($('#CustomerAddress').val() == "") { toastr.error("Please Customer Address"); $('#CustomerAddress').css("border", "1px solid #e46f61"); isValid = false; } else { $('#CustomerAddress').css("border", "1px solid #a5da6b");  }
             //    if ($('#DoctorCode').val() == "") { toastr.error("Please Enter DoctorCode"); $('#DoctorCode').css("border", "1px solid #e46f61"); isValid = false; } else { $('#DoctorCode').css("border", "1px solid #a5da6b"); }
 
@@ -2033,7 +2038,34 @@
                     $('#EmployeeID').val(result[0].EmployeeID);
                     $('#CustId').val(result[0].CustomerID);
                     $('#ReferenceNumber').val(result[0].ReferenceNumber);
-
+                    if (result[0].ReferenceNumber == null) {
+                        $('#four_label_print').hide();
+                        $('#pod_label_print').hide();
+                        $('#cancel_booking').hide();
+                        $('#track_booking').hide();
+                        $('#pod_label').hide();
+                        $('#ReferenceNumber').hide();
+                        $('#ReferenceNumber1').hide();
+                        $('#BookingStatus').hide();
+                        $('#BookingStatus1').hide();
+                    }
+                   
+                    if (result[0].BookingStatus == "Cancelled") {
+                        $('#four_label_print').hide();
+                        $('#pod_label_print').hide();
+                        $('#cancel_booking').hide();
+                        $('#track_booking').hide();
+                        $('#pod_label').hide();
+                        //$('#ReferenceNumber').hide();
+                        //$('#ReferenceNumber1').hide();
+                        $('#Booking').hide();
+                        $('#heading').hide();
+                        $('#BookingStatus').val(result[0].BookingStatus);
+                    }
+                    else {
+                        $('#BookingStatus').hide();
+                        $('#BookingStatus1').hide();
+                    }
                     $('#tempSRNO').val(result[0].tempSRNONew);
 
                     $('#ProductId').val(result[0].ProductCode);
@@ -2207,7 +2239,7 @@
 
             if ($('#CashCustomerName').val() == "") {
                 toastr.error('Please Enter Customer Name');
-                flag = false;
+                //flag = false;
             }
             else {
                 CustomerName = $('#CashCustomerName').val();
@@ -2219,7 +2251,7 @@
         }
         if ($('#Customer').val() == "") {
             toastr.error('Please Select Customer');
-            flag = false;
+            //flag = false;
         }
         if ($('#Employee').val() == "") {
             toastr.error('Please Select Employee');
@@ -2492,22 +2524,22 @@
 
     $("#Booking").click(function () {
         if (confirm("Do you want to book through DTDC?")) {
-        var url1 = $(location).attr('href').replace(/\/+$/, ''), //rtrim `/`
-            part = url1.split("/"),
-            last_par = part[part.length - 1];
-        $.ajax({
-            type: 'POST',
-            url: '/DeliveryChallanSale/DTDCBooking',
-            data: { OrderID: last_par },
-            success: function (result) {
-                if (result == "Success") {
-                    alert("Order Booked Successfully");
-                } else {
-                    alert("Booking Failed");
+            var url1 = $(location).attr('href').replace(/\/+$/, ''), //rtrim `/`
+                part = url1.split("/"),
+                last_par = part[part.length - 1];
+            $.ajax({
+                type: 'POST',
+                url: '/DeliveryChallanSale/DTDCBooking',
+                data: { OrderID: last_par },
+                success: function (result) {
+                    debugger
+                    if (result == "" || result == null || result == '') { alert("Booking Failed"); }
+                    else if (result.result == null) { alert("Booking through DTDC Successfull.") }
+                    else {
+                        alert(result.result);
+                    }
                 }
-
-            }
-        })
+            })
         } else {
 
         }
@@ -2515,15 +2547,15 @@
 
     $("#four_label_print").click(function () {
         if (confirm("Do you want to print?")) {
-        $.post("/DeliveryChallanSale/Print4X6Label", { reference_number: $("#ReferenceNumber").val() }, function (res) {
+            $.post("/DeliveryChallanSale/Print4X6Label", { reference_number: $("#ReferenceNumber").val() }, function (res) {
 
-            debugger;
+                debugger;
 
-            var data = res.split(',');
-            var url = data[2].substring(9, data[2].length - 4);
-            console.log(url);
-            $("#pod_label").attr('src', 'data:Application/pdf;base64,' + url);
-        });
+                var data = res.split(',');
+                var url = data[2].substring(9, data[2].length - 4);
+                console.log(url);
+                $("#pod_label").attr('src', 'data:Application/pdf;base64,' + url);
+            });
         } else {
 
         }
@@ -2532,24 +2564,34 @@
 
     $("#pod_label_print").click(function () {
         if (confirm("Do you want to print?")) {
-        $.get("/DeliveryChallanSale/PrintPODLabel", { reference_number: $("#ReferenceNumber").val() }, function (res) {
+            $.get("/DeliveryChallanSale/PrintPODLabel", { reference_number: $("#ReferenceNumber").val() }, function (res) {
 
-            console.log(res);
-            var data = res.split(',');
-            var url = data[1].substring(15, data[1].length - 3);
-            $("#pod_label").attr('src', url);
-        });
+                console.log(res);
+                var data = res.split(',');
+                var url = data[1].substring(15, data[1].length - 3);
+                $("#pod_label").attr('src', url);
+            });
         } else {
 
         }
     });
     $("#cancel_booking").click(function () {
         if (confirm("Do you really want to cancel booking?")) {
-        $.post("/DeliveryChallanSale/CancelBooking", { AWBNo: $("#ReferenceNumber").val() }, function (res) {
-            if (res != undefined || res != null) {
-                alert("Order Cancelled Successfully!");
-            }
-        });
+            $.post("/DeliveryChallanSale/CancelBooking", { AWBNo: $("#ReferenceNumber").val() }, function (res) {
+                if (res != undefined || res != null) {
+                    alert("Order Cancelled Successfully!");
+
+                    $('#four_label_print').hide();
+                    $('#pod_label_print').hide();
+                    $('#cancel_booking').hide();
+                    $('#track_booking').hide();
+                    $('#pod_label').hide();
+                    $('#ReferenceNumber').hide();
+                    $('#ReferenceNumber1').hide();
+
+                    
+                }
+            });
         } else {
 
         }

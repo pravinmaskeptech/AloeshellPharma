@@ -78,7 +78,7 @@
                             .Columns(col =>
                             {
                                 col.HeaderText("Edit").Template("<a href='/DoctorMaster/Edit/{{:DoctorID}}'><input type='Button' class='btn btn-sm btn-primary' id='Button1' Value='Edit' /></a> ").TextAlign(TextAlign.Left).Width(55).AllowFiltering(false).Add();
-                                col.HeaderText("").Template("<input type='Button' class='btn btn-sm btn-danger' id='{{:DoctorID}}' Value='Delete' onclick='DeleteEntry(this.id);' /></a> ").AllowFiltering(false).Width(55).Add();
+                                col.HeaderText("").Template("<input type='Button' class='btn btn-sm btn-danger' id='{{:DoctorID}}' Value='Delete' onclick='DeleteEntry(this.id);' /></a> ").AllowFiltering(false).Width(80).Add();
                                 col.Field("DoctorCode").HeaderText("Doctor/NutraAgent Code").IsPrimaryKey(true).TextAlign(TextAlign.Left).Visible(true).Width(110).Add();
                                 col.Field("Type").HeaderText("Type").IsPrimaryKey(true).TextAlign(TextAlign.Left).Visible(true).Width(110).Add();
 
@@ -108,10 +108,11 @@
 
 
                                 col.Field("DoctorName").HeaderText("Doctor/NutraAgent Name").IsPrimaryKey(true).TextAlign(TextAlign.Left).Visible(true).Width(110).Add();
-                                col.Field("Address").HeaderText("Address").IsPrimaryKey(true).TextAlign(TextAlign.Left).Visible(true).Width(90).Add();
+                                col.Field("Address").HeaderText("Address").IsPrimaryKey(true).TextAlign(TextAlign.Left).Visible(true).Width(200).Add();
                                 col.Field("City").HeaderText("City").TextAlign(TextAlign.Left).Visible(true).Width(100).EditType(EditingType.String).Add();
                                 col.Field("ContactNo").HeaderText("ContactNo").TextAlign(TextAlign.Left).Visible(true).Width(150).EditType(EditingType.String).Add();
-                                col.Field("IsActive").HeaderText("Freeze").TextAlign(TextAlign.Left).Visible(true).Width(85).Add();
+                                col.Field("DoctorDropdownRegister").HeaderText("RegisterUnderDoctor").TextAlign(TextAlign.Left).Visible(true).Width(150).EditType(EditingType.String).Add();
+                                col.Field("SalesPersonName").HeaderText("RegisterUnderSalesPerson").TextAlign(TextAlign.Left).Visible(true).Width(150).EditType(EditingType.String).Add();
                             }))
         </div>
     </div>

@@ -58,7 +58,7 @@ namespace Inventory.Models
 
         [Display(Name = "Email")]
         [MaxLength(100)]
-        [RegularExpression("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$", ErrorMessage = "E-mail is not valid")]
+        
         public string BillingEmail { get; set; }
 
 
@@ -107,7 +107,7 @@ namespace Inventory.Models
 
         [Display(Name = "PAN No")]
         [MaxLength(20)]
-        [RegularExpression("^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$", ErrorMessage = "E-mail is not valid")]
+       
         public string PANNo { get; set; }
 
 
@@ -117,7 +117,6 @@ namespace Inventory.Models
 
         [Display(Name = "GST No")]
         [MaxLength(20)]
-        [RegularExpression("^([0][1-9]|[1-2][0-9]|[3][0-5])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$", ErrorMessage = "E-mail is not valid")]
         public string GSTNo { get; set; }
 
 
@@ -151,12 +150,10 @@ namespace Inventory.Models
 
 
         [Display(Name = "Balance Amount")]
-        [RegularExpression("^[0-9]{1,9}(.[0-9]{0,2})?$", ErrorMessage = "E-mail is not valid")]
         public decimal? BalanceAmount { get; set; }
 
 
         [Display(Name = "Advance Amounts")]
-        [RegularExpression("^[0-9]{1,9}(.[0-9]{0,2})?$", ErrorMessage = "E-mail is not valid")]
         public decimal? AdvanceAmount { get; set; }
 
 
@@ -175,7 +172,6 @@ namespace Inventory.Models
 
         [Display(Name = "Whats App No")]
         [MaxLength(15)]
-        [RegularExpression("^[7-9][0-9]{9}$", ErrorMessage = "E-mail is not valid")]
         public string WhatsApp { get; set; }
 
 

@@ -38,7 +38,7 @@
 
     <input type="hidden" id="OrderNo" />
     <input type="hidden" id="InvoiceNo" />
-    <input type="hidden" id="ReferenceNumber" />
+
     <head>
         <style>
             input:checked {
@@ -332,11 +332,17 @@
                     </div>
                     <div class="col-md-3" id="dtdcbookingbutton">
                         <div class="form-group">
-                            <div class="col-md-12">
+                            <div class="col-md-12" id="heading">
                                 <h4><b>DTDC Options</b></h4>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-8">
                                 <input type="button" id="Booking" value="BOOK THROUGH DTDC" onclick="" class="btn btn-warning" style="padding: 10px 10px; width: 200px; " />
+                            </div>    
+                            <div class="col-md-4">
+                                <label id="ReferenceNumber1" for="ReferenceNumber">DTDCReferenceNumber</label>
+                                <input type="text" id="ReferenceNumber" disabled />
+                                <label id="BookingStatus1" for="BookingStatus">DTDCBookingStatus</label>
+                                <input type="text" id="BookingStatus" disabled />
                             </div>
                             <div class="col-md-12">
 
@@ -849,7 +855,7 @@
                 if ($('#discIn').val() == "") { toastr.error("Please Select Discount In"); $('#discIn').css("border", "1px solid #e46f61"); isValid = false; } else { $('#discIn').css("border", "1px solid #a5da6b");  }
 
                 if ($('#OrderDate').val() == "") { toastr.error("Please Select Order Date"); $('#OrderDate').css("border", "1px solid #e46f61"); isValid = false; } else { $('#OrderDate').css("border", "1px solid #a5da6b"); }
-                if ($('#CustomerName').val() == "") { toastr.error("Please Enter Customer"); $('#CustomerName').css("border", "1px solid #e46f61"); isValid = false; } else { $('#CustomerName').css("border", "1px solid #a5da6b"); }
+                //if ($('#CustomerName').val() == "") { toastr.error("Please Enter Customer"); $('#CustomerName').css("border", "1px solid #e46f61"); isValid = false; } else { $('#CustomerName').css("border", "1px solid #a5da6b"); }
                // if ($('#CustomerAddress').val() == "") { toastr.error("Please Customer Address"); $('#CustomerAddress').css("border", "1px solid #e46f61"); isValid = false; } else { $('#CustomerAddress').css("border", "1px solid #a5da6b");  }
             //    if ($('#DoctorCode').val() == "") { toastr.error("Please Enter DoctorCode"); $('#DoctorCode').css("border", "1px solid #e46f61"); isValid = false; } else { $('#DoctorCode').css("border", "1px solid #a5da6b"); }
 
@@ -2033,7 +2039,33 @@
                     $('#EmployeeID').val(result[0].EmployeeID);
                     $('#CustId').val(result[0].CustomerID);
                     $('#ReferenceNumber').val(result[0].ReferenceNumber);
-
+                    if (result[0].ReferenceNumber == null) {
+                        $('#four_label_print').hide();
+                        $('#pod_label_print').hide();
+                        $('#cancel_booking').hide();
+                        $('#track_booking').hide();
+                        $('#pod_label').hide();
+                        $('#ReferenceNumber').hide();
+                        $('#ReferenceNumber1').hide(); 
+                        $('#BookingStatus').hide();
+                        $('#BookingStatus1').hide();
+                    }
+                    if (result[0].BookingStatus == "Cancelled") {
+                        $('#four_label_print').hide();
+                        $('#pod_label_print').hide();
+                        $('#cancel_booking').hide();
+                        $('#track_booking').hide();
+                        $('#pod_label').hide();
+                        //$('#ReferenceNumber').hide();
+                        //$('#ReferenceNumber1').hide();
+                        $('#Booking').hide();
+                        $('#BookingStatus').val(result[0].BookingStatus);
+                        $('#heading').hide();
+                    }
+                    else {
+                        $('#BookingStatus').hide();
+                        $('#BookingStatus1').hide();
+                    }
                     $('#tempSRNO').val(result[0].tempSRNONew);
 
                     $('#ProductId').val(result[0].ProductCode);
@@ -2207,7 +2239,7 @@
 
             if ($('#CashCustomerName').val() == "") {
                 toastr.error('Please Enter Customer Name');
-                flag = false;
+                //flag = false;
             }
             else {
                 CustomerName = $('#CashCustomerName').val();
@@ -2219,7 +2251,7 @@
         }
         if ($('#Customer').val() == "") {
             toastr.error('Please Select Customer');
-            flag = false;
+            //flag = false;
         }
         if ($('#Employee').val() == "") {
             toastr.error('Please Select Employee');
@@ -2503,12 +2535,14 @@
             url: '/CounterSale/DTDCBooking',
             data: { OrderID: last_par },
             success: function (result) {
-                if (result == "Success") {
-                    alert("Order Booked Successfully");
-                } else {
-                    alert("Booking Failed");
+                debugger
+                if (result == "" || result == null || result == '')
+                { alert("Booking Failed"); }
+                else if (result.result == null)
+                { alert("Booking through DTDC Successfull.") }
+                else {
+                    alert(result.result);
                 }
-
             }
         })
         } else {
@@ -2551,10 +2585,19 @@
             $.post("/CounterSale/CancelBooking", { AWBNo: $("#ReferenceNumber").val() }, function (res) {
                 if (res != undefined || res != null) {
                     alert("Order Cancelled Successfully!");
+
+                    $('#four_label_print').hide();
+                    $('#pod_label_print').hide();
+                    $('#cancel_booking').hide();
+                    $('#track_booking').hide();
+                    $('#pod_label').hide();
+                    $('#ReferenceNumber').hide();
+                    $('#ReferenceNumber1').hide(); 
                 }
+                location.reload();
             });
         } else {
-         
+
         }
     });
     //TrackBooking

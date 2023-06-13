@@ -172,5 +172,10 @@ namespace Inventory.Models
         public string Delivery { get; set; }
         public string VehicleNo { get; set; }
         public bool? IsDCSale { get; set; }
+        public string ReferenceNumber { get; set; }
+        public string CustRefNo { get; set; }
+
+        public string BookingStatus { get; set; }
+
     }
 }

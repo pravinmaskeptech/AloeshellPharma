@@ -24,7 +24,7 @@ namespace Inventory.Controllers
             var results = from p in db.GRNDetail
                           where p.ReturnQty > 0 /*&& p.DebitDocNo == null*/
                           join supplier in db.suppliers on p.SupplierID equals supplier.SupplierID
-                         
+
                           group new { p.GRNNo, p.GRNId, p.PONo, p.PODate, p.ReturnQty, p.AmountPerItem, supplier.SupplierName } by p.PONo into g
                           select new
                           {
@@ -34,7 +34,7 @@ namespace Inventory.Controllers
                               PODate = g.Select(x => x.PODate).FirstOrDefault(),
                               TotalQty = g.Sum(x => x.ReturnQty),
                               TotAmount = g.Sum(x => x.ReturnQty * x.AmountPerItem),
-                             
+
                           };
 
 
@@ -71,15 +71,15 @@ namespace Inventory.Controllers
                 return View();
             }
         }
-        
+
         public ActionResult Detail(string Id)
         {
             ViewBag.PONO = Id;
             var count = db.BillNumbering.Where(x => x.Type == "DebitDocNo").FirstOrDefault();
             var Number = count.Number;
             ViewBag.DocNo = "Doc_" + Number;
-            var GRN = db.GRNDetail.Select(x => new { x.SupplierID, x.PONo}).Where(x => x.PONo == Id).FirstOrDefault();
-            var Supplier = db.suppliers.Where(x => x.SupplierID ==GRN.SupplierID).Select(x => new { x.SupplierName }).FirstOrDefault();
+            var GRN = db.GRNDetail.Select(x => new { x.SupplierID, x.PONo }).Where(x => x.PONo == Id).FirstOrDefault();
+            var Supplier = db.suppliers.Where(x => x.SupplierID == GRN.SupplierID).Select(x => new { x.SupplierName }).FirstOrDefault();
             ViewBag.Supplier = Supplier.SupplierName;
             return View();
         }
@@ -106,7 +106,7 @@ namespace Inventory.Controllers
                 GRN.ForEach(x => x.DebitDocNo = DocNo);
 
                 var results = from p in db.GRNDetail
-                              where p.ReturnQty > 0  && p.PONo == PONO
+                              where p.ReturnQty > 0 && p.PONo == PONO
                               join supplier in db.suppliers on p.SupplierID equals supplier.SupplierID
                               select new { p.PONo, p.PODate, p.ReturnQty, p.AmountPerItem, supplier.SupplierName, p.SupplierID } into x
                               group x by x.PONo into g
@@ -141,7 +141,7 @@ namespace Inventory.Controllers
             catch (Exception EX)
             {
                 return Json(EX.Message);
-            }            
+            }
         }
 
         public JsonResult PrintDebitNote(int id)
@@ -169,12 +169,29 @@ namespace Inventory.Controllers
                                 join StoreLocation in Storesmaster on returns.StoreLocationId equals StoreLocation.StoreLocationId into storeLoc
                                 from store in storeLoc.DefaultIfEmpty()
 
-                                orderby returns.POreturnId descending
-                                select new { POreturnId = returns.POreturnId, SerialNumber = returns.SerialNumber, GrnNo = returns.GrnNo, ReturnDate = returns.ReturnDate, BatchNo = returns.BatchNo, ReturnQty = returns.ReturnQty, ReturnReason = returns.ReturnReason, ProductCode = prd == null ? string.Empty : prd.ProductName, Warehouse = Whouse == null ? string.Empty : Whouse.WareHouseName, StoreLocation = store == null ? string.Empty : store.StoreLocation, Status = returns.Status }
+                                orderby returns.CreatedDate descending
+                                select new { SerialNumber = returns.SerialNumber, GrnNo = returns.GrnNo, ReturnDate = returns.ReturnDate, BatchNo = returns.BatchNo, ReturnQty = returns.ReturnQty, ReturnReason = returns.ReturnReason, ProductCode = prd == null ? string.Empty : prd.ProductName, Warehouse = Whouse == null ? string.Empty : Whouse.WareHouseName, StoreLocation = store == null ? string.Empty : store.StoreLocation, Status = returns.Status }
                                     ).ToList();
+                var distinctByProductCode = result12
+    .GroupBy(x => x.ProductCode)
+    .Select(g => new
+    {
+        ProductCode = g.Key,
+        ReturnQty = g.Sum(x => x.ReturnQty),
+        SerialNumber = g.First().SerialNumber,
+        GrnNo = g.First().GrnNo,
+        ReturnDate = g.First().ReturnDate,
+        BatchNo = g.First().BatchNo,
+        ReturnReason = g.First().ReturnReason,
+        Warehouse = g.First().Warehouse,
+        StoreLocation = g.First().StoreLocation,
+        Status = g.First().Status
+    })
+    .ToList();
 
-                var supplier = db.suppliers.Where(a=>a.SupplierID == getGRNNo.SupplierID).FirstOrDefault();
-                
+
+                var supplier = db.suppliers.Where(a => a.SupplierID == getGRNNo.SupplierID).FirstOrDefault();
+
                 iTextSharp.text.Font font5 = iTextSharp.text.FontFactory.GetFont(FontFactory.HELVETICA, 9);
                 iTextSharp.text.Font font10 = iTextSharp.text.FontFactory.GetFont(FontFactory.HELVETICA, 11);
 
@@ -244,18 +261,18 @@ namespace Inventory.Controllers
 
                 int cnt = 1;
                 decimal totAmt = 0;
-                foreach (var r in result12)
+                foreach (var r in distinctByProductCode)
                 {
                     var prd = db.Products.Where(a => a.ProductName == r.ProductCode).FirstOrDefault();
                     var grn = db.GRNDetail.Where(a => a.GRNNo == getGRNNo.GRNNo && a.ProductCode == prd.ProductCode).FirstOrDefault();
-                   
+
                     var qty = r.ReturnQty;
                     var amt = grn.BasicRate;
                     var Netamot = Convert.ToDecimal(qty) * Convert.ToDecimal(amt);
                     totAmt = totAmt + Netamot;
                     var Count = 1;
                     //var orderdetails=db.orderDetails.Where(a=>a.OrderNo==r.)
-                    if (result12.Count > 0)
+                    if (distinctByProductCode.Count > 0)
                     {
                         Paragraph pr931 = new Paragraph();
                         pr931.Add(new Phrase("", FontFactory.GetFont("Arial", 9, Font.NORMAL)));
@@ -529,9 +546,9 @@ namespace Inventory.Controllers
                 table3.AddCell(c112);
 
                 var crdata = db.DebitNote.Where(a => a.PONO == getGRNNo.PONo).FirstOrDefault();
-               if (crdata == null)
+                if (crdata == null)
                 {
-                     var result0 = new { Message = "Complete Debit Note First" };
+                    var result0 = new { Message = "Complete Debit Note First" };
                     return Json(result0, JsonRequestBehavior.AllowGet);
                 }
                 Paragraph pr539 = new Paragraph();
