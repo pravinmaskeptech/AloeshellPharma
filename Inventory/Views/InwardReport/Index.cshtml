@@ -26,7 +26,7 @@
 </style>
 
 <th>
-    <h3 class="mb-0">Purchase Report </h3>
+    <h3 class="mb-0">Inward Report </h3>
 </th>
 <div>
     <div class="container-fluid">
@@ -67,22 +67,15 @@
                     <thead>
                         <tr class="text-uppercase" style="font-size: 12px; background-color: #d8e9c1">
                             @*<th></th>*@
+                            <th>GRN No</th>
+                            <th>GRN Date </th>
+                            
+                            <th>Po No </th>
+
                             <th>Supplier Name</th>
-                            <th>Supplier City</th>
-                            <th>GST No</th>
-                            <th>Purchase Order No</th>
-                            <th>Purchase Order Date </th>
-                            <th>Basic Rate </th>
-                            <th>Discount </th>
-                            <th>IGST Amount</th>
-                            <th>SGST Amount</th>
-                            <th>CGST Amount</th>
-
-                            <th>Total Amount </th>
-                            <th>Return Qty</th>
-                            <th>Return Amount</th>
-                            <th>Net Amount</th>
-
+                            <th>Order Qty</th>
+                            <th>Received Qty</th>
+                            <th>Net Qty</th>
 
                         </tr>
                     </thead>
@@ -132,7 +125,7 @@
                         "aLengthMenu": [100],
 
             "sServerMethod": 'POST',
-            "sAjaxSource": '@Url.Action("GetData", "PurchaseReport")',
+            "sAjaxSource": '@Url.Action("GetData", "InwardReport")',
               "pageLength": 15,
               //lengthMenu: [
               //    [10, 25, 50, -1],
@@ -160,37 +153,31 @@
             "autoWidth": false,
             "aoColumns": [
 
-
-                { "mData": "SupplierName" },
-                { "mData": "BillingCity" },
-                { "mData": "GSTNo" },
-                { "mData": "PurchaseOrderNo" },
+                { "mData": "GRNNo" },
                 {
-                    "mData": "PODate",
-                    data: "PODate", render: function (data) {
+                    "mData": "GRNDate",
+                    data: "GRNDate", render: function (data) {
                         return moment(data).format('DD-MM-YYYY');
                     }
                 },
-                { "mData": "NetAmount" },
+                { "mData": "PoNo" },
 
-                { "mData": "Discount" },
-                { "mData": "IGST" },
+                { "mData": "SupplierName" },
+                //{ "mData": "PurchaseOrderNo" },
+               
+                { "mData": "OrderQty" },
 
-                { "mData": "SGST" },
-                { "mData": "CGST" },
-                
+                { "mData": "ReceivedQty" },
+                { "mData": "NetQty" },
 
-                { "mData": "TotalAmount" },
-                 { "mData": "ReturnQty" },
-                { "mData": "ReturnAmount" },
-
-                {
-                    "mData": null,
-                    "render": function (data, type, row) {
-                        var Amount = row.TotalAmount - row.ReturnAmount;
-                        return Amount.toFixed(2);
-                    }
-                }
+                //{
+                //    "mData": null,
+                //    "render": function (data, type, row) {
+                //        var Amount = row.TotalAmount - row.ReturnAmount;
+                //        return Amount.toFixed(2);
+                //    }
+                //}
+               
                // { "mData": "Amount" }
 
                 ],
@@ -205,7 +192,7 @@
 
 
     $(document).ready(function () {
-       
+
         $('#exportBtn').click(function () {
             exportAllPagesToExcel();
         });
@@ -234,7 +221,7 @@
 
 
                 $.ajax({
-                    url: '@Url.Action("SearchData", "PurchaseReport")',
+                    url: '@Url.Action("SearchData", "InwardReport")',
                     type: "GET",
                     dataType: "JSON",
                     data: { FromDate: $("#FromDate").val(), ToDate: $("#ToDate").val() },

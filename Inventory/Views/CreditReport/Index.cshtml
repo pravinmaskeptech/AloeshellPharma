@@ -3,6 +3,41 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<style>
+    .e-grid .e-headercell, .e-grid .e-grouptopleftcell {
+        background-color: #3c8dbc;
+        border-top-color: #3c8dbc;
+        border-left-color: #3c8dbc;
+        border-bottom-color: #3c8dbc;
+        color: #fff;
+    }
+
+    .e-grid .e-gridheader .e-icon {
+        color: #fff;
+    }
+
+    .Expand {
+        background-position: -180px 3px;
+    }
+
+    .Collapse {
+        background-position: -205px 3px;
+    }
+
+    .refresh {
+        background-position: -76px 3px;
+    }
+
+    .e-toolbaricons {
+        background-image: url("../../Content/ej/web/common-images/icons-gray.png");
+    }
+
+    .Expand:hover, .Collapse:hover, .refresh:hover {
+        background-image: url("../../Content/ej/web/common-images/icons-white.png");
+    }
+</style>
+
 <style>
     .dt-buttons {
         text-align: right;
@@ -26,10 +61,12 @@
 </style>
 
 <th>
-    <h3 class="mb-0">Purchase Report </h3>
+    <h3 class="mb-0">Credit Report </h3>
 </th>
 <div>
+
     <div class="container-fluid">
+
         <div class="row">
             <div class="col-md-12 col-xs-12">
 
@@ -50,6 +87,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-lg-3">
                         <div class="form-group">
                             <div class="col-lg-8">
@@ -57,52 +95,75 @@
                                     @*<input id="btnsearch" type="submit" value="Search" class="btn btn-warning" style="padding:6px 6px" />*@
                                     @*<input type="submit" value="Search" />*@
                                     <input type="button" id="btnSearch" value="Search" onclick="SearchData();" class="btn btn-primary" />
+
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @*<button type="button" id="exportButton" class="btn btn-primary">Export to Excel</button>*@
 
                 </div>
+
+
+
                 <table id="example" class="table table-striped table-bordered dt-responsive" style="width:100%">
                     <thead>
                         <tr class="text-uppercase" style="font-size: 12px; background-color: #d8e9c1">
                             @*<th></th>*@
-                            <th>Supplier Name</th>
-                            <th>Supplier City</th>
-                            <th>GST No</th>
-                            <th>Purchase Order No</th>
-                            <th>Purchase Order Date </th>
-                            <th>Basic Rate </th>
-                            <th>Discount </th>
-                            <th>IGST Amount</th>
-                            <th>SGST Amount</th>
-                            <th>CGST Amount</th>
+                            @*<th>Customer Name</th>
+        <th>City</th>
+        <th>GST No</th>
+        <th>Invoice No</th>
+        <th>Order No </th>
+        <th>Invoice Date </th>
+        <th>Basic Rate </th>
+        <th>Discount </th>
+        <th>IGST Amount</th>
 
-                            <th>Total Amount </th>
-                            <th>Return Qty</th>
-                            <th>Return Amount</th>
-                            <th>Net Amount</th>
+        <th>SGST Amount</th>
+        <th>CGST Amount</th>
+        <th>Total Amount </th>
+        <th>Return Qty</th>
+        <th>Return Amount</th>
 
+        <th>Net Amount </th>*@
+                            @*<th>ProductCode</th>
+        <th>ProductName</th>*@
+                            <th>CreditNoteNo</th>
+                            <th>CreditNoteDate</th>
+                            <th>CustomerName</th>
+
+                            <th>InvoiceNo</th>
+                            <th>InvoiceDate</th>
+
+                            <th>Qty</th>
+                            <th>Amount</th>
 
                         </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
+
+
+
             </div>
         </div>
     </div>
 </div>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/vfs_fonts.js"></script>
-<script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+
 <script src="~/plugins/jquery/jquery.min.js"></script>
 @*<script src="~/plugins/datatables/jquery.dataTables.min.js"></script>*@
+<link href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css'
+      rel='stylesheet'>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js">
+</script>
 
 <script>
     $(document).ready(function () {
@@ -111,91 +172,70 @@
 
         report();
 
-        //SearchData();
+       // SearchData();
 
 
-     });
 
-    function report() {
+    });
+     function report() {
         debugger
 
                 try {
                     $('#example').DataTable({
                         paging: true,
-              searching: false,
-            bServerSide: true,
-            responsive: true,
-            lengthChange: false,
+                        searching: false,
+                        bServerSide: true,
+                        responsive: true,
+                        lengthChange: false,
                         dom: 'Bfrtip',
                         "sScrollX": "100%",
                         "bScrollCollapse": true,
-                        "aLengthMenu": [100],
-
-            "sServerMethod": 'POST',
-            "sAjaxSource": '@Url.Action("GetData", "PurchaseReport")',
-              "pageLength": 15,
-              //lengthMenu: [
-              //    [10, 25, 50, -1],
-              //    ['10 rows', '25 rows', '50 rows', 'Show all']
-              //],
-              //buttons: [
-              //    'pageLength'
-              //],
-              "buttons": [
-                  {
-                      extend: 'excelHtml5',
-                      text: 'Export to Excel',
-
-                      exportOptions: {
-                          modifier: {
-                              page: 'all'
-                          }
-                      }
-                  }
-              ],
-            language: {
-                search: "_INPUT_",
-                searchPlaceholder: "Search"
-            },
+                        "sServerMethod": 'POST',
+                        "sAjaxSource": '@Url.Action("GetData", "CreditReport")',
+                        "pageLength": 15,
+                        // buttons: ['excel'],
+                        "buttons": [
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Export to Excel',
+                                exportOptions: {
+                                    modifier: {
+                                        page: 'all'
+                                    }
+                                }
+                            }
+                        ],
+            //language: {
+            //    search: "_INPUT_",
+            ////    searchPlaceholder: "Search"
+            //},
             "autoWidth": false,
             "aoColumns": [
-
-
-                { "mData": "SupplierName" },
-                { "mData": "BillingCity" },
-                { "mData": "GSTNo" },
-                { "mData": "PurchaseOrderNo" },
+                //{ "mData": "ProductCode" },
+                //{ "mData": "ProductName" },
+                { "mData": "CreditNoteNo" },
+                //{ "mData": "CreditNoteDate" },
                 {
-                    "mData": "PODate",
-                    data: "PODate", render: function (data) {
+                    "mData": "CreditNoteDate",
+                    data: "CreditNoteDate", render: function (data) {
                         return moment(data).format('DD-MM-YYYY');
                     }
                 },
-                { "mData": "NetAmount" },
+                { "mData": "CustomerName" },
 
-                { "mData": "Discount" },
-                { "mData": "IGST" },
+                { "mData": "InvoiceNo" },
+                { "mData": "InvoiceDate" },
 
-                { "mData": "SGST" },
-                { "mData": "CGST" },
                 
+                { "mData": "Qty" },
 
-                { "mData": "TotalAmount" },
-                 { "mData": "ReturnQty" },
-                { "mData": "ReturnAmount" },
+                { "mData": "Amount" },
 
-                {
-                    "mData": null,
-                    "render": function (data, type, row) {
-                        var Amount = row.TotalAmount - row.ReturnAmount;
-                        return Amount.toFixed(2);
-                    }
-                }
-               // { "mData": "Amount" }
 
                 ],
 
-        });
+                    });
+
 
         }
 
@@ -204,37 +244,12 @@
     }
 
 
-    $(document).ready(function () {
-       
-        $('#exportBtn').click(function () {
-            exportAllPagesToExcel();
-        });
-
-        function exportAllPagesToExcel() {
-            $.ajax({
-                url: '/path-to-export-endpoint', // Specify the server-side endpoint to export all pages to Excel
-                type: 'POST',
-                dataType: 'json',
-                success: function (response) {
-                    // Download the generated Excel file
-                    var downloadLink = document.createElement('a');
-                    downloadLink.href = response.fileUrl;
-                    downloadLink.download = 'all_pages.xlsx';
-                    downloadLink.click();
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error exporting to Excel:', error);
-                }
-            });
-        }
-    });
-
-
         function SearchData() {
 
 
+
                 $.ajax({
-                    url: '@Url.Action("SearchData", "PurchaseReport")',
+                    url: '@Url.Action("SearchData", "CreditReport")',
                     type: "GET",
                     dataType: "JSON",
                     data: { FromDate: $("#FromDate").val(), ToDate: $("#ToDate").val() },
@@ -242,7 +257,6 @@
                     success: function (result) {
                         debugger;
                         if (result.Message == "success") {
-                          // report();
                             var table = $('#example').DataTable();
                             table.ajax.reload(function (Json) {
 
@@ -251,12 +265,12 @@
 
                         }
                         else {
-                            alert(result.Message)
+                            toastr.error(result.Message);
                         }
                     }
                 });
 
-    }
+        }
 
 
 

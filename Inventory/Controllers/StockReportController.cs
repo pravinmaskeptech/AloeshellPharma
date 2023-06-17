@@ -50,14 +50,16 @@ namespace Inventory.Controllers
         {
 
             var xx1 = db.GRNDetail
-     .GroupBy(l => l.ProductCode)
-     .Select(cl => new
-     {
-         ProductCode = cl.Key,
-         ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
-         SalesQty = db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty),
-         AvailableQty = (cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - (db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty)),
-     }).ToList();
+   .GroupBy(l => l.ProductCode)
+   .Select(cl => new
+   {
+       ProductCode = cl.Key,
+       ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
+       SalesQty = db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty),
+       AvailableQty = (cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - (db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty))
+   })
+   .ToList();
+
             var xxFiltered1 = xx1.Where(x => db.Products.Any(p => p.ProductCode == x.ProductCode && p.SerialNoApplicable == true)).ToList();
 
 
@@ -68,8 +70,9 @@ namespace Inventory.Controllers
         ProductCode = cl.FirstOrDefault().ProductCode,
         ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
         SalesQty = cl.Sum(c => c.SalesQty),
-        AvailableQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(a => a.SalesQty),
-    }).ToList();
+        AvailableQty = (cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - cl.Sum(a => a.SalesQty),
+    })
+    .ToList();
 
             var xxFiltered2 = xx2.Where(x => db.Products.Any(p => p.ProductCode == x.ProductCode && p.SerialNoApplicable == false)).ToList();
 
@@ -95,7 +98,7 @@ namespace Inventory.Controllers
                              grn?.ProductCode,
                              grn?.ReceivedQty,
                              grn?.SalesQty,
-                             grn?.AvailableQty
+                             grn?.AvailableQty,
                          };
 
             // ViewBag.datasource = result.ToList();
@@ -106,8 +109,9 @@ namespace Inventory.Controllers
             var ToDate = Session["ToDate"];
             try
             {
-                Product = Session["Product"].ToString();
-                Category = Session["Category"].ToString();
+                Product = Session["Product"]?.ToString();
+                Category = Session["Category"]?.ToString();
+
 
             }
             catch
@@ -132,7 +136,8 @@ namespace Inventory.Controllers
         ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
         SalesQty = db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty),
         AvailableQty = (cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - (db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty)),
-    }).ToList();
+    })
+    .ToList();
                 xxFiltered1 = xx1.Where(x => db.Products.Any(p => p.ProductCode == x.ProductCode && p.SerialNoApplicable == true)).ToList();
 
 
@@ -143,8 +148,9 @@ namespace Inventory.Controllers
            ProductCode = cl.FirstOrDefault().ProductCode,
            ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
            SalesQty = cl.Sum(c => c.SalesQty),
-           AvailableQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(a => a.SalesQty),
-       }).ToList();
+           AvailableQty = (cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - cl.Sum(a => a.SalesQty),
+       })
+    .ToList();
 
                 xxFiltered2 = xx2.Where(x => db.Products.Any(p => p.ProductCode == x.ProductCode && p.SerialNoApplicable == false)).ToList();
 
@@ -177,44 +183,62 @@ namespace Inventory.Controllers
             {
                 DateTime fromDateValue = new DateTime();
                 DateTime toDateValue = new DateTime();
+
                 try
-                { fromDateValue = DateTime.ParseExact(FromDate.ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture); }
+                {
+                    fromDateValue = DateTime.ParseExact(FromDate.ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                }
                 catch { }
 
                 try
-                { toDateValue = DateTime.ParseExact(ToDate.ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture); }
+                {
+                    toDateValue = DateTime.ParseExact(ToDate.ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                }
                 catch { }
-                //xx = db.GRNDetail.Where(a => a.GRNDate >= fromDateValue && a.GRNDate <= toDateValue)
-                //           .GroupBy(l => l.ProductCode)
-                //           .Select(cl => new
-                //           {
-                //               ProductCode = cl.FirstOrDefault().ProductCode,
-                //               ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
-                //               SalesQty = db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty),
-                //               AvailableQty = (cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - (db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty)),
-                //           }).ToList();
 
-                xx1 = db.GRNDetail.Where(a => a.GRNDate >= fromDateValue && a.GRNDate <= toDateValue)
-    .GroupBy(l => l.ProductCode)
-    .Select(cl => new
-    {
-        ProductCode = cl.Key,
-        ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
-        SalesQty = db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty),
-        AvailableQty = (cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - (db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty)),
-    }).ToList();
+                xx1 = db.GRNDetail
+                    .Where(a => a.GRNDate >= fromDateValue && a.GRNDate <= toDateValue)
+                    .GroupBy(l => l.ProductCode)
+                    .Select(cl => new
+                    {
+                        ProductCode = cl.Key,
+                        ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
+                        SalesQty = db.orderDetails.Where(s => s.ProductCode == cl.Key && s.CreatedDate >= fromDateValue && s.CreatedDate <= toDateValue).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key && s.CreatedDate >= fromDateValue && s.CreatedDate <= toDateValue).Sum(s => s.ReturnQty),
+                        AvailableQty = (db.GRNDetail.Where(s => s.ProductCode == cl.Key).Sum(c => c.ReceivedQty - c.ReturnQty) - (db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty)))
+                        - (cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty) - (db.orderDetails.Where(s => s.ProductCode == cl.Key && s.CreatedDate >= fromDateValue && s.CreatedDate <= toDateValue).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key && s.CreatedDate >= fromDateValue && s.CreatedDate <= toDateValue).Sum(s => s.ReturnQty)))
+                    })
+                    .ToList();
+
+               
+
+
+
                 xxFiltered1 = xx1.Where(x => db.Products.Any(p => p.ProductCode == x.ProductCode && p.SerialNoApplicable == true)).ToList();
 
 
-                xx2 = db.GRNDetail.Where(a => a.GRNDate >= fromDateValue && a.GRNDate <= toDateValue)
-       .GroupBy(l => l.ProductCode)
-       .Select(cl => new
-       {
-           ProductCode = cl.FirstOrDefault().ProductCode,
-           ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
-           SalesQty = cl.Sum(c => c.SalesQty),
-           AvailableQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(a => a.SalesQty),
-       }).ToList();
+                xx2 = db.GRNDetail
+                    .Where(a => a.GRNDate >= fromDateValue && a.GRNDate <= toDateValue)
+                    .GroupBy(l => l.ProductCode)
+                    .Select(cl => new
+                    {
+                        ProductCode = cl.FirstOrDefault().ProductCode,
+                        ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
+                        SalesQty = cl.Sum(c => c.SalesQty),
+                        AvailableQty = (db.GRNDetail.Where(s => s.ProductCode == cl.Key).Sum(c => c.ReceivedQty - c.ReturnQty) - (db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty))) - ((cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - cl.Sum(a => a.SalesQty))
+                    })
+                    .ToList();
+
+
+                //            xx2 = db.GRNDetail.Where(a => a.GRNDate >= fromDateValue && a.GRNDate <= toDateValue)
+                //   .GroupBy(l => l.ProductCode)
+                //   .Select(cl => new
+                //   {
+                //       ProductCode = cl.FirstOrDefault().ProductCode,
+                //       ReceivedQty = cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty),
+                //       SalesQty = cl.Sum(c => c.SalesQty),
+                //       AvailableQty = (db.GRNDetail.Where(s => s.ProductCode == cl.Key).Sum(c => c.ReceivedQty - c.ReturnQty) - (db.orderDetails.Where(s => s.ProductCode == cl.Key).Sum(s => s.DeliveredQty) - db.Sales.Where(s => s.ProductCode == cl.Key).Sum(s => s.ReturnQty))) - ((cl.Sum(c => c.ReceivedQty) - cl.Sum(c => c.ReturnQty)) - cl.Sum(a => a.SalesQty)),
+                //   })
+                //.ToList();
 
                 xxFiltered2 = xx2.Where(x => db.Products.Any(p => p.ProductCode == x.ProductCode && p.SerialNoApplicable == false)).ToList();
 
@@ -231,7 +255,6 @@ namespace Inventory.Controllers
                           {
                               product.ProductName,
                               CategoryName = category.CategoryName,
-
                               grn?.ProductCode,
                               grn?.ReceivedQty,
                               grn?.SalesQty,

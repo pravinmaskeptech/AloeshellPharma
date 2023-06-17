@@ -30,36 +30,77 @@ namespace Inventory.Controllers
         public string GetData(string sEcho, int iDisplayLength, int iDisplayStart, string sSearch)
         {
             try
+
             {
-
-
-
                 var result = (
-  from o in db.orderMain
-  join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
-  from sl in salesData.DefaultIfEmpty()
-  where o.IsCashCustomer == true
-  group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName }
-  by new { o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName } into groupedData
-  orderby groupedData.Key.OrderID ascending
-  select new
-  {
-      groupedData.Key.OrderNo,
-      groupedData.Key.OrderID,
-      groupedData.Key.CurrentStatus,
-      groupedData.Key.DeliverTo,
-      groupedData.Key.NetAmount,
-      groupedData.Key.Discount,
-      groupedData.Key.Freeze,
-      groupedData.Key.IGST,
-      groupedData.Key.SGST,
-      groupedData.Key.CGST,
-      groupedData.Key.TotalAmount,
-      groupedData.Key.CustomerName,
-      InvoiceNo = groupedData.Max(x => x.InvoiceNo),
-      InvoiceDate = groupedData.Max(x => x.InvoiceDate)
-  }
+    from o in db.orderMain
+    join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
+    from sl in salesData.DefaultIfEmpty()
+    where o.IsCashCustomer == true
+    group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName, o.CustomerGSTNo, o.CustomerCity, sl.ReturnQty, sl.AmountPerUnit }
+    by new { o.OrderNo, o.OrderID }
+    into groupedData
+    orderby groupedData.Key.OrderID ascending
+    select new
+    {
+        groupedData.Key.OrderNo,
+        groupedData.Key.OrderID,
+        CurrentStatus = groupedData.Select(x => x.CurrentStatus).FirstOrDefault(),
+        DeliverTo = groupedData.Select(x => x.DeliverTo).FirstOrDefault(),
+        NetAmount = groupedData.Select(x => x.NetAmount).FirstOrDefault(),
+        Discount = groupedData.Select(x => x.Discount).FirstOrDefault(),
+        Freeze = groupedData.Select(x => x.Freeze).FirstOrDefault(),
+        IGST = groupedData.Select(x => x.IGST).FirstOrDefault(),
+        SGST = groupedData.Select(x => x.SGST).FirstOrDefault(),
+        CGST = groupedData.Select(x => x.CGST).FirstOrDefault(),
+        TotalAmount = groupedData.Select(x => x.TotalAmount).FirstOrDefault(),
+        CustomerName = groupedData.Select(x => x.CustomerName).FirstOrDefault(),
+        CustomerGSTNo = groupedData.Select(x => x.CustomerGSTNo).FirstOrDefault(),
+        CustomerCity = groupedData.Select(x => x.CustomerCity).FirstOrDefault(),
+        InvoiceNo = groupedData.Max(x => x.InvoiceNo),
+        InvoiceDate = groupedData.Max(x => x.InvoiceDate),
+        ReturnQty = groupedData.Sum(x => x.ReturnQty),
+        ReturnAmount = groupedData.Any(x => x.ReturnQty != null && x.ReturnQty != 0)
+            ? groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit)
+            : 0,
+
+        Amount = groupedData.Any(x => x.ReturnQty != null && x.ReturnQty != 0)
+            ? groupedData.Sum(x => x.TotalAmount) - groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit)
+            : 0,
+       
+        //ReturnAmount = groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit),
+        //Amount = groupedData.Sum(x => x.TotalAmount) - groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit)
+
+        //Amount = groupedData.Sum(x => x.TotalAmount - (x.ReturnQty * x.AmountPerUnit))
+    }
 ).ToList();
+
+//                var result = (
+//  from o in db.orderMain
+//  join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
+//  from sl in salesData.DefaultIfEmpty()
+//  where o.IsCashCustomer == true
+//  group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName }
+//  by new { o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName } into groupedData
+//  orderby groupedData.Key.OrderID ascending
+//  select new
+//  {
+//      groupedData.Key.OrderNo,
+//      groupedData.Key.OrderID,
+//      groupedData.Key.CurrentStatus,
+//      groupedData.Key.DeliverTo,
+//      groupedData.Key.NetAmount,
+//      groupedData.Key.Discount,
+//      groupedData.Key.Freeze,
+//      groupedData.Key.IGST,
+//      groupedData.Key.SGST,
+//      groupedData.Key.CGST,
+//      groupedData.Key.TotalAmount,
+//      groupedData.Key.CustomerName,
+//      InvoiceNo = groupedData.Max(x => x.InvoiceNo),
+//      InvoiceDate = groupedData.Max(x => x.InvoiceDate)
+//  }
+//).ToList();
 
 
 
@@ -70,35 +111,80 @@ namespace Inventory.Controllers
                 var ToDate = Session["ToDate"];
                 if (FromDate == "" || ToDate == "" || ToDate == null || FromDate == null)
                 {
+                     result = (
+    from o in db.orderMain
+    join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
+    from sl in salesData.DefaultIfEmpty()
+    where o.IsCashCustomer == true
+    group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName, o.CustomerGSTNo, o.CustomerCity, sl.ReturnQty, sl.AmountPerUnit }
+    by new { o.OrderNo, o.OrderID }
+    into groupedData
+    orderby groupedData.Key.OrderID ascending
+    select new
+    {
+        groupedData.Key.OrderNo,
+        groupedData.Key.OrderID,
+        CurrentStatus = groupedData.Select(x => x.CurrentStatus).FirstOrDefault(),
+        DeliverTo = groupedData.Select(x => x.DeliverTo).FirstOrDefault(),
+        NetAmount = groupedData.Select(x => x.NetAmount).FirstOrDefault(),
+        Discount = groupedData.Select(x => x.Discount).FirstOrDefault(),
+        Freeze = groupedData.Select(x => x.Freeze).FirstOrDefault(),
+        IGST = groupedData.Select(x => x.IGST).FirstOrDefault(),
+        SGST = groupedData.Select(x => x.SGST).FirstOrDefault(),
+        CGST = groupedData.Select(x => x.CGST).FirstOrDefault(),
+        TotalAmount = groupedData.Select(x => x.TotalAmount).FirstOrDefault(),
+        CustomerName = groupedData.Select(x => x.CustomerName).FirstOrDefault(),
+        CustomerGSTNo = groupedData.Select(x => x.CustomerGSTNo).FirstOrDefault(),
+        CustomerCity = groupedData.Select(x => x.CustomerCity).FirstOrDefault(),
+        InvoiceNo = groupedData.Max(x => x.InvoiceNo),
+        InvoiceDate = groupedData.Max(x => x.InvoiceDate),
+        ReturnQty = groupedData.Sum(x => x.ReturnQty),
+        ReturnAmount = groupedData.Any(x => x.ReturnQty != null && x.ReturnQty != 0)
+            ? groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit)
+            : 0,
+        //ReturnAmount = groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit),
+        //Amount = groupedData.Sum(x => x.TotalAmount) - groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit)
+         Amount = groupedData.Any(x => x.ReturnQty != null && x.ReturnQty != 0)
+            ? groupedData.Sum(x => x.TotalAmount) - groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit)
+            : 0
+       
+        //ReturnAmount = groupedData.Sum(x => x.TotalAmount - (x.ReturnQty * x.AmountPerUnit))
+    }
+).ToList();
 
-
-                    result = (
-   from o in db.orderMain
-   join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
-   from sl in salesData.DefaultIfEmpty()
-   where o.IsCashCustomer == true
-   group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName }
-   by new { o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName } into groupedData
-   orderby groupedData.Key.OrderID ascending
-   select new
-   {
-       groupedData.Key.OrderNo,
-       groupedData.Key.OrderID,
-       groupedData.Key.CurrentStatus,
-       groupedData.Key.DeliverTo,
-       groupedData.Key.NetAmount,
-       groupedData.Key.Discount,
-       groupedData.Key.Freeze,
-       groupedData.Key.IGST,
-       groupedData.Key.SGST,
-       groupedData.Key.CGST,
-       groupedData.Key.TotalAmount,
-       groupedData.Key.CustomerName,
-       InvoiceNo = groupedData.Max(x => x.InvoiceNo),
-       InvoiceDate = groupedData.Max(x => x.InvoiceDate)
-   }
- ).ToList();
-
+//                    result = (
+//    from o in db.orderMain
+//    join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
+//    from sl in salesData.DefaultIfEmpty()
+//    where o.IsCashCustomer == true
+//    group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName, o.CustomerGSTNo, o.CustomerCity, sl.ReturnQty, sl.AmountPerUnit }
+//    by new { o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName, o.CustomerGSTNo, o.CustomerCity, sl.AmountPerUnit, sl.ReturnQty, }
+//    into groupedData
+//    orderby groupedData.Key.OrderID ascending
+//    select new
+//    {
+//        groupedData.Key.OrderNo,
+//        groupedData.Key.OrderID,
+//        groupedData.Key.CurrentStatus,
+//        groupedData.Key.DeliverTo,
+//        groupedData.Key.NetAmount,
+//        groupedData.Key.Discount,
+//        groupedData.Key.Freeze,
+//        groupedData.Key.IGST,
+//        groupedData.Key.SGST,
+//        groupedData.Key.CGST,
+//        groupedData.Key.TotalAmount,
+//        groupedData.Key.CustomerName,
+//        groupedData.Key.CustomerGSTNo,
+//        groupedData.Key.CustomerCity,
+//        InvoiceNo = groupedData.Max(x => x.InvoiceNo),
+//        InvoiceDate = groupedData.Max(x => x.InvoiceDate),
+//        ReturnQty = groupedData.Sum(x => x.ReturnQty),
+//        Amount = groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit),
+//        ReturnAmount = groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit)
+//    }
+//).ToList();
+   
 
                 }
                 else
@@ -114,37 +200,143 @@ namespace Inventory.Controllers
                     catch { }
                     Session["FromDate"] = "";
                     Session["ToDate"] = "";
-                    result = (
-  from o in db.orderMain.Where(a => a.OrderDate >= fromDateValue && a.OrderDate <= toDateValue).DefaultIfEmpty()
-  join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
-  from sl in salesData.DefaultIfEmpty()
-  where o.IsCashCustomer == true
-  group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName }
-  by new { o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName } into groupedData
-  orderby groupedData.Key.OrderID ascending
-  select new
-  {
-      groupedData.Key.OrderNo,
-      groupedData.Key.OrderID,
-      groupedData.Key.CurrentStatus,
-      groupedData.Key.DeliverTo,
-      groupedData.Key.NetAmount,
-      groupedData.Key.Discount,
-      groupedData.Key.Freeze,
-      groupedData.Key.IGST,
-      groupedData.Key.SGST,
-      groupedData.Key.CGST,
-      groupedData.Key.TotalAmount,
-      groupedData.Key.CustomerName,
-      InvoiceNo = groupedData.Max(x => x.InvoiceNo),
-      InvoiceDate = groupedData.Max(x => x.InvoiceDate)
-  }
+
+                     result = (
+        from o in db.orderMain.Where(a => a.OrderDate >= fromDateValue && a.OrderDate <= toDateValue).DefaultIfEmpty()
+    join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
+    from sl in salesData.DefaultIfEmpty()
+    where o.IsCashCustomer == true
+    group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName, o.CustomerGSTNo, o.CustomerCity, sl.ReturnQty, sl.AmountPerUnit }
+    by new { o.OrderNo, o.OrderID }
+    into groupedData
+    orderby groupedData.Key.OrderID ascending
+    select new
+    {
+        groupedData.Key.OrderNo,
+        groupedData.Key.OrderID,
+        CurrentStatus = groupedData.Select(x => x.CurrentStatus).FirstOrDefault(),
+        DeliverTo = groupedData.Select(x => x.DeliverTo).FirstOrDefault(),
+        NetAmount = groupedData.Select(x => x.NetAmount).FirstOrDefault(),
+        Discount = groupedData.Select(x => x.Discount).FirstOrDefault(),
+        Freeze = groupedData.Select(x => x.Freeze).FirstOrDefault(),
+        IGST = groupedData.Select(x => x.IGST).FirstOrDefault(),
+        SGST = groupedData.Select(x => x.SGST).FirstOrDefault(),
+        CGST = groupedData.Select(x => x.CGST).FirstOrDefault(),
+        TotalAmount = groupedData.Select(x => x.TotalAmount).FirstOrDefault(),
+        CustomerName = groupedData.Select(x => x.CustomerName).FirstOrDefault(),
+        CustomerGSTNo = groupedData.Select(x => x.CustomerGSTNo).FirstOrDefault(),
+        CustomerCity = groupedData.Select(x => x.CustomerCity).FirstOrDefault(),
+        InvoiceNo = groupedData.Max(x => x.InvoiceNo),
+        InvoiceDate = groupedData.Max(x => x.InvoiceDate),
+        ReturnQty = groupedData.Sum(x => x.ReturnQty),
+        ReturnAmount = groupedData.Any(x => x.ReturnQty != null && x.ReturnQty != 0)
+            ? groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit)
+            : 0,
+        Amount = groupedData.Any(x => x.ReturnQty != null && x.ReturnQty != 0)
+            ? groupedData.Sum(x => x.TotalAmount) - groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit)
+            : 0
+      
+        //ReturnAmount = groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit),
+        //Amount = groupedData.Sum(x => x.TotalAmount) - groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit)
+    
+    }
 ).ToList();
 
+//                    result = (
+//    from o in db.orderMain.Where(a => a.OrderDate >= fromDateValue && a.OrderDate <= toDateValue).DefaultIfEmpty()
+//    join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
+//    from sl in salesData.DefaultIfEmpty()
+//    where o.IsCashCustomer == true
+//    group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName, o.CustomerGSTNo, o.CustomerCity, sl.ReturnQty, sl.AmountPerUnit }
+//    by new { o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName, o.CustomerGSTNo, o.CustomerCity, sl.AmountPerUnit, sl.ReturnQty, }
+//    into groupedData
+//    orderby groupedData.Key.OrderID ascending
+//    select new
+//    {
+//        groupedData.Key.OrderNo,
+//        groupedData.Key.OrderID,
+//        groupedData.Key.CurrentStatus,
+//        groupedData.Key.DeliverTo,
+//        groupedData.Key.NetAmount,
+//        groupedData.Key.Discount,
+//        groupedData.Key.Freeze,
+//        groupedData.Key.IGST,
+//        groupedData.Key.SGST,
+//        groupedData.Key.CGST,
+//        groupedData.Key.TotalAmount,
+//        groupedData.Key.CustomerName,
+//        groupedData.Key.CustomerGSTNo,
+//        groupedData.Key.CustomerCity,
+//        InvoiceNo = groupedData.Max(x => x.InvoiceNo),
+//        InvoiceDate = groupedData.Max(x => x.InvoiceDate),
+//        ReturnQty = groupedData.Sum(x => x.ReturnQty),
+//        Amount = groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit),
+//        ReturnAmount = groupedData.Sum(x => x.ReturnQty * x.AmountPerUnit)
+//    }
+//).ToList();
+
+//                    result = (
+//                   from o in db.orderMain.Where(a => a.OrderDate >= fromDateValue && a.OrderDate <= toDateValue).DefaultIfEmpty()
+//    join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
+//    from sl in salesData.DefaultIfEmpty()
+//    where o.IsCashCustomer == true
+//    group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName, o.CustomerGSTNo, o.CustomerCity, sl.ReturnQty, sl.PayAmount }
+//    by new { o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName, o.CustomerGSTNo, o.CustomerCity } into groupedData
+//    orderby groupedData.Key.OrderID ascending
+//    select new
+//    {
+//        groupedData.Key.OrderNo,
+//        groupedData.Key.OrderID,
+//        groupedData.Key.CurrentStatus,
+//        groupedData.Key.DeliverTo,
+//        groupedData.Key.NetAmount,
+//        groupedData.Key.Discount,
+//        groupedData.Key.Freeze,
+//        groupedData.Key.IGST,
+//        groupedData.Key.SGST,
+//        groupedData.Key.CGST,
+//        groupedData.Key.TotalAmount,
+//        groupedData.Key.CustomerName,
+//        groupedData.Key.CustomerGSTNo,
+//        groupedData.Key.CustomerCity,
+//        InvoiceNo = groupedData.Max(x => x.InvoiceNo),
+//        InvoiceDate = groupedData.Max(x => x.InvoiceDate),
+//        ReturnQty = groupedData.Sum(x => x.ReturnQty),
+//        //PayAmount = groupedData.Sum(x => x.PayAmount)
+//    }
+//).ToList();
+
+                    //                    result = (
+                    //  from o in db.orderMain.Where(a => a.OrderDate >= fromDateValue && a.OrderDate <= toDateValue).DefaultIfEmpty()
+                    //  join s in db.Sales on o.OrderNo equals s.OrderNo into salesData
+                    //  from sl in salesData.DefaultIfEmpty()
+                    //  where o.IsCashCustomer == true
+                    //  group new { sl.InvoiceNo, sl.InvoiceDate, o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName }
+                    //  by new { o.OrderNo, o.OrderID, o.CurrentStatus, o.DeliverTo, o.NetAmount, o.Discount, o.Freeze, o.IGST, o.SGST, o.CGST, o.TotalAmount, o.CustomerName } into groupedData
+                    //  orderby groupedData.Key.OrderID ascending
+                    //  select new
+                    //  {
+                    //      groupedData.Key.OrderNo,
+                    //      groupedData.Key.OrderID,
+                    //      groupedData.Key.CurrentStatus,
+                    //      groupedData.Key.DeliverTo,
+                    //      groupedData.Key.NetAmount,
+                    //      groupedData.Key.Discount,
+                    //      groupedData.Key.Freeze,
+                    //      groupedData.Key.IGST,
+                    //      groupedData.Key.SGST,
+                    //      groupedData.Key.CGST,
+                    //      groupedData.Key.TotalAmount,
+                    //      groupedData.Key.CustomerName,
+                    //      InvoiceNo = groupedData.Max(x => x.InvoiceNo),
+                    //      InvoiceDate = groupedData.Max(x => x.InvoiceDate)
+                    //  }
+                    //).ToList();
 
 
 
-               
+
+
                 }
 
                 int totalRecords = result.Count();

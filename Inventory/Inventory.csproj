@@ -299,6 +299,9 @@
     <Compile Include="Controllers\BOMController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\CompanyDetailsController.cs" />
+    <Compile Include="Controllers\CreditReportController.cs" />
+    <Compile Include="Controllers\DCSaleReportController.cs" />
+    <Compile Include="Controllers\DebitReportController.cs" />
     <Compile Include="Controllers\DeliveryChallanSaleController.cs" />
     <Compile Include="Controllers\CounterSaleController.cs" />
     <Compile Include="Controllers\CurrencyController.cs" />
@@ -316,6 +319,7 @@
     <Compile Include="Controllers\GetQuotationsController.cs" />
     <Compile Include="Controllers\GRNDetailsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InwardReportController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MMEController.cs" />
     <Compile Include="Controllers\OrderMainController.cs" />
@@ -328,6 +332,7 @@
     <Compile Include="Controllers\ProductExpiryReportController.cs" />
     <Compile Include="Controllers\ProductionOrderController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Controllers\ProductStatusReportController.cs" />
     <Compile Include="Controllers\PurchaseOrderPaymentController.cs" />
     <Compile Include="Controllers\PurchaseReportController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -620,6 +625,12 @@
     <Content Include="Views\DCReturns\Return.cshtml" />
     <Content Include="Views\DCReplacement\Edit.cshtml" />
     <Content Include="Views\DCReplacement\Index.cshtml" />
+    <Content Include="Views\CreditReport\Index.cshtml" />
+    <Content Include="Views\DCSaleReport\Index.cshtml" />
+    <Content Include="Views\DebitReport\Index.cshtml" />
+    <Content Include="Views\InwardReport\Index.cshtml" />
+    <Content Include="Views\ProductExpiryReport\ProductExpiryReport2.cshtml" />
+    <Content Include="Views\ProductStatusReport\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Antlr3.Runtime.dll" />
